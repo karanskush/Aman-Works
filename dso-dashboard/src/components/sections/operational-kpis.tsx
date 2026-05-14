@@ -4,10 +4,11 @@ import { KPICard } from "@/components/ui/kpi-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MiniSparkline } from "@/components/charts/mini-sparkline";
 import {
-  invoiceToCashData,
-  creditPeriodUtilizationData,
-  daysToClearBacklogData,
+  invoiceToCashInsight,
+  creditPeriodUtilizationInsight,
+  daysToClearBacklogInsight,
 } from "@/lib/data";
+import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
 import { Activity } from "lucide-react";
 import {
   BarChart,
@@ -22,6 +23,9 @@ import {
 } from "recharts";
 
 function InvoiceToCashGauge() {
+  const kpiData = useKPIData();
+  const { p50, p90 } = kpiData.operational.invoiceToCash;
+
   return (
     <div className="flex items-center gap-6 justify-center py-2">
       <div className="text-center">
@@ -32,11 +36,11 @@ function InvoiceToCashGauge() {
             <circle
               cx="40" cy="40" r="34" fill="none"
               stroke="#16a34a" strokeWidth="6"
-              strokeDasharray={`${(8 / 30) * 213.6} 213.6`}
+              strokeDasharray={`${(p50 / Math.max(p90, 60)) * 213.6} 213.6`}
               strokeLinecap="round"
             />
           </svg>
-          <span className="absolute text-xl font-bold text-accent-green">{invoiceToCashData.p50}</span>
+          <span className="absolute text-xl font-bold text-accent-green">{p50}</span>
         </div>
         <div className="text-xs text-accent-green mt-1">days</div>
       </div>
@@ -51,11 +55,11 @@ function InvoiceToCashGauge() {
             <circle
               cx="40" cy="40" r="34" fill="none"
               stroke="#dc2626" strokeWidth="6"
-              strokeDasharray={`${(30 / 60) * 213.6} 213.6`}
+              strokeDasharray={`${(p90 / Math.max(p90, 60)) * 213.6} 213.6`}
               strokeLinecap="round"
             />
           </svg>
-          <span className="absolute text-xl font-bold text-accent-red">{invoiceToCashData.p90}</span>
+          <span className="absolute text-xl font-bold text-accent-red">{p90}</span>
         </div>
         <div className="text-xs text-accent-red mt-1">days</div>
       </div>
@@ -64,9 +68,16 @@ function InvoiceToCashGauge() {
 }
 
 function BacklogChart() {
+  const kpiData = useKPIData();
+  const data = kpiData.operational.daysToClearBacklog.weekly;
+
+  if (data.length === 0) {
+    return <div className="text-xs text-muted text-center py-8">No data for this period</div>;
+  }
+
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={daysToClearBacklogData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
+      <BarChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
         <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
@@ -76,7 +87,7 @@ function BacklogChart() {
           labelStyle={{ color: "#6b7280" }}
         />
         <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32}>
-          {daysToClearBacklogData.weekly.map((d, i) => (
+          {data.map((d, i) => (
             <Cell
               key={i}
               fill={d.value > 5 ? "#dc2626" : d.value > 3 ? "#d97706" : "#16a34a"}
@@ -91,6 +102,9 @@ function BacklogChart() {
 }
 
 export function OperationalKPIs() {
+  const kpiData = useKPIData();
+  const quarterLabel = useQuarterLabel();
+
   return (
     <section>
       <SectionHeader
@@ -105,7 +119,7 @@ export function OperationalKPIs() {
         <KPICard
           title="Invoice to Cash Cycle Time"
           value=""
-          insight={invoiceToCashData.insight}
+          insight={invoiceToCashInsight}
           compact
         >
           <InvoiceToCashGauge />
@@ -113,13 +127,13 @@ export function OperationalKPIs() {
 
         <KPICard
           title="Credit Period Utilization"
-          value={creditPeriodUtilizationData.overall}
+          value={kpiData.operational.creditPeriodUtilization.overall}
           suffix="%"
-          valueLabel="Overall Avg (Q1 2026)"
-          insight={creditPeriodUtilizationData.insight}
+          valueLabel={quarterLabel}
+          insight={creditPeriodUtilizationInsight}
           glowClass="glow-amber"
         >
-          <MiniSparkline data={creditPeriodUtilizationData.monthly} color="#d97706" />
+          <MiniSparkline data={kpiData.operational.creditPeriodUtilization.monthly} color="#d97706" />
         </KPICard>
       </div>
 
@@ -127,7 +141,7 @@ export function OperationalKPIs() {
       <KPICard
         title="Days to Clear Backlog"
         value=""
-        insight={daysToClearBacklogData.insight}
+        insight={daysToClearBacklogInsight}
         compact
       >
         <BacklogChart />

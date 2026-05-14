@@ -4,24 +4,28 @@
 // No external AI — all responses derived from dashboard data
 // ============================================================
 
-import {
-  dsoData,
-  overdueRatioData,
-  revenueAtRiskData,
-  receivablesTurnoverData,
-  netARMovementData,
-  ceiData,
-  onTimePaymentData,
-  collectionEffectivenessWeeklyData,
-  collectionPeriodEffectivenessData,
-  agingBucketData,
-  overdueInvoiceDensityData,
-  peakOverdueExposureData,
-  invoiceToCashData,
-  creditPeriodUtilizationData,
-  daysToClearBacklogData,
-} from "./data";
+import { COMPUTED_KPI_DATA } from "./computed-kpis";
 import { formatCurrency } from "./utils";
+
+// Use "All" quarter as the default for chatbot responses (full year view)
+const _all = COMPUTED_KPI_DATA["All"];
+
+// Compatibility layer — maps computed data to the shape the chatbot expects
+const dsoData = { overall: _all.executive.dso.overall, monthly: _all.executive.dso.monthly };
+const overdueRatioData = { overall: _all.executive.overdueRatio.overall, monthly: _all.executive.overdueRatio.monthly };
+const revenueAtRiskData = { value: _all.executive.revenueAtRisk.value };
+const receivablesTurnoverData = { overall: _all.executive.receivablesTurnover.overall, monthly: _all.executive.receivablesTurnover.monthly };
+const netARMovementData = { monthly: _all.executive.netARMovement.monthly };
+const ceiData = { overall: _all.collection.cei.overall, monthly: _all.collection.cei.monthly };
+const onTimePaymentData = { weekly: _all.collection.onTimePayment.weekly };
+const collectionEffectivenessWeeklyData = { weekly: _all.collection.collectionEffectiveness.weekly };
+const collectionPeriodEffectivenessData = { data: _all.collection.creditPeriodEffectiveness.data };
+const agingBucketData = { data: _all.aging.buckets.map(b => ({ bucket: b.bucket, percentage: b.percentage, color: b.color })) };
+const overdueInvoiceDensityData = { count: _all.aging.overdueDensity.count, value: _all.aging.overdueDensity.value };
+const peakOverdueExposureData = _all.aging.peakExposure;
+const invoiceToCashData = _all.operational.invoiceToCash;
+const creditPeriodUtilizationData = { overall: _all.operational.creditPeriodUtilization.overall, monthly: _all.operational.creditPeriodUtilization.monthly };
+const daysToClearBacklogData = { weekly: _all.operational.daysToClearBacklog.weekly };
 
 // ---- Derived calculations ----
 const totalARQ1 = netARMovementData.monthly.reduce((s, m) => s + m.value, 0);
@@ -29,8 +33,8 @@ const avgOnTime = Math.round(onTimePaymentData.weekly.reduce((s, w) => s + w.val
 const avgCollEff = Math.round(collectionEffectivenessWeeklyData.weekly.reduce((s, w) => s + w.value, 0) / collectionEffectivenessWeeklyData.weekly.length * 10) / 10;
 const weeksAboveTarget = onTimePaymentData.weekly.filter(w => w.value >= 85).length;
 const backlogLatest = daysToClearBacklogData.weekly[daysToClearBacklogData.weekly.length - 1].value;
-const agingHealthy = agingBucketData.data.filter(d => ["7 days", "15 days", "30 days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
-const agingRisky = agingBucketData.data.filter(d => ["45 days", "60 days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
+const agingHealthy = agingBucketData.data.filter(d => ["Not Due", "1-7 days", "8-15 days", "16-30 days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
+const agingRisky = agingBucketData.data.filter(d => ["31-45 days", "46-60 days", "60+ days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
 
 // ---- Health Scoring ----
 function calcScore(deductions: number[]): { score: number; grade: string; status: string } {
@@ -67,7 +71,7 @@ const overallGrade = overallScore >= 80 ? "A" : overallScore >= 60 ? "B" : overa
 
 // ---- Text-based visualization helpers ----
 function bar(value: number, max: number = 100): string {
-  const filled = Math.round((value / max) * 10);
+  const filled = Math.max(0, Math.min(10, Math.round((value / max) * 10)));
   return `[${"█".repeat(filled)}${"░".repeat(10 - filled)}] ${value}%`;
 }
 
@@ -286,11 +290,13 @@ aging: `**Aging Bucket Distribution:**
 
 **Formula:** Bucket % = (AR in Bucket / Total AR) x 100
 
-**7 days** ${bar(agingBucketData.data[0].percentage)}
-**15 days** ${bar(agingBucketData.data[1].percentage)}
-**30 days** ${bar(agingBucketData.data[2].percentage)}
-**45 days** ${bar(agingBucketData.data[3].percentage)}
-**60 days** ${bar(agingBucketData.data[4].percentage)}
+**Not Due** ${bar(agingBucketData.data[0].percentage)}
+**1-7 days** ${bar(agingBucketData.data[1].percentage)}
+**8-15 days** ${bar(agingBucketData.data[2].percentage)}
+**16-30 days** ${bar(agingBucketData.data[3].percentage)}
+**31-45 days** ${bar(agingBucketData.data[4].percentage)}
+**46-60 days** ${bar(agingBucketData.data[5].percentage)}
+**60+ days** ${bar(agingBucketData.data[6].percentage)}
 
 **Diagnosis:** Inverted pyramid — ${agingHealthy}% in 0-30 days vs ${agingRisky}% in 45-60 days. Healthy is the reverse (60%+ in 0-30).
 

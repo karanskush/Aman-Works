@@ -4,12 +4,13 @@ import { KPICard } from "@/components/ui/kpi-card";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MiniSparkline } from "@/components/charts/mini-sparkline";
 import {
-  dsoData,
-  overdueRatioData,
-  revenueAtRiskData,
-  receivablesTurnoverData,
-  netARMovementData,
+  dsoInsight,
+  overdueRatioInsight,
+  revenueAtRiskInsight,
+  receivablesTurnoverInsight,
+  netARMovementInsight,
 } from "@/lib/data";
+import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
 import { formatCurrency } from "@/lib/utils";
 import { BarChart3, AlertTriangle } from "lucide-react";
 import {
@@ -24,14 +25,17 @@ import {
   LabelList,
 } from "recharts";
 
-const waterfallColors = ["#3b82f6", "#60a5fa", "#3b82f6"];
-
 function WaterfallChart() {
-  const data = netARMovementData.monthly.map((d) => ({
+  const kpiData = useKPIData();
+  const data = kpiData.executive.netARMovement.monthly.map((d) => ({
     name: d.label,
     value: d.value,
     displayValue: formatCurrency(d.value),
   }));
+
+  if (data.length === 0) {
+    return <div className="text-xs text-muted text-center py-8">No data for this period</div>;
+  }
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -61,8 +65,8 @@ function WaterfallChart() {
         />
         <ReferenceLine y={0} stroke="#e2e6ed" />
         <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60}>
-          {data.map((_, index) => (
-            <Cell key={index} fill={waterfallColors[index]} fillOpacity={0.85} />
+          {data.map((d, index) => (
+            <Cell key={index} fill={d.value >= 0 ? "#3b82f6" : "#dc2626"} fillOpacity={0.85} />
           ))}
           <LabelList dataKey="displayValue" position="top" fill="#1a1d23" fontSize={10} fontWeight={600} />
         </Bar>
@@ -72,6 +76,10 @@ function WaterfallChart() {
 }
 
 export function ExecutiveKPIs() {
+  const kpiData = useKPIData();
+  const quarterLabel = useQuarterLabel();
+  const { executive } = kpiData;
+
   return (
     <section>
       <SectionHeader
@@ -84,41 +92,41 @@ export function ExecutiveKPIs() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <KPICard
           title="Days Sales Outstanding"
-          value={dsoData.overall}
+          value={executive.dso.overall}
           suffix="days"
-          valueLabel="Overall Avg (Q1 2026)"
-          insight={dsoData.insight}
+          valueLabel={quarterLabel}
+          insight={dsoInsight}
           glowClass="glow-amber"
         >
-          <MiniSparkline data={dsoData.monthly} color="#d97706" />
+          <MiniSparkline data={executive.dso.monthly} color="#d97706" />
         </KPICard>
 
         <KPICard
           title="Overdue Ratio"
-          value={overdueRatioData.overall}
+          value={executive.overdueRatio.overall}
           suffix="%"
-          valueLabel="Overall Avg (Q1 2026)"
-          insight={overdueRatioData.insight}
+          valueLabel={quarterLabel}
+          insight={overdueRatioInsight}
           glowClass="glow-red"
         >
-          <MiniSparkline data={overdueRatioData.monthly} color="#dc2626" />
+          <MiniSparkline data={executive.overdueRatio.monthly} color="#dc2626" />
         </KPICard>
 
         <KPICard
           title="Revenue at Risk"
-          value={revenueAtRiskData.value}
+          value={executive.revenueAtRisk.value}
           suffix="%"
-          insight={revenueAtRiskData.insight}
+          insight={revenueAtRiskInsight}
           glowClass="glow-red"
         >
           <div className="flex items-center gap-2 mt-2">
             <AlertTriangle className="w-4 h-4 text-accent-red pulse-alert" />
-            <span className="text-xs text-accent-red">{revenueAtRiskData.changeLabel}</span>
+            <span className="text-xs text-accent-red">of open AR at risk</span>
           </div>
           <div className="mt-3 h-2 rounded-full bg-border overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-accent-red to-accent-amber transition-all duration-1000"
-              style={{ width: `${revenueAtRiskData.value}%` }}
+              style={{ width: `${Math.min(executive.revenueAtRisk.value, 100)}%` }}
             />
           </div>
         </KPICard>
@@ -128,19 +136,19 @@ export function ExecutiveKPIs() {
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <KPICard
           title="Receivables Turnover Ratio"
-          value={receivablesTurnoverData.overall}
+          value={executive.receivablesTurnover.overall}
           suffix="x"
-          valueLabel="Overall Avg (Q1 2026)"
-          insight={receivablesTurnoverData.insight}
+          valueLabel={quarterLabel}
+          insight={receivablesTurnoverInsight}
           className="md:col-span-2"
         >
-          <MiniSparkline data={receivablesTurnoverData.monthly} color="#dc2626" />
+          <MiniSparkline data={executive.receivablesTurnover.monthly} color="#dc2626" />
         </KPICard>
 
         <KPICard
           title="Net AR Movement (Waterfall)"
           value=""
-          insight={netARMovementData.insight}
+          insight={netARMovementInsight}
           compact
           className="md:col-span-3"
         >
