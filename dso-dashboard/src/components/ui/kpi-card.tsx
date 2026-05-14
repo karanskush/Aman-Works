@@ -10,6 +10,7 @@ interface KPICardProps {
   value: string | number;
   suffix?: string;
   prefix?: string;
+  valueLabel?: string;
   insight: KPIInsight;
   glowClass?: string;
   children?: React.ReactNode;
@@ -29,6 +30,7 @@ export function KPICard({
   value,
   suffix,
   prefix,
+  valueLabel,
   insight,
   glowClass,
   children,
@@ -40,7 +42,7 @@ export function KPICard({
   const TrendIcon = trend.icon;
 
   return (
-    <div className={cn("glass-card p-5 relative group", glowClass, className)}>
+    <div className={cn("glass-card p-4 relative group", glowClass, className)}>
       {/* Header */}
       <div className="flex items-start justify-between mb-2">
         <h3 className="text-sm font-medium text-muted">{title}</h3>
@@ -57,10 +59,15 @@ export function KPICard({
 
       {/* Value */}
       {!compact && (
-        <div className="flex items-baseline gap-1 mb-3">
-          {prefix && <span className="text-lg text-muted">{prefix}</span>}
-          <span className="text-3xl font-bold tracking-tight">{value}</span>
-          {suffix && <span className="text-lg text-muted">{suffix}</span>}
+        <div className="mb-3">
+          <div className="flex items-baseline gap-1">
+            {prefix && <span className="text-lg text-muted">{prefix}</span>}
+            <span className="text-3xl font-bold tracking-tight">{value}</span>
+            {suffix && <span className="text-lg text-muted">{suffix}</span>}
+          </div>
+          {valueLabel && (
+            <span className="text-[10px] text-muted/60 font-medium uppercase tracking-wider">{valueLabel}</span>
+          )}
         </div>
       )}
 

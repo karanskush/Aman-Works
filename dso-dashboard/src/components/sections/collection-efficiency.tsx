@@ -22,12 +22,13 @@ import {
   CartesianGrid,
   ReferenceLine,
   Cell,
+  LabelList,
 } from "recharts";
 
 function OnTimePaymentChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={onTimePaymentData.weekly} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
+      <BarChart data={onTimePaymentData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
         <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
@@ -37,7 +38,9 @@ function OnTimePaymentChart() {
           labelStyle={{ color: "#8b949e" }}
         />
         <ReferenceLine y={85} stroke="#3fb950" strokeDasharray="4 4" strokeOpacity={0.5} />
-        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32} fill="#58a6ff" fillOpacity={0.8} />
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32} fill="#58a6ff" fillOpacity={0.8}>
+          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={10} formatter={(v) => `${v}%`} />
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );
@@ -46,7 +49,7 @@ function OnTimePaymentChart() {
 function CollectionEffectivenessChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <LineChart data={collectionEffectivenessWeeklyData.weekly} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
+      <LineChart data={collectionEffectivenessWeeklyData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
         <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
@@ -63,7 +66,9 @@ function CollectionEffectivenessChart() {
           strokeWidth={2}
           dot={{ r: 3, fill: "#bc8cff", stroke: "#0d1117", strokeWidth: 2 }}
           activeDot={{ r: 5 }}
-        />
+        >
+          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={10} formatter={(v) => `${v}%`} />
+        </Line>
       </LineChart>
     </ResponsiveContainer>
   );
@@ -72,7 +77,7 @@ function CollectionEffectivenessChart() {
 function CollectionPeriodChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={collectionPeriodEffectivenessData.data} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
+      <BarChart data={collectionPeriodEffectivenessData.data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
         <XAxis dataKey="creditPeriod" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
@@ -86,6 +91,7 @@ function CollectionPeriodChart() {
             const color = entry.value > 60 ? "#3fb950" : entry.value > 40 ? "#d29922" : "#f85149";
             return <Cell key={i} fill={color} fillOpacity={0.8} />;
           })}
+          <LabelList dataKey="value" position="top" fill="#e4e8ef" fontSize={11} fontWeight={600} formatter={(v) => `${v}%`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -108,6 +114,7 @@ export function CollectionEfficiency() {
           title="Collection Effectiveness Index (CEI)"
           value={ceiData.overall}
           suffix="%"
+          valueLabel="Overall Avg (Q1 2026)"
           insight={ceiData.insight}
           glowClass="glow-green"
         >
@@ -137,9 +144,9 @@ export function CollectionEfficiency() {
           <CollectionEffectivenessChart />
         </KPICard>
 
-        {/* Collection Period Effectiveness */}
+        {/* Credit Period Effectiveness */}
         <KPICard
-          title="Collection Period Effectiveness"
+          title="Credit Period Effectiveness"
           value=""
           insight={collectionPeriodEffectivenessData.insight}
           compact

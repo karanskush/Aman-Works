@@ -21,6 +21,7 @@ import {
   ResponsiveContainer,
   Cell,
   ReferenceLine,
+  LabelList,
 } from "recharts";
 
 const waterfallColors = ["#58a6ff", "#79c0ff", "#58a6ff"];
@@ -63,6 +64,7 @@ function WaterfallChart() {
           {data.map((_, index) => (
             <Cell key={index} fill={waterfallColors[index]} fillOpacity={0.8} />
           ))}
+          <LabelList dataKey="displayValue" position="top" fill="#e4e8ef" fontSize={10} fontWeight={600} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -84,6 +86,7 @@ export function ExecutiveKPIs() {
           title="Days Sales Outstanding"
           value={dsoData.overall}
           suffix="days"
+          valueLabel="Overall Avg (Q1 2026)"
           insight={dsoData.insight}
           glowClass="glow-amber"
         >
@@ -95,6 +98,7 @@ export function ExecutiveKPIs() {
           title="Overdue Ratio"
           value={overdueRatioData.overall}
           suffix="%"
+          valueLabel="Overall Avg (Q1 2026)"
           insight={overdueRatioData.insight}
           glowClass="glow-red"
         >
@@ -122,12 +126,13 @@ export function ExecutiveKPIs() {
         </KPICard>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {/* Receivables Turnover */}
         <KPICard
           title="Receivables Turnover Ratio"
           value={receivablesTurnoverData.overall}
           suffix="x"
+          valueLabel="Overall Avg (Q1 2026)"
           insight={receivablesTurnoverData.insight}
         >
           <MiniSparkline data={receivablesTurnoverData.monthly} color="#f85149" />
@@ -139,6 +144,7 @@ export function ExecutiveKPIs() {
           value=""
           insight={netARMovementData.insight}
           compact
+          className="xl:col-span-2"
         >
           <WaterfallChart />
         </KPICard>

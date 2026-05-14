@@ -79,10 +79,10 @@ const kpiKnowledgeBase: KPIEntry[] = [
     situation: `Weekly Collection Effectiveness is highly erratic: swings from 0% (W2) to 80% (W3) with no discernible pattern. Average is ~45%, well below the 70% target. W11 crashed to 19%, W13 at 38%. The contrast with On-Time Payment (which hit 100%) suggests payments ARE coming in, but collections activity is inconsistent. The team is not maintaining consistent effort — this needs process discipline.`,
   },
   {
-    keywords: ["collection period", "credit period effectiveness", "credit term", "credit bucket"],
-    name: "Collection Period Effectiveness",
+    keywords: ["credit period", "credit period effectiveness", "credit term", "credit bucket", "collection period"],
+    name: "Credit Period Effectiveness",
     category: "Collection Efficiency",
-    situation: `Collection Period Effectiveness by credit terms: ${collectionPeriodEffectivenessData.data.map(d => `${d.creditPeriod}: ${d.value}%`).join(", ")}. Striking pattern: 7-45 day terms cluster around 39-41% (flat), but 60-day terms jump to 71.6%. Longer credit terms paradoxically yield better collection — likely because 60-day customers are larger, established accounts with dedicated AP teams. The 7-30 day segment needs targeted intervention.`,
+    situation: `Credit Period Effectiveness by credit terms: ${collectionPeriodEffectivenessData.data.map(d => `${d.creditPeriod}: ${d.value}%`).join(", ")}. Striking pattern: 7-45 day credit terms cluster around 39-41% (flat), but 60-day terms jump to 71.6%. Longer credit periods paradoxically yield better collection — likely because 60-day customers are larger, established accounts with dedicated AP teams. The short-term credit periods (7-30 days) need targeted intervention.`,
   },
   {
     keywords: ["aging", "aging bucket", "aging distribution", "how old", "invoice age"],

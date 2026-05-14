@@ -162,9 +162,9 @@ export const collectionPeriodEffectivenessData = {
   ],
   insight: {
     businessPurpose:
-      "Collection Period Effectiveness measures how well collections perform segmented by credit period terms. Reveals which credit buckets are most/least efficient.",
+      "Credit Period Effectiveness measures how efficiently receivables are collected within each credit term bucket. Highlights which credit periods drive timely cash conversion and where collection gaps exist.",
     aiInsight:
-      "Striking pattern: 7-45 day terms all cluster around 39-41% effectiveness (essentially flat), but 60-day terms jump to 71.6%. This suggests that longer credit terms paradoxically yield better collection performance — likely because 60-day customers are larger, more established accounts with dedicated AP teams. The 7-30 day segment needs targeted intervention.",
+      "Striking pattern: 7-45 day credit terms all cluster around 39-41% effectiveness (essentially flat), but 60-day terms jump to 71.6%. Longer credit periods paradoxically yield better collection — likely because 60-day customers are larger, established accounts with dedicated AP teams. The short-term credit periods (7-30 days) need targeted intervention to close the effectiveness gap.",
     trend: "stable" as const,
   },
 };

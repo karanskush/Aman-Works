@@ -69,6 +69,7 @@ body {
 .glass-card:hover {
   border-color: rgba(88, 166, 255, 0.3);
   box-shadow: 0 0 30px rgba(88, 166, 255, 0.05);
+  transform: translateY(-2px);
 }
 
 /* Glow effect for key metrics */

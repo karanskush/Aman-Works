@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
   Cell,
+  LabelList,
 } from "recharts";
 
 function InvoiceToCashGauge() {
@@ -65,7 +66,7 @@ function InvoiceToCashGauge() {
 function BacklogChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <BarChart data={daysToClearBacklogData.weekly} margin={{ top: 8, right: 8, bottom: 0, left: -10 }}>
+      <BarChart data={daysToClearBacklogData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
         <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
         <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
@@ -82,6 +83,7 @@ function BacklogChart() {
               fillOpacity={0.8}
             />
           ))}
+          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={9} formatter={(v) => `${v}d`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -98,7 +100,7 @@ export function OperationalKPIs() {
         iconColor="text-accent-purple"
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Invoice to Cash Cycle */}
         <KPICard
           title="Invoice to Cash Cycle Time"
@@ -114,6 +116,7 @@ export function OperationalKPIs() {
           title="Credit Period Utilization"
           value={creditPeriodUtilizationData.overall}
           suffix="%"
+          valueLabel="Overall Avg (Q1 2026)"
           insight={creditPeriodUtilizationData.insight}
           glowClass="glow-amber"
         >

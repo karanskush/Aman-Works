@@ -43,7 +43,7 @@ export default function Dashboard() {
       </header>
 
       {/* Dashboard Content */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 space-y-8">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 space-y-6">
         <ExecutiveKPIs />
         <CollectionEfficiency />
         <AgingRisk />
