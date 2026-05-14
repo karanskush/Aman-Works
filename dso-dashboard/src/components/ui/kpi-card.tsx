@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { KPIInsight } from "@/lib/data";
-import { TrendingUp, TrendingDown, Minus, AlertTriangle, X, Sparkles, Info, ChevronRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, AlertTriangle, X, Sparkles, Info, ChevronRight, Calculator } from "lucide-react";
 
 interface KPICardProps {
   title: string;
@@ -68,27 +68,39 @@ function DetailModal({
           </button>
         </div>
 
-        <div className="space-y-3">
-          <div className="p-3 rounded-lg bg-accent-blue/10 border border-accent-blue/20">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Info className="w-4 h-4 text-accent-blue" />
-              <span className="text-xs font-semibold text-accent-blue uppercase tracking-wider">
+        <div className="space-y-2.5">
+          <div className="p-2.5 rounded-lg bg-accent-blue/10 border border-accent-blue/20">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Info className="w-3.5 h-3.5 text-accent-blue" />
+              <span className="text-[10px] font-bold text-accent-blue uppercase tracking-wider">
                 Business Purpose
               </span>
             </div>
-            <p className="text-sm text-foreground/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 leading-relaxed">
               {insight.businessPurpose}
             </p>
           </div>
 
-          <div className="p-3 rounded-lg bg-accent-purple/10 border border-accent-purple/20">
-            <div className="flex items-center gap-2 mb-1.5">
-              <Sparkles className="w-4 h-4 text-accent-purple" />
-              <span className="text-xs font-semibold text-accent-purple uppercase tracking-wider">
-                AI Insight — Current Situation
+          <div className="p-2.5 rounded-lg bg-accent-green/10 border border-accent-green/20">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Calculator className="w-3.5 h-3.5 text-accent-green" />
+              <span className="text-[10px] font-bold text-accent-green uppercase tracking-wider">
+                Formula
               </span>
             </div>
-            <p className="text-sm text-foreground/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 leading-relaxed font-mono">
+              {insight.formula}
+            </p>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-accent-purple/10 border border-accent-purple/20">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-accent-purple" />
+              <span className="text-[10px] font-bold text-accent-purple uppercase tracking-wider">
+                AI Insight
+              </span>
+            </div>
+            <p className="text-xs text-foreground/80 leading-relaxed">
               {insight.aiInsight}
             </p>
           </div>

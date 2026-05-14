@@ -65,6 +65,12 @@ const opsHealth = calcScore([
 const overallScore = Math.round((execHealth.score + collHealth.score + agingHealth.score + opsHealth.score) / 4);
 const overallGrade = overallScore >= 80 ? "A" : overallScore >= 60 ? "B" : overallScore >= 40 ? "C" : overallScore >= 20 ? "D" : "F";
 
+// ---- Text-based visualization helpers ----
+function bar(value: number, max: number = 100): string {
+  const filled = Math.round((value / max) * 10);
+  return `[${"█".repeat(filled)}${"░".repeat(10 - filled)}] ${value}%`;
+}
+
 // ============================================================
 // RESPONSE BANK — Each of the 20 queries has a pre-built response
 // ============================================================
@@ -74,12 +80,12 @@ const responses: Record<string, string> = {
 // ---- 1. System Health Score ----
 health: `**System Health: Grade ${overallGrade} (${overallScore}/100)**
 
-• **Executive KPIs:** ${execHealth.grade} (${execHealth.score}/100) — ${execHealth.status}
-• **Collection Efficiency:** ${collHealth.grade} (${collHealth.score}/100) — ${collHealth.status}
-• **Aging & Risk:** ${agingHealth.grade} (${agingHealth.score}/100) — ${agingHealth.status}
-• **Operational:** ${opsHealth.grade} (${opsHealth.score}/100) — ${opsHealth.status}
+**Executive KPIs** (${execHealth.grade}) ${bar(execHealth.score)}
+**Collection Efficiency** (${collHealth.grade}) ${bar(collHealth.score)}
+**Aging & Risk** (${agingHealth.grade}) ${bar(agingHealth.score)}
+**Operational** (${opsHealth.grade}) ${bar(opsHealth.score)}
 
-**Weakest area:** ${execHealth.score <= Math.min(collHealth.score, agingHealth.score, opsHealth.score) ? "Executive KPIs — DSO, overdue ratio, and revenue at risk are all in warning zone" : agingHealth.score <= Math.min(collHealth.score, opsHealth.score) ? "Aging & Risk — inverted aging pyramid with 65% in 45-60 day buckets" : collHealth.score <= opsHealth.score ? "Collection Efficiency — team effectiveness at " + avgCollEff + "% vs 70% target" : "Operational — backlog at " + backlogLatest + " days and rising"}.`,
+**Weakest area:** ${execHealth.score <= Math.min(collHealth.score, agingHealth.score, opsHealth.score) ? "Executive KPIs — DSO, overdue ratio, and revenue at risk all in warning zone" : agingHealth.score <= Math.min(collHealth.score, opsHealth.score) ? "Aging & Risk — inverted aging pyramid with 65% in 45-60 day buckets" : collHealth.score <= opsHealth.score ? "Collection Efficiency — team effectiveness at " + avgCollEff + "% vs 70% target" : "Operational — backlog at " + backlogLatest + " days and rising"}.`,
 
 // ---- 2. CFO Executive Brief ----
 cfo: `**CFO Executive Brief — Q1 2026**
@@ -159,16 +165,15 @@ actions: `**Priority Action Plan:**
 // ---- 6. Industry Benchmarks ----
 benchmarks: `**Current vs Industry Benchmarks:**
 
-• **DSO:** ${dsoData.overall} days vs <30 target — **${dsoData.overall - 30} days above** ⚠️
-• **Overdue Ratio:** ${overdueRatioData.overall}% vs <20% — **2x the target** ⚠️
-• **Turnover:** ${receivablesTurnoverData.overall}x vs 5-8x — **below benchmark** ⚠️
-• **CEI:** ${ceiData.monthly[2].value}% latest vs >90% — **declining fast** ⚠️
-• **On-Time Rate:** ${avgOnTime}% avg vs >85% — **${(85 - avgOnTime).toFixed(0)}pp below** ⚠️
-• **P50 Cycle:** ${invoiceToCashData.p50} days vs <10 — **within target** ✅
-• **P90 Cycle:** ${invoiceToCashData.p90} days vs <20 — **${invoiceToCashData.p90 - 20}d above** ⚠️
-• **Aging 0-30d:** ${agingHealthy}% vs >60% — **inverted pyramid** ⚠️
+**DSO** (target <30d): ${bar(Math.min(dsoData.overall, 100))} → ${dsoData.overall}d ⚠️
+**Overdue Ratio** (target <20%): ${bar(overdueRatioData.overall)} ⚠️
+**CEI** (target >90%): ${bar(ceiData.monthly[2].value)} → ${ceiData.monthly[2].value}% latest ⚠️
+**On-Time Rate** (target >85%): ${bar(avgOnTime)} ⚠️
+**Aging 0-30d** (target >60%): ${bar(agingHealthy)} ⚠️
+**P50 Cycle** (target <10d): ${bar(Math.round(invoiceToCashData.p50 / 30 * 100))} → ${invoiceToCashData.p50}d ✅
+**P90 Cycle** (target <20d): ${bar(Math.round(invoiceToCashData.p90 / 60 * 100))} → ${invoiceToCashData.p90}d ⚠️
 
-**Only bright spot:** P50 of ${invoiceToCashData.p50} days is excellent — most invoices clear fast. The problem is the stuck 10% (P90) dragging everything else.`,
+**Bright spot:** P50 of ${invoiceToCashData.p50} days is excellent — most invoices clear fast. The problem is the stuck 10% (P90) dragging everything else.`,
 
 // ---- 7. Liquidity Risk ----
 liquidity: `**Liquidity Risk Assessment:**
@@ -250,8 +255,10 @@ dso: `**DSO Trend Analysis:**
 
 **Formula:** DSO = (AR / Total Credit Sales) x Days
 
-**Current:** ${dsoData.overall} days overall
-**Monthly:** Jan=${dsoData.monthly[0].value}d → Feb=${dsoData.monthly[1].value}d → Mar=${dsoData.monthly[2].value}d (surged 13.5x)
+**Jan** ${bar(Math.round(dsoData.monthly[0].value / 45 * 100))} → ${dsoData.monthly[0].value}d
+**Feb** ${bar(Math.round(dsoData.monthly[1].value / 45 * 100))} → ${dsoData.monthly[1].value}d
+**Mar** ${bar(Math.round(dsoData.monthly[2].value / 45 * 100))} → ${dsoData.monthly[2].value}d
+**Overall:** ${dsoData.overall} days (surged 13.5x Jan→Mar)
 
 **What's driving it:** AR is growing faster than credit sales (billings outpace collections). The 65% aging concentration in 45-60 day buckets directly inflates DSO. Inversely related to turnover: 365/${receivablesTurnoverData.overall}x ≈ 83 implied DSO.
 
@@ -279,7 +286,11 @@ aging: `**Aging Bucket Distribution:**
 
 **Formula:** Bucket % = (AR in Bucket / Total AR) x 100
 
-**Current:** ${agingBucketData.data.map(d => `${d.bucket}: ${d.percentage}%`).join(" | ")}
+**7 days** ${bar(agingBucketData.data[0].percentage)}
+**15 days** ${bar(agingBucketData.data[1].percentage)}
+**30 days** ${bar(agingBucketData.data[2].percentage)}
+**45 days** ${bar(agingBucketData.data[3].percentage)}
+**60 days** ${bar(agingBucketData.data[4].percentage)}
 
 **Diagnosis:** Inverted pyramid — ${agingHealthy}% in 0-30 days vs ${agingRisky}% in 45-60 days. Healthy is the reverse (60%+ in 0-30).
 
@@ -355,9 +366,9 @@ backlog: `**Days to Clear Backlog:**
 // ---- 20. Overdue Count vs Value Gap ----
 overdueDensity: `**Overdue Invoice Density — Count vs Value Gap:**
 
-**Formulas:**
-• Count = (Overdue Invoice Count / Total Invoices) x 100 = **${overdueInvoiceDensityData.count}%**
-• Value = (Overdue Invoice Value / Total AR) x 100 = **${overdueInvoiceDensityData.value}%**
+**By Count:** ${bar(overdueInvoiceDensityData.count)}
+**By Value:** ${bar(overdueInvoiceDensityData.value)}
+**Gap:** ${(overdueInvoiceDensityData.count - overdueInvoiceDensityData.value).toFixed(1)}pp
 
 **The ${(overdueInvoiceDensityData.count - overdueInvoiceDensityData.value).toFixed(1)}pp gap is diagnostic:** High volume of small invoices drives the overdue count (91.7%), while large invoices (26.8% of value) are paid more reliably.
 

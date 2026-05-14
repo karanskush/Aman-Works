@@ -11,6 +11,8 @@ import {
   Sparkles,
   User,
   ChevronDown,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 
 interface Message {
@@ -27,11 +29,20 @@ function formatMarkdown(text: string): string {
     .replace(/_(.*?)_/g, '<em class="text-muted">$1</em>')
     .replace(/\n\n/g, '<div class="h-3"></div>')
     .replace(/\n/g, "<br/>")
-    .replace(/• /g, '<span class="text-accent-blue mr-1">›</span> ');
+    .replace(/• /g, '<span class="text-accent-blue mr-1">›</span> ')
+    // Render text-based bar charts: lines like [████████░░] 80%
+    .replace(/\[([█░]+)\]\s*(\d+%?)/g, '<div class="flex items-center gap-2 my-1"><div class="flex-1 h-2 rounded-full bg-border overflow-hidden"><div class="h-full rounded-full bg-accent-blue" style="width:$2"></div></div><span class="text-[10px] text-muted shrink-0">$2</span></div>')
+    // Render colored status indicators
+    .replace(/🔴/g, '<span class="inline-block w-2 h-2 rounded-full bg-accent-red mr-1"></span>')
+    .replace(/🟡/g, '<span class="inline-block w-2 h-2 rounded-full bg-accent-amber mr-1"></span>')
+    .replace(/🟢/g, '<span class="inline-block w-2 h-2 rounded-full bg-accent-green mr-1"></span>')
+    .replace(/✅/g, '<span class="text-accent-green">✓</span>')
+    .replace(/⚠️/g, '<span class="text-accent-amber">!</span>');
 }
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -111,11 +122,14 @@ export function Chatbot() {
 
   const chatPanel = (
     <>
-      {/* Backdrop on mobile */}
+      {/* Backdrop on mobile or fullscreen */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[90] bg-black/20 backdrop-blur-sm sm:hidden"
-          onClick={() => setIsOpen(false)}
+          className={cn(
+            "fixed inset-0 z-[90] bg-black/20 backdrop-blur-sm",
+            !isFullscreen && "sm:hidden"
+          )}
+          onClick={() => { setIsOpen(false); setIsFullscreen(false); }}
         />
       )}
 
@@ -138,19 +152,18 @@ export function Chatbot() {
         )}
       </button>
 
-      {/* Chat Panel — full screen on mobile, floating on desktop */}
+      {/* Chat Panel */}
       <div
         className={cn(
           "fixed z-[95] flex flex-col bg-card border border-border overflow-hidden transition-all duration-300",
-          // Mobile: full screen sheet from bottom
-          "inset-x-0 bottom-0 top-0 sm:inset-auto",
-          // Desktop: floating panel
-          "sm:bottom-24 sm:right-6 sm:w-[380px] sm:max-h-[560px] sm:rounded-2xl",
-          // Mobile: rounded top only
-          "rounded-none sm:rounded-2xl",
           "shadow-xl",
+          isFullscreen
+            // Fullscreen: centered with max dimensions
+            ? "inset-4 sm:inset-8 rounded-2xl"
+            // Mobile: full screen sheet
+            : "inset-x-0 bottom-0 top-0 sm:inset-auto sm:bottom-24 sm:right-6 sm:w-[380px] sm:max-h-[560px] sm:rounded-2xl rounded-none",
           isOpen
-            ? "opacity-100 translate-y-0"
+            ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-full sm:translate-y-4 sm:scale-95 pointer-events-none"
         )}
       >
@@ -167,12 +180,25 @@ export function Chatbot() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="p-2 -m-1 rounded-full hover:bg-card-hover active:bg-border transition-colors"
-          >
-            <X className="w-4 h-4 text-muted" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="p-2 rounded-full hover:bg-card-hover active:bg-border transition-colors hidden sm:flex"
+              aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 text-muted" />
+              ) : (
+                <Maximize2 className="w-4 h-4 text-muted" />
+              )}
+            </button>
+            <button
+              onClick={() => { setIsOpen(false); setIsFullscreen(false); }}
+              className="p-2 rounded-full hover:bg-card-hover active:bg-border transition-colors"
+            >
+              <X className="w-4 h-4 text-muted" />
+            </button>
+          </div>
         </div>
 
         {/* Messages */}
@@ -193,7 +219,8 @@ export function Chatbot() {
 
               <div
                 className={cn(
-                  "max-w-[85%] rounded-xl px-3 py-2.5 text-xs leading-relaxed",
+                  "rounded-xl px-3 py-2.5 text-xs leading-relaxed",
+                  isFullscreen ? "max-w-[70%]" : "max-w-[85%]",
                   msg.role === "user"
                     ? "bg-accent-blue/15 border border-accent-blue/20 text-foreground"
                     : "bg-card-hover border border-border text-foreground/90"
@@ -233,7 +260,7 @@ export function Chatbot() {
         {messages.length <= 2 && (
           <div className="px-4 pb-2 shrink-0">
             <div className="flex flex-wrap gap-1.5">
-              {suggestedQuestions.slice(0, 6).map((q) => (
+              {suggestedQuestions.slice(0, isFullscreen ? 10 : 6).map((q) => (
                 <button
                   key={q}
                   onClick={() => handleSend(q)}
