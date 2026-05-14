@@ -98,3 +98,15 @@ section + section {
   border-top: 1px solid var(--border);
   padding-top: 1.5rem;
 }
+
+/* Safe area for iOS bottom bar */
+.safe-area-pb {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
+/* Disable hover lift on touch devices to prevent stacking context issues */
+@media (hover: none) {
+  .glass-card:hover {
+    transform: none;
+  }
+}

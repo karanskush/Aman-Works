@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { getChatResponse, suggestedQuestions } from "@/lib/chatbot-engine";
 import {
@@ -31,6 +32,7 @@ function formatMarkdown(text: string): string {
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -45,6 +47,10 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -56,7 +62,13 @@ export function Chatbot() {
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 300);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   const handleSend = useCallback(
@@ -75,7 +87,6 @@ export function Chatbot() {
       setInput("");
       setIsTyping(true);
 
-      // Simulate brief thinking delay for natural feel
       setTimeout(() => {
         const response = getChatResponse(query);
         const botMsg: Message = {
@@ -98,17 +109,25 @@ export function Chatbot() {
     }
   };
 
-  return (
+  const chatPanel = (
     <>
+      {/* Backdrop on mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-[90] bg-black/20 backdrop-blur-sm sm:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
       {/* Floating Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center",
+          "fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full flex items-center justify-center",
           "shadow-lg shadow-accent-purple/20 transition-all duration-300",
           isOpen
             ? "bg-card border border-border scale-90"
-            : "bg-gradient-to-br from-accent-purple to-accent-blue hover:scale-110"
+            : "bg-gradient-to-br from-accent-purple to-accent-blue hover:scale-110 active:scale-95"
         )}
         aria-label={isOpen ? "Close chat" : "Open AI assistant"}
       >
@@ -119,18 +138,24 @@ export function Chatbot() {
         )}
       </button>
 
-      {/* Chat Panel */}
+      {/* Chat Panel — full screen on mobile, floating on desktop */}
       <div
         className={cn(
-          "fixed bottom-24 right-6 z-50 w-[380px] max-h-[560px] flex flex-col",
-          "glass-card overflow-hidden transition-all duration-300 origin-bottom-right",
+          "fixed z-[95] flex flex-col bg-card border border-border overflow-hidden transition-all duration-300",
+          // Mobile: full screen sheet from bottom
+          "inset-x-0 bottom-0 top-0 sm:inset-auto",
+          // Desktop: floating panel
+          "sm:bottom-24 sm:right-6 sm:w-[380px] sm:max-h-[560px] sm:rounded-2xl",
+          // Mobile: rounded top only
+          "rounded-none sm:rounded-2xl",
+          "shadow-xl",
           isOpen
-            ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-95 translate-y-4 pointer-events-none"
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-full sm:translate-y-4 sm:scale-95 pointer-events-none"
         )}
       >
         {/* Chat Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/80">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-accent-purple/10">
               <Sparkles className="w-4 h-4 text-accent-purple" />
@@ -144,14 +169,14 @@ export function Chatbot() {
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1 rounded-md hover:bg-border/50 transition-colors"
+            className="p-2 -m-1 rounded-full hover:bg-card-hover active:bg-border transition-colors"
           >
             <X className="w-4 h-4 text-muted" />
           </button>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 min-h-[300px] max-h-[380px]">
+        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -206,13 +231,13 @@ export function Chatbot() {
 
         {/* Suggested Questions */}
         {messages.length <= 2 && (
-          <div className="px-4 pb-2">
+          <div className="px-4 pb-2 shrink-0">
             <div className="flex flex-wrap gap-1.5">
               {suggestedQuestions.slice(0, 4).map((q) => (
                 <button
                   key={q}
                   onClick={() => handleSend(q)}
-                  className="text-[10px] px-2.5 py-1.5 rounded-full bg-accent-purple/8 border border-accent-purple/15 text-accent-purple/80 hover:bg-accent-purple/15 hover:text-accent-purple transition-colors"
+                  className="text-[10px] px-2.5 py-1.5 rounded-full bg-accent-purple/8 border border-accent-purple/15 text-accent-purple/80 hover:bg-accent-purple/15 hover:text-accent-purple active:bg-accent-purple/20 transition-colors"
                 >
                   {q}
                 </button>
@@ -222,7 +247,7 @@ export function Chatbot() {
         )}
 
         {/* Input Area */}
-        <div className="px-3 py-3 border-t border-border bg-card/50">
+        <div className="px-3 py-3 border-t border-border bg-card shrink-0 safe-area-pb">
           <div className="flex items-center gap-2">
             <input
               ref={inputRef}
@@ -231,7 +256,7 @@ export function Chatbot() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask about any KPI..."
-              className="flex-1 bg-background/60 border border-border rounded-xl px-3 py-2.5 text-xs text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent-purple/40 focus:ring-1 focus:ring-accent-purple/20 transition-colors"
+              className="flex-1 bg-background/60 border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent-purple/40 focus:ring-1 focus:ring-accent-purple/20 transition-colors"
             />
             <button
               onClick={() => handleSend()}
@@ -239,7 +264,7 @@ export function Chatbot() {
               className={cn(
                 "p-2.5 rounded-xl transition-all",
                 input.trim()
-                  ? "bg-accent-purple/20 text-accent-purple hover:bg-accent-purple/30"
+                  ? "bg-accent-purple/20 text-accent-purple hover:bg-accent-purple/30 active:bg-accent-purple/40"
                   : "bg-border/30 text-muted/30 cursor-not-allowed"
               )}
             >
@@ -250,4 +275,8 @@ export function Chatbot() {
       </div>
     </>
   );
+
+  if (!mounted) return null;
+
+  return createPortal(chatPanel, document.body);
 }
