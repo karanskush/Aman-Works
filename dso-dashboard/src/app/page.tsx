@@ -11,7 +11,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border">
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/90 border-b border-border shadow-sm">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

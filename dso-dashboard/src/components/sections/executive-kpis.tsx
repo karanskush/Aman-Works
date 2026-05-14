@@ -24,7 +24,7 @@ import {
   LabelList,
 } from "recharts";
 
-const waterfallColors = ["#58a6ff", "#79c0ff", "#58a6ff"];
+const waterfallColors = ["#3b82f6", "#60a5fa", "#3b82f6"];
 
 function WaterfallChart() {
   const data = netARMovementData.monthly.map((d) => ({
@@ -34,37 +34,37 @@ function WaterfallChart() {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={data} margin={{ top: 20, right: 10, bottom: 0, left: 10 }}>
+    <ResponsiveContainer width="100%" height={200}>
+      <BarChart data={data} margin={{ top: 24, right: 10, bottom: 0, left: 10 }}>
         <XAxis
           dataKey="name"
           axisLine={false}
           tickLine={false}
-          tick={{ fill: "#8b949e", fontSize: 12 }}
+          tick={{ fill: "#6b7280", fontSize: 12 }}
         />
         <YAxis
           axisLine={false}
           tickLine={false}
-          tick={{ fill: "#8b949e", fontSize: 11 }}
+          tick={{ fill: "#6b7280", fontSize: 11 }}
           tickFormatter={(v: number) => formatCurrency(v)}
         />
         <Tooltip
           contentStyle={{
-            background: "#0d1117",
-            border: "1px solid #1e2a3a",
+            background: "#ffffff",
+            border: "1px solid #e2e6ed",
             borderRadius: 8,
             fontSize: 12,
-            color: "#e4e8ef",
+            color: "#1a1d23",
           }}
           formatter={(value) => [`${formatCurrency(value as number)}`, "Net AR"]}
-          labelStyle={{ color: "#8b949e" }}
+          labelStyle={{ color: "#6b7280" }}
         />
-        <ReferenceLine y={0} stroke="#1e2a3a" />
+        <ReferenceLine y={0} stroke="#e2e6ed" />
         <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={60}>
           {data.map((_, index) => (
-            <Cell key={index} fill={waterfallColors[index]} fillOpacity={0.8} />
+            <Cell key={index} fill={waterfallColors[index]} fillOpacity={0.85} />
           ))}
-          <LabelList dataKey="displayValue" position="top" fill="#e4e8ef" fontSize={10} fontWeight={600} />
+          <LabelList dataKey="displayValue" position="top" fill="#1a1d23" fontSize={10} fontWeight={600} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -80,8 +80,8 @@ export function ExecutiveKPIs() {
         subtitle="C-suite visibility into receivables health"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
-        {/* DSO */}
+      {/* Row 1: DSO, Overdue Ratio, Revenue at Risk */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <KPICard
           title="Days Sales Outstanding"
           value={dsoData.overall}
@@ -90,10 +90,9 @@ export function ExecutiveKPIs() {
           insight={dsoData.insight}
           glowClass="glow-amber"
         >
-          <MiniSparkline data={dsoData.monthly} color="#d29922" />
+          <MiniSparkline data={dsoData.monthly} color="#d97706" />
         </KPICard>
 
-        {/* Overdue Ratio */}
         <KPICard
           title="Overdue Ratio"
           value={overdueRatioData.overall}
@@ -102,10 +101,9 @@ export function ExecutiveKPIs() {
           insight={overdueRatioData.insight}
           glowClass="glow-red"
         >
-          <MiniSparkline data={overdueRatioData.monthly} color="#f85149" />
+          <MiniSparkline data={overdueRatioData.monthly} color="#dc2626" />
         </KPICard>
 
-        {/* Revenue at Risk */}
         <KPICard
           title="Revenue at Risk"
           value={revenueAtRiskData.value}
@@ -126,25 +124,25 @@ export function ExecutiveKPIs() {
         </KPICard>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {/* Receivables Turnover */}
+      {/* Row 2: Receivables Turnover + Net AR Movement */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <KPICard
           title="Receivables Turnover Ratio"
           value={receivablesTurnoverData.overall}
           suffix="x"
           valueLabel="Overall Avg (Q1 2026)"
           insight={receivablesTurnoverData.insight}
+          className="md:col-span-2"
         >
-          <MiniSparkline data={receivablesTurnoverData.monthly} color="#f85149" />
+          <MiniSparkline data={receivablesTurnoverData.monthly} color="#dc2626" />
         </KPICard>
 
-        {/* Net AR Movement — Waterfall */}
         <KPICard
           title="Net AR Movement (Waterfall)"
           value=""
           insight={netARMovementData.insight}
           compact
-          className="xl:col-span-2"
+          className="md:col-span-3"
         >
           <WaterfallChart />
         </KPICard>

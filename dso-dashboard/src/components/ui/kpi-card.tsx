@@ -79,7 +79,7 @@ export function KPICard({
         onClick={() => setShowDetail(true)}
         className={cn(
           "mt-3 w-full flex items-start gap-2 p-2.5 rounded-lg border transition-all text-left",
-          "bg-accent-purple/5 border-accent-purple/15 hover:bg-accent-purple/10 hover:border-accent-purple/30"
+          "bg-accent-purple/5 border-accent-purple/20 hover:bg-accent-purple/10 hover:border-accent-purple/30"
         )}
       >
         <Sparkles className="w-3.5 h-3.5 text-accent-purple mt-0.5 shrink-0" />
@@ -91,7 +91,7 @@ export function KPICard({
       {/* Full Detail Modal */}
       {showDetail && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm p-4"
           onClick={() => setShowDetail(false)}
         >
           <div

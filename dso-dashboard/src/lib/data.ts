@@ -173,11 +173,11 @@ export const collectionPeriodEffectivenessData = {
 
 export const agingBucketData = {
   data: [
-    { bucket: "7 days", percentage: 11, color: "#3fb950" },
-    { bucket: "15 days", percentage: 10, color: "#58a6ff" },
-    { bucket: "30 days", percentage: 14, color: "#d29922" },
-    { bucket: "45 days", percentage: 34, color: "#f0883e" },
-    { bucket: "60 days", percentage: 31, color: "#f85149" },
+    { bucket: "7 days", percentage: 11, color: "#16a34a" },
+    { bucket: "15 days", percentage: 10, color: "#3b82f6" },
+    { bucket: "30 days", percentage: 14, color: "#d97706" },
+    { bucket: "45 days", percentage: 34, color: "#ea580c" },
+    { bucket: "60 days", percentage: 31, color: "#dc2626" },
   ],
   insight: {
     businessPurpose:

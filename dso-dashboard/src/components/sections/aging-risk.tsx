@@ -28,7 +28,7 @@ function AgingStackedBar() {
           <XAxis type="number" hide domain={[0, 100]} />
           <YAxis type="category" dataKey="name" hide />
           <Tooltip
-            contentStyle={{ background: "#0d1117", border: "1px solid #1e2a3a", borderRadius: 8, fontSize: 12, color: "#e4e8ef" }}
+            contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
             formatter={(value) => [`${value}%`]}
           />
           {agingBucketData.data.map((d) => (
@@ -115,8 +115,8 @@ export function AgingRisk() {
         iconColor="text-accent-amber"
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Aging Buckets */}
+      {/* Row 1: Aging Bucket Distribution (full width) */}
+      <div className="mb-4">
         <KPICard
           title="Aging Bucket Distribution"
           value=""
@@ -125,8 +125,10 @@ export function AgingRisk() {
         >
           <AgingStackedBar />
         </KPICard>
+      </div>
 
-        {/* Overdue Invoice Density */}
+      {/* Row 2: Overdue Invoice Density + Peak Overdue Exposure */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <KPICard
           title="Overdue Invoice Density vs Value Split"
           value=""
@@ -136,7 +138,6 @@ export function AgingRisk() {
           <DualTile />
         </KPICard>
 
-        {/* Peak Overdue Exposure */}
         <KPICard
           title="Peak Overdue Exposure"
           value=""

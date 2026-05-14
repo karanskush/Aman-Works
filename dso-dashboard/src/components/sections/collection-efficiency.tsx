@@ -29,17 +29,17 @@ function OnTimePaymentChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={onTimePaymentData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
+        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} domain={[0, 100]} />
         <Tooltip
-          contentStyle={{ background: "#0d1117", border: "1px solid #1e2a3a", borderRadius: 8, fontSize: 12, color: "#e4e8ef" }}
+          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value}%`, "On-Time Rate"]}
-          labelStyle={{ color: "#8b949e" }}
+          labelStyle={{ color: "#6b7280" }}
         />
-        <ReferenceLine y={85} stroke="#3fb950" strokeDasharray="4 4" strokeOpacity={0.5} />
-        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32} fill="#58a6ff" fillOpacity={0.8}>
-          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={10} formatter={(v) => `${v}%`} />
+        <ReferenceLine y={85} stroke="#16a34a" strokeDasharray="4 4" strokeOpacity={0.5} />
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32} fill="#3b82f6" fillOpacity={0.85}>
+          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={10} formatter={(v) => `${v}%`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -50,24 +50,24 @@ function CollectionEffectivenessChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={collectionEffectivenessWeeklyData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
+        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} domain={[0, 100]} />
         <Tooltip
-          contentStyle={{ background: "#0d1117", border: "1px solid #1e2a3a", borderRadius: 8, fontSize: 12, color: "#e4e8ef" }}
+          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value}%`, "CEI"]}
-          labelStyle={{ color: "#8b949e" }}
+          labelStyle={{ color: "#6b7280" }}
         />
-        <ReferenceLine y={70} stroke="#d29922" strokeDasharray="4 4" strokeOpacity={0.5} />
+        <ReferenceLine y={70} stroke="#d97706" strokeDasharray="4 4" strokeOpacity={0.5} />
         <Line
           type="monotone"
           dataKey="value"
-          stroke="#bc8cff"
+          stroke="#7c3aed"
           strokeWidth={2}
-          dot={{ r: 3, fill: "#bc8cff", stroke: "#0d1117", strokeWidth: 2 }}
+          dot={{ r: 3, fill: "#7c3aed", stroke: "#ffffff", strokeWidth: 2 }}
           activeDot={{ r: 5 }}
         >
-          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={10} formatter={(v) => `${v}%`} />
+          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={10} formatter={(v) => `${v}%`} />
         </Line>
       </LineChart>
     </ResponsiveContainer>
@@ -78,20 +78,20 @@ function CollectionPeriodChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={collectionPeriodEffectivenessData.data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
-        <XAxis dataKey="creditPeriod" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
+        <XAxis dataKey="creditPeriod" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} domain={[0, 100]} />
         <Tooltip
-          contentStyle={{ background: "#0d1117", border: "1px solid #1e2a3a", borderRadius: 8, fontSize: 12, color: "#e4e8ef" }}
+          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value}%`, "Effectiveness"]}
-          labelStyle={{ color: "#8b949e" }}
+          labelStyle={{ color: "#6b7280" }}
         />
         <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={48}>
           {collectionPeriodEffectivenessData.data.map((entry, i) => {
-            const color = entry.value > 60 ? "#3fb950" : entry.value > 40 ? "#d29922" : "#f85149";
-            return <Cell key={i} fill={color} fillOpacity={0.8} />;
+            const color = entry.value > 60 ? "#16a34a" : entry.value > 40 ? "#d97706" : "#dc2626";
+            return <Cell key={i} fill={color} fillOpacity={0.85} />;
           })}
-          <LabelList dataKey="value" position="top" fill="#e4e8ef" fontSize={11} fontWeight={600} formatter={(v) => `${v}%`} />
+          <LabelList dataKey="value" position="top" fill="#1a1d23" fontSize={11} fontWeight={600} formatter={(v) => `${v}%`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -108,8 +108,8 @@ export function CollectionEfficiency() {
         iconColor="text-accent-green"
       />
 
-      {/* CEI Overall */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4">
+      {/* Row 1: CEI (smaller) + On-Time Payment Rate (larger) */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
         <KPICard
           title="Collection Effectiveness Index (CEI)"
           value={ceiData.overall}
@@ -117,24 +117,24 @@ export function CollectionEfficiency() {
           valueLabel="Overall Avg (Q1 2026)"
           insight={ceiData.insight}
           glowClass="glow-green"
+          className="md:col-span-2"
         >
-          <MiniSparkline data={ceiData.monthly} color="#3fb950" />
+          <MiniSparkline data={ceiData.monthly} color="#16a34a" />
         </KPICard>
 
-        {/* On-Time Payment Rate */}
         <KPICard
           title="On-Time Payment Rate %"
           value=""
           insight={onTimePaymentData.insight}
           compact
-          className="xl:col-span-2"
+          className="md:col-span-3"
         >
           <OnTimePaymentChart />
         </KPICard>
       </div>
 
+      {/* Row 2: Weekly Collection Effectiveness + Credit Period Effectiveness */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Weekly Collection Effectiveness */}
         <KPICard
           title="Collection Effectiveness (Weekly)"
           value=""
@@ -144,7 +144,6 @@ export function CollectionEfficiency() {
           <CollectionEffectivenessChart />
         </KPICard>
 
-        {/* Credit Period Effectiveness */}
         <KPICard
           title="Credit Period Effectiveness"
           value=""

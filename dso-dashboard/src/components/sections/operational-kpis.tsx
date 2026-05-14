@@ -28,10 +28,10 @@ function InvoiceToCashGauge() {
         <div className="text-xs text-muted mb-1">P50 (Median)</div>
         <div className="relative w-20 h-20 flex items-center justify-center">
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="#1e2a3a" strokeWidth="6" />
+            <circle cx="40" cy="40" r="34" fill="none" stroke="#e2e6ed" strokeWidth="6" />
             <circle
               cx="40" cy="40" r="34" fill="none"
-              stroke="#3fb950" strokeWidth="6"
+              stroke="#16a34a" strokeWidth="6"
               strokeDasharray={`${(8 / 30) * 213.6} 213.6`}
               strokeLinecap="round"
             />
@@ -47,10 +47,10 @@ function InvoiceToCashGauge() {
         <div className="text-xs text-muted mb-1">P90 (Worst 10%)</div>
         <div className="relative w-20 h-20 flex items-center justify-center">
           <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="#1e2a3a" strokeWidth="6" />
+            <circle cx="40" cy="40" r="34" fill="none" stroke="#e2e6ed" strokeWidth="6" />
             <circle
               cx="40" cy="40" r="34" fill="none"
-              stroke="#f85149" strokeWidth="6"
+              stroke="#dc2626" strokeWidth="6"
               strokeDasharray={`${(30 / 60) * 213.6} 213.6`}
               strokeLinecap="round"
             />
@@ -67,23 +67,23 @@ function BacklogChart() {
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={daysToClearBacklogData.weekly} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#1e2a3a" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8b949e", fontSize: 11 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
+        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ background: "#0d1117", border: "1px solid #1e2a3a", borderRadius: 8, fontSize: 12, color: "#e4e8ef" }}
+          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value} days`, "Backlog"]}
-          labelStyle={{ color: "#8b949e" }}
+          labelStyle={{ color: "#6b7280" }}
         />
         <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32}>
           {daysToClearBacklogData.weekly.map((d, i) => (
             <Cell
               key={i}
-              fill={d.value > 5 ? "#f85149" : d.value > 3 ? "#d29922" : "#3fb950"}
-              fillOpacity={0.8}
+              fill={d.value > 5 ? "#dc2626" : d.value > 3 ? "#d97706" : "#16a34a"}
+              fillOpacity={0.85}
             />
           ))}
-          <LabelList dataKey="value" position="top" fill="#8b949e" fontSize={9} formatter={(v) => `${v}d`} />
+          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={9} formatter={(v) => `${v}d`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -100,8 +100,8 @@ export function OperationalKPIs() {
         iconColor="text-accent-purple"
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Invoice to Cash Cycle */}
+      {/* Row 1: Invoice to Cash + Credit Period Utilization */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <KPICard
           title="Invoice to Cash Cycle Time"
           value=""
@@ -111,7 +111,6 @@ export function OperationalKPIs() {
           <InvoiceToCashGauge />
         </KPICard>
 
-        {/* Credit Period Utilization */}
         <KPICard
           title="Credit Period Utilization"
           value={creditPeriodUtilizationData.overall}
@@ -120,19 +119,19 @@ export function OperationalKPIs() {
           insight={creditPeriodUtilizationData.insight}
           glowClass="glow-amber"
         >
-          <MiniSparkline data={creditPeriodUtilizationData.monthly} color="#d29922" />
-        </KPICard>
-
-        {/* Days to Clear Backlog */}
-        <KPICard
-          title="Days to Clear Backlog"
-          value=""
-          insight={daysToClearBacklogData.insight}
-          compact
-        >
-          <BacklogChart />
+          <MiniSparkline data={creditPeriodUtilizationData.monthly} color="#d97706" />
         </KPICard>
       </div>
+
+      {/* Row 2: Days to Clear Backlog (full width) */}
+      <KPICard
+        title="Days to Clear Backlog"
+        value=""
+        insight={daysToClearBacklogData.insight}
+        compact
+      >
+        <BacklogChart />
+      </KPICard>
     </section>
   );
 }
