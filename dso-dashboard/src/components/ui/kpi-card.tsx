@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { KPIInsight } from "@/lib/data";
-import { TrendingUp, TrendingDown, Minus, AlertTriangle, X, Sparkles, Info } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, AlertTriangle, X, Sparkles, Info, ChevronRight } from "lucide-react";
 
 interface KPICardProps {
   title: string;
@@ -153,19 +153,33 @@ export function KPICard({
       {/* Chart / Content area */}
       {children}
 
-      {/* AI Situation Strip — tap to open detail */}
+      {/* AI Insight Strip — clickable to open detail popup */}
       <button
         onClick={() => setShowDetail(true)}
         className={cn(
-          "mt-3 w-full flex items-start gap-2 p-2.5 rounded-lg border transition-all text-left",
-          "bg-accent-purple/5 border-accent-purple/20 hover:bg-accent-purple/10 hover:border-accent-purple/30",
-          "active:bg-accent-purple/15 active:scale-[0.99]"
+          "mt-3 w-full rounded-lg border transition-all text-left cursor-pointer",
+          "bg-gradient-to-r from-accent-purple/10 to-accent-blue/5",
+          "border-accent-purple/25 hover:border-accent-purple/40",
+          "hover:from-accent-purple/15 hover:to-accent-blue/10",
+          "hover:shadow-md hover:shadow-accent-purple/5",
+          "active:scale-[0.99]"
         )}
       >
-        <Sparkles className="w-3.5 h-3.5 text-accent-purple mt-0.5 shrink-0" />
-        <span className="text-[11px] leading-relaxed text-accent-purple/80 line-clamp-2">
+        <div className="flex items-center justify-between px-3 pt-2 pb-1">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-accent-purple" />
+            <span className="text-[10px] font-bold text-accent-purple uppercase tracking-wider">
+              AI Insight
+            </span>
+          </div>
+          <div className="flex items-center gap-0.5 text-accent-purple/70">
+            <span className="text-[9px] font-medium">View Details</span>
+            <ChevronRight className="w-3 h-3" />
+          </div>
+        </div>
+        <p className="px-3 pb-2.5 text-[11px] leading-relaxed text-foreground/60 line-clamp-2">
           {insight.aiInsight}
-        </span>
+        </p>
       </button>
 
       {/* Full Detail Modal — portaled to body */}
