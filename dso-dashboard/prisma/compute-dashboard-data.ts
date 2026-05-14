@@ -31,10 +31,14 @@ async function computeForQuarter(quarter: Quarter) {
   const fpLabels = fiscalPeriods.map((fp) => fp.periodLabel);
   console.log(`  Periods: ${fpLabels.join(", ")}`);
 
-  // Get all invoices for these periods
+  // Get all invoices for these periods (include customer for segment data)
   const allInvoices = await prisma.invoice.findMany({
     where: { fiscalPeriodId: { in: fpIds } },
+    include: { customer: true },
   });
+
+  // Get all company codes for company code performance
+  const companyCodes = await prisma.companyCode.findMany();
   const openInvoices = allInvoices.filter((i) => i.status === "OPEN" || i.status === "PARTIAL");
   const clearedInvoices = allInvoices.filter((i) => i.status === "CLEARED");
   const overdueInvs = openInvoices.filter((i) => i.isOverdue);
@@ -279,6 +283,169 @@ async function computeForQuarter(quarter: Quarter) {
     return { week: d.label, value: parseFloat(val.toFixed(1)) };
   });
 
+  // ========== ADVANCED KPIs ==========
+
+  // --- 1. DSO Bridge by Customer Segment ---
+  const blendedDSO = dso; // reuse the already-computed overall DSO
+  const segments = ["STRATEGIC", "KEY", "STANDARD", "SMB"] as const;
+  const dsoBridgeSegments = segments.map((seg) => {
+    const segInvs = allInvoices.filter((i) => i.customer.segment === seg);
+    const segOpen = segInvs.filter((i) => i.status === "OPEN" || i.status === "PARTIAL");
+    const segOpenAR = segOpen.reduce((s, i) => s + i.amount, 0);
+    const segSales = segInvs.reduce((s, i) => s + i.amount, 0);
+    const segDSO = segSales > 0 ? (segOpenAR / segSales) * periodDays : 0;
+    const weight = totalSalesAll > 0 ? segSales / totalSalesAll : 0;
+    const contribution = (segDSO - blendedDSO) * weight;
+    return {
+      segment: seg,
+      dso: parseFloat(segDSO.toFixed(1)),
+      weight: parseFloat((weight * 100).toFixed(1)),
+      contribution: parseFloat(contribution.toFixed(1)),
+    };
+  });
+  const dsoBridge = {
+    blendedDSO: parseFloat(blendedDSO.toFixed(1)),
+    segments: dsoBridgeSegments,
+  };
+
+  // --- 2. AR Health Score ---
+  const overdueARForHealth = overdueAR;
+  const overdueRatioForHealth = totalOpenAR > 0 ? (overdueARForHealth / totalOpenAR) * 100 : 0;
+
+  // DSO component: 0-100, lower DSO = higher score
+  const dsoHealthScore = Math.max(0, Math.min(100, 100 - (blendedDSO - 20) / (60 - 20) * 100));
+  // CEI component
+  const ceiHealthScore = Math.min(100, Math.max(0, ceiOverall));
+  // Overdue component: lower overdue ratio = higher score
+  const overdueHealthScore = Math.max(0, 100 - overdueRatioForHealth);
+  // Aging component: % of AR that is NOT overdue
+  const notDueAR = openInvoices.filter((i) => !i.isOverdue).reduce((s, i) => s + i.amount, 0);
+  const agingHealthScore = totalOpenAR > 0 ? (notDueAR / totalOpenAR) * 100 : 100;
+  // Concentration component: lower top-5 customer concentration = higher score
+  const custARMap = new Map<string, number>();
+  for (const i of openInvoices) {
+    custARMap.set(i.customerId, (custARMap.get(i.customerId) || 0) + i.amount);
+  }
+  const top5Pct = totalOpenAR > 0
+    ? [...custARMap.values()].sort((a, b) => b - a).slice(0, 5).reduce((s, v) => s + v, 0) / totalOpenAR * 100
+    : 0;
+  const concentrationHealthScore = Math.max(0, 100 - top5Pct * 2);
+  // Trend component: based on DSO velocity from monthly data
+  const dsoMonthlyValues = dsoMonthly.map((d) => d.value);
+  let avgDsoVelocity = 0;
+  if (dsoMonthlyValues.length >= 2) {
+    const velocities: number[] = [];
+    for (let idx = 1; idx < dsoMonthlyValues.length; idx++) {
+      if (dsoMonthlyValues[idx - 1] > 0) {
+        velocities.push(((dsoMonthlyValues[idx] - dsoMonthlyValues[idx - 1]) / dsoMonthlyValues[idx - 1]) * 100);
+      }
+    }
+    avgDsoVelocity = velocities.length > 0 ? velocities.reduce((a, b) => a + b, 0) / velocities.length : 0;
+  }
+  const trendHealthScore = Math.max(0, Math.min(100, 50 - avgDsoVelocity));
+
+  const healthScoreValue = Math.round(
+    dsoHealthScore * 0.20 + ceiHealthScore * 0.20 + overdueHealthScore * 0.15 +
+    agingHealthScore * 0.15 + concentrationHealthScore * 0.15 + trendHealthScore * 0.15
+  );
+  const healthGrade = healthScoreValue >= 80 ? "A" : healthScoreValue >= 65 ? "B" : healthScoreValue >= 50 ? "C" : healthScoreValue >= 35 ? "D" : "F";
+
+  const arHealthScore = {
+    score: healthScoreValue,
+    grade: healthGrade,
+    components: {
+      DSO: Math.round(dsoHealthScore),
+      CEI: Math.round(ceiHealthScore),
+      Overdue: Math.round(overdueHealthScore),
+      Aging: Math.round(agingHealthScore),
+      Concentration: Math.round(concentrationHealthScore),
+      Trend: Math.round(trendHealthScore),
+    },
+  };
+
+  // --- 3. Terms Mix Drag ---
+  const weightedAvgTerms = totalOpenAR > 0
+    ? openInvoices.reduce((s, i) => s + i.creditPeriodDays * i.amount, 0) / totalOpenAR
+    : 0;
+  const clearedWithPayDays = clearedInvoices.filter((i) => i.daysForPayment != null);
+  const avgActualPayDays = clearedWithPayDays.length > 0
+    ? clearedWithPayDays.reduce((s, i) => s + i.daysForPayment!, 0) / clearedWithPayDays.length
+    : 0;
+  const termsMixDrag = {
+    weightedAvgTerms: parseFloat(weightedAvgTerms.toFixed(1)),
+    avgActualPayDays: parseFloat(avgActualPayDays.toFixed(1)),
+    drag: parseFloat((avgActualPayDays - weightedAvgTerms).toFixed(1)),
+  };
+
+  // --- 4. Carrying Cost ---
+  const costOfCapital = 0.10;
+  const dailyCost = totalOpenAR * costOfCapital / 365;
+  const monthlyCost = dailyCost * 30;
+  const avgDaysOut = openInvoices.length > 0
+    ? openInvoices.reduce((s, i) => s + i.daysOutstanding, 0) / openInvoices.length
+    : 0;
+  const annualCost = totalOpenAR * costOfCapital * (avgDaysOut / 365);
+  const carryingCost = {
+    dailyCost: Math.round(dailyCost),
+    monthlyCost: Math.round(monthlyCost),
+    annualCost: Math.round(annualCost),
+    avgDaysOutstanding: Math.round(avgDaysOut),
+  };
+
+  // --- 5. Cash Flow Leakage ---
+  const bestPossibleDSO = weightedAvgTerms; // if everyone paid on time
+  const dailySales = totalSalesAll > 0 ? totalSalesAll / periodDays : 0;
+  const leakageDays = blendedDSO - bestPossibleDSO;
+  const leakageINR = leakageDays * dailySales;
+  const cashFlowLeakage = {
+    bestPossibleDSO: parseFloat(bestPossibleDSO.toFixed(1)),
+    actualDSO: parseFloat(blendedDSO.toFixed(1)),
+    leakageDays: parseFloat(leakageDays.toFixed(1)),
+    leakageINR: Math.round(leakageINR),
+  };
+
+  // --- 6. Company Code Performance ---
+  const companyCodePerformance = companyCodes.map((cc) => {
+    const ccOpen = openInvoices.filter((i) => i.companyCodeId === cc.id);
+    const ccAll = allInvoices.filter((i) => i.companyCodeId === cc.id);
+    const ccOpenAR = ccOpen.reduce((s, i) => s + i.amount, 0);
+    const ccOverdueAR = ccOpen.filter((i) => i.isOverdue).reduce((s, i) => s + i.amount, 0);
+    const ccSales = ccAll.reduce((s, i) => s + i.amount, 0);
+    const ccDSO = ccSales > 0 ? (ccOpenAR / ccSales) * periodDays : 0;
+    const ccOverdueRatio = ccOpenAR > 0 ? (ccOverdueAR / ccOpenAR) * 100 : 0;
+    return {
+      code: cc.code,
+      name: cc.name,
+      dso: parseFloat(ccDSO.toFixed(1)),
+      overdueRatio: parseFloat(ccOverdueRatio.toFixed(1)),
+      openAR: Math.round(ccOpenAR),
+      invoiceCount: ccOpen.length,
+    };
+  });
+
+  // --- 7. Segment Efficiency ---
+  const segmentEfficiency = segments.map((seg) => {
+    const segInvs = allInvoices.filter((i) => i.customer.segment === seg);
+    const segOpen = segInvs.filter((i) => i.status === "OPEN" || i.status === "PARTIAL");
+    const segCleared = segInvs.filter((i) => i.status === "CLEARED");
+    const segOpenAR = segOpen.reduce((s, i) => s + i.amount, 0);
+    const segSales = segInvs.reduce((s, i) => s + i.amount, 0);
+    const segOverdue = segOpen.filter((i) => i.isOverdue).reduce((s, i) => s + i.amount, 0);
+    const segDSO = segSales > 0 ? (segOpenAR / segSales) * periodDays : 0;
+    const segCollRate = segSales > 0 ? (segCleared.reduce((s, i) => s + i.amount, 0) / segSales * 100) : 0;
+    const segOverdueRatio = segOpenAR > 0 ? (segOverdue / segOpenAR * 100) : 0;
+    const efficiency = segDSO > 0 ? Math.round((1 / segDSO) * segCollRate * (1 - segOverdueRatio / 100) * 1000) : 0;
+    return {
+      segment: seg,
+      dso: parseFloat(segDSO.toFixed(1)),
+      collectionRate: parseFloat(segCollRate.toFixed(1)),
+      overdueRatio: parseFloat(segOverdueRatio.toFixed(1)),
+      efficiencyScore: efficiency,
+    };
+  });
+
+  console.log(`  Advanced KPIs: Health=${healthScoreValue}(${healthGrade}), Drag=${termsMixDrag.drag}d, Leakage=${Math.round(leakageINR)}`);
+
   // ========== SUMMARY ==========
   const summary = {
     totalInvoices: allInvoices.length,
@@ -346,6 +513,15 @@ async function computeForQuarter(quarter: Quarter) {
         weekly: backlogWeekly,
       },
     },
+    advanced: {
+      dsoBridge,
+      arHealthScore,
+      termsMixDrag,
+      carryingCost,
+      cashFlowLeakage,
+      companyCodePerformance,
+      segmentEfficiency,
+    },
   };
 }
 
@@ -391,6 +567,70 @@ export interface WaterfallPoint {
   label: string;
 }
 
+export interface DSOBridgeSegment {
+  segment: string;
+  dso: number;
+  weight: number;
+  contribution: number;
+}
+
+export interface HealthScoreComponents {
+  DSO: number;
+  CEI: number;
+  Overdue: number;
+  Aging: number;
+  Concentration: number;
+  Trend: number;
+}
+
+export interface CompanyCodePerf {
+  code: string;
+  name: string;
+  dso: number;
+  overdueRatio: number;
+  openAR: number;
+  invoiceCount: number;
+}
+
+export interface SegmentEfficiency {
+  segment: string;
+  dso: number;
+  collectionRate: number;
+  overdueRatio: number;
+  efficiencyScore: number;
+}
+
+export interface AdvancedKPIs {
+  dsoBridge: {
+    blendedDSO: number;
+    segments: DSOBridgeSegment[];
+  };
+  arHealthScore: {
+    score: number;
+    grade: string;
+    components: HealthScoreComponents;
+  };
+  termsMixDrag: {
+    weightedAvgTerms: number;
+    avgActualPayDays: number;
+    drag: number;
+  };
+  carryingCost: {
+    dailyCost: number;
+    monthlyCost: number;
+    annualCost: number;
+    avgDaysOutstanding: number;
+  };
+  cashFlowLeakage: {
+    bestPossibleDSO: number;
+    actualDSO: number;
+    leakageDays: number;
+    leakageINR: number;
+  };
+  companyCodePerformance: CompanyCodePerf[];
+  segmentEfficiency: SegmentEfficiency[];
+}
+
 export interface QuarterData {
   summary: {
     totalInvoices: number;
@@ -425,6 +665,7 @@ export interface QuarterData {
     creditPeriodUtilization: { overall: number; monthly: MonthlyPoint[] };
     daysToClearBacklog: { weekly: WeeklyPoint[] };
   };
+  advanced: AdvancedKPIs;
 }
 
 export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = ${JSON.stringify(result, null, 2)} as any;

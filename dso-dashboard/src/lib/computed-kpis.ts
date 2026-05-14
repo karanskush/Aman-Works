@@ -31,6 +31,70 @@ export interface WaterfallPoint {
   label: string;
 }
 
+export interface DSOBridgeSegment {
+  segment: string;
+  dso: number;
+  weight: number;
+  contribution: number;
+}
+
+export interface HealthScoreComponents {
+  DSO: number;
+  CEI: number;
+  Overdue: number;
+  Aging: number;
+  Concentration: number;
+  Trend: number;
+}
+
+export interface CompanyCodePerf {
+  code: string;
+  name: string;
+  dso: number;
+  overdueRatio: number;
+  openAR: number;
+  invoiceCount: number;
+}
+
+export interface SegmentEfficiency {
+  segment: string;
+  dso: number;
+  collectionRate: number;
+  overdueRatio: number;
+  efficiencyScore: number;
+}
+
+export interface AdvancedKPIs {
+  dsoBridge: {
+    blendedDSO: number;
+    segments: DSOBridgeSegment[];
+  };
+  arHealthScore: {
+    score: number;
+    grade: string;
+    components: HealthScoreComponents;
+  };
+  termsMixDrag: {
+    weightedAvgTerms: number;
+    avgActualPayDays: number;
+    drag: number;
+  };
+  carryingCost: {
+    dailyCost: number;
+    monthlyCost: number;
+    annualCost: number;
+    avgDaysOutstanding: number;
+  };
+  cashFlowLeakage: {
+    bestPossibleDSO: number;
+    actualDSO: number;
+    leakageDays: number;
+    leakageINR: number;
+  };
+  companyCodePerformance: CompanyCodePerf[];
+  segmentEfficiency: SegmentEfficiency[];
+}
+
 export interface QuarterData {
   summary: {
     totalInvoices: number;
@@ -65,6 +129,7 @@ export interface QuarterData {
     creditPeriodUtilization: { overall: number; monthly: MonthlyPoint[] };
     daysToClearBacklog: { weekly: WeeklyPoint[] };
   };
+  advanced: AdvancedKPIs;
 }
 
 export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
@@ -457,6 +522,122 @@ export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
           }
         ]
       }
+    },
+    "advanced": {
+      "dsoBridge": {
+        "blendedDSO": 15,
+        "segments": [
+          {
+            "segment": "STRATEGIC",
+            "dso": 6,
+            "weight": 31,
+            "contribution": -2.8
+          },
+          {
+            "segment": "KEY",
+            "dso": 16.2,
+            "weight": 39.9,
+            "contribution": 0.5
+          },
+          {
+            "segment": "STANDARD",
+            "dso": 21.1,
+            "weight": 18.5,
+            "contribution": 1.1
+          },
+          {
+            "segment": "SMB",
+            "dso": 26.4,
+            "weight": 10.5,
+            "contribution": 1.2
+          }
+        ]
+      },
+      "arHealthScore": {
+        "score": 56,
+        "grade": "C",
+        "components": {
+          "DSO": 100,
+          "CEI": 85,
+          "Overdue": 0,
+          "Aging": 0,
+          "Concentration": 71,
+          "Trend": 53
+        }
+      },
+      "termsMixDrag": {
+        "weightedAvgTerms": 36.8,
+        "avgActualPayDays": 37,
+        "drag": 0.2
+      },
+      "carryingCost": {
+        "dailyCost": 1135427,
+        "monthlyCost": 34062799,
+        "annualCost": 364289797,
+        "avgDaysOutstanding": 321
+      },
+      "cashFlowLeakage": {
+        "bestPossibleDSO": 36.8,
+        "actualDSO": 15,
+        "leakageDays": -21.8,
+        "leakageINR": -6006381742
+      },
+      "companyCodePerformance": [
+        {
+          "code": "1000",
+          "name": "HQ Operations India",
+          "dso": 13.7,
+          "overdueRatio": 100,
+          "openAR": 1277267249,
+          "invoiceCount": 414
+        },
+        {
+          "code": "2000",
+          "name": "Manufacturing Division",
+          "dso": 13.9,
+          "overdueRatio": 100,
+          "openAR": 1273419626,
+          "invoiceCount": 384
+        },
+        {
+          "code": "3000",
+          "name": "Services & Solutions",
+          "dso": 17.5,
+          "overdueRatio": 100,
+          "openAR": 1593620301,
+          "invoiceCount": 430
+        }
+      ],
+      "segmentEfficiency": [
+        {
+          "segment": "STRATEGIC",
+          "dso": 6,
+          "collectionRate": 93.3,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "KEY",
+          "dso": 16.2,
+          "collectionRate": 82,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "STANDARD",
+          "dso": 21.1,
+          "collectionRate": 76.6,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "SMB",
+          "dso": 26.4,
+          "collectionRate": 70.6,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        }
+      ]
     }
   },
   "Q2": {
@@ -860,6 +1041,122 @@ export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
           }
         ]
       }
+    },
+    "advanced": {
+      "dsoBridge": {
+        "blendedDSO": 14.1,
+        "segments": [
+          {
+            "segment": "STRATEGIC",
+            "dso": 7.4,
+            "weight": 34.9,
+            "contribution": -2.3
+          },
+          {
+            "segment": "KEY",
+            "dso": 13.6,
+            "weight": 38.1,
+            "contribution": -0.2
+          },
+          {
+            "segment": "STANDARD",
+            "dso": 21.8,
+            "weight": 17.5,
+            "contribution": 1.4
+          },
+          {
+            "segment": "SMB",
+            "dso": 26.5,
+            "weight": 9.4,
+            "contribution": 1.2
+          }
+        ]
+      },
+      "arHealthScore": {
+        "score": 55,
+        "grade": "C",
+        "components": {
+          "DSO": 100,
+          "CEI": 86,
+          "Overdue": 0,
+          "Aging": 0,
+          "Concentration": 70,
+          "Trend": 51
+        }
+      },
+      "termsMixDrag": {
+        "weightedAvgTerms": 36,
+        "avgActualPayDays": 37.1,
+        "drag": 1.2
+      },
+      "carryingCost": {
+        "dailyCost": 1323531,
+        "monthlyCost": 39705931,
+        "annualCost": 303234386,
+        "avgDaysOutstanding": 229
+      },
+      "cashFlowLeakage": {
+        "bestPossibleDSO": 36,
+        "actualDSO": 14.1,
+        "leakageDays": -21.9,
+        "leakageINR": -7513623533
+      },
+      "companyCodePerformance": [
+        {
+          "code": "1000",
+          "name": "HQ Operations India",
+          "dso": 13.7,
+          "overdueRatio": 100,
+          "openAR": 1552508056,
+          "invoiceCount": 451
+        },
+        {
+          "code": "2000",
+          "name": "Manufacturing Division",
+          "dso": 11.1,
+          "overdueRatio": 100,
+          "openAR": 1330026417,
+          "invoiceCount": 456
+        },
+        {
+          "code": "3000",
+          "name": "Services & Solutions",
+          "dso": 17.7,
+          "overdueRatio": 100,
+          "openAR": 1948353790,
+          "invoiceCount": 473
+        }
+      ],
+      "segmentEfficiency": [
+        {
+          "segment": "STRATEGIC",
+          "dso": 7.4,
+          "collectionRate": 91.7,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "KEY",
+          "dso": 13.6,
+          "collectionRate": 84.9,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "STANDARD",
+          "dso": 21.8,
+          "collectionRate": 75.7,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "SMB",
+          "dso": 26.5,
+          "collectionRate": 70.6,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        }
+      ]
     }
   },
   "Q3": {
@@ -1251,6 +1548,122 @@ export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
           }
         ]
       }
+    },
+    "advanced": {
+      "dsoBridge": {
+        "blendedDSO": 15.9,
+        "segments": [
+          {
+            "segment": "STRATEGIC",
+            "dso": 8.9,
+            "weight": 34.5,
+            "contribution": -2.4
+          },
+          {
+            "segment": "KEY",
+            "dso": 16.9,
+            "weight": 38.7,
+            "contribution": 0.4
+          },
+          {
+            "segment": "STANDARD",
+            "dso": 22.9,
+            "weight": 17.7,
+            "contribution": 1.2
+          },
+          {
+            "segment": "SMB",
+            "dso": 24.5,
+            "weight": 9.1,
+            "contribution": 0.8
+          }
+        ]
+      },
+      "arHealthScore": {
+        "score": 55,
+        "grade": "C",
+        "components": {
+          "DSO": 100,
+          "CEI": 85,
+          "Overdue": 0,
+          "Aging": 0,
+          "Concentration": 70,
+          "Trend": 53
+        }
+      },
+      "termsMixDrag": {
+        "weightedAvgTerms": 36.6,
+        "avgActualPayDays": 37.2,
+        "drag": 0.6
+      },
+      "carryingCost": {
+        "dailyCost": 1693008,
+        "monthlyCost": 50790239,
+        "annualCost": 231054095,
+        "avgDaysOutstanding": 136
+      },
+      "cashFlowLeakage": {
+        "bestPossibleDSO": 36.6,
+        "actualDSO": 15.9,
+        "leakageDays": -20.7,
+        "leakageINR": -8053500017
+      },
+      "companyCodePerformance": [
+        {
+          "code": "1000",
+          "name": "HQ Operations India",
+          "dso": 14.4,
+          "overdueRatio": 100,
+          "openAR": 2083047916,
+          "invoiceCount": 514
+        },
+        {
+          "code": "2000",
+          "name": "Manufacturing Division",
+          "dso": 14.8,
+          "overdueRatio": 100,
+          "openAR": 1742146805,
+          "invoiceCount": 554
+        },
+        {
+          "code": "3000",
+          "name": "Services & Solutions",
+          "dso": 18.6,
+          "overdueRatio": 100,
+          "openAR": 2354284304,
+          "invoiceCount": 503
+        }
+      ],
+      "segmentEfficiency": [
+        {
+          "segment": "STRATEGIC",
+          "dso": 8.9,
+          "collectionRate": 90.1,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "KEY",
+          "dso": 16.9,
+          "collectionRate": 81.2,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "STANDARD",
+          "dso": 22.9,
+          "collectionRate": 74.6,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        },
+        {
+          "segment": "SMB",
+          "dso": 24.5,
+          "collectionRate": 72.8,
+          "overdueRatio": 100,
+          "efficiencyScore": 0
+        }
+      ]
     }
   },
   "Q4": {
@@ -1630,6 +2043,122 @@ export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
           }
         ]
       }
+    },
+    "advanced": {
+      "dsoBridge": {
+        "blendedDSO": 44.6,
+        "segments": [
+          {
+            "segment": "STRATEGIC",
+            "dso": 45.4,
+            "weight": 35,
+            "contribution": 0.3
+          },
+          {
+            "segment": "KEY",
+            "dso": 45.7,
+            "weight": 38.6,
+            "contribution": 0.4
+          },
+          {
+            "segment": "STANDARD",
+            "dso": 43.8,
+            "weight": 16.8,
+            "contribution": -0.1
+          },
+          {
+            "segment": "SMB",
+            "dso": 38.6,
+            "weight": 9.6,
+            "contribution": -0.6
+          }
+        ]
+      },
+      "arHealthScore": {
+        "score": 60,
+        "grade": "C",
+        "components": {
+          "DSO": 38,
+          "CEI": 89,
+          "Overdue": 79,
+          "Aging": 79,
+          "Concentration": 70,
+          "Trend": 0
+        }
+      },
+      "termsMixDrag": {
+        "weightedAvgTerms": 45.5,
+        "avgActualPayDays": 29.5,
+        "drag": -16
+      },
+      "carryingCost": {
+        "dailyCost": 5223081,
+        "monthlyCost": 156692440,
+        "annualCost": 176659100,
+        "avgDaysOutstanding": 34
+      },
+      "cashFlowLeakage": {
+        "bestPossibleDSO": 45.5,
+        "actualDSO": 44.6,
+        "leakageDays": -0.9,
+        "leakageINR": -377315400
+      },
+      "companyCodePerformance": [
+        {
+          "code": "1000",
+          "name": "HQ Operations India",
+          "dso": 47.7,
+          "overdueRatio": 17.6,
+          "openAR": 6907270187,
+          "invoiceCount": 1180
+        },
+        {
+          "code": "2000",
+          "name": "Manufacturing Division",
+          "dso": 42,
+          "overdueRatio": 23.8,
+          "openAR": 5446964403,
+          "invoiceCount": 1154
+        },
+        {
+          "code": "3000",
+          "name": "Services & Solutions",
+          "dso": 43.8,
+          "overdueRatio": 23,
+          "openAR": 6710012316,
+          "invoiceCount": 1170
+        }
+      ],
+      "segmentEfficiency": [
+        {
+          "segment": "STRATEGIC",
+          "dso": 45.4,
+          "collectionRate": 49.5,
+          "overdueRatio": 13.6,
+          "efficiencyScore": 942
+        },
+        {
+          "segment": "KEY",
+          "dso": 45.7,
+          "collectionRate": 49.2,
+          "overdueRatio": 13.3,
+          "efficiencyScore": 933
+        },
+        {
+          "segment": "STANDARD",
+          "dso": 43.8,
+          "collectionRate": 51.3,
+          "overdueRatio": 38.5,
+          "efficiencyScore": 720
+        },
+        {
+          "segment": "SMB",
+          "dso": 38.6,
+          "collectionRate": 57.1,
+          "overdueRatio": 57.5,
+          "efficiencyScore": 629
+        }
+      ]
     }
   },
   "All": {
@@ -2714,6 +3243,122 @@ export const COMPUTED_KPI_DATA: Record<QuarterKey, QuarterData> = {
           }
         ]
       }
+    },
+    "advanced": {
+      "dsoBridge": {
+        "blendedDSO": 96.7,
+        "segments": [
+          {
+            "segment": "STRATEGIC",
+            "dso": 77.9,
+            "weight": 34.1,
+            "contribution": -6.4
+          },
+          {
+            "segment": "KEY",
+            "dso": 99.5,
+            "weight": 38.8,
+            "contribution": 1.1
+          },
+          {
+            "segment": "STANDARD",
+            "dso": 114.5,
+            "weight": 17.5,
+            "contribution": 3.1
+          },
+          {
+            "segment": "SMB",
+            "dso": 119.9,
+            "weight": 9.6,
+            "contribution": 2.2
+          }
+        ]
+      },
+      "arHealthScore": {
+        "score": 46,
+        "grade": "D",
+        "components": {
+          "DSO": 0,
+          "CEI": 86,
+          "Overdue": 44,
+          "Aging": 44,
+          "Concentration": 76,
+          "Trend": 26
+        }
+      },
+      "termsMixDrag": {
+        "weightedAvgTerms": 41.5,
+        "avgActualPayDays": 35.5,
+        "drag": -6
+      },
+      "carryingCost": {
+        "dailyCost": 9375047,
+        "monthlyCost": 281251409,
+        "annualCost": 1272801425,
+        "avgDaysOutstanding": 136
+      },
+      "cashFlowLeakage": {
+        "bestPossibleDSO": 41.5,
+        "actualDSO": 96.7,
+        "leakageDays": 55.2,
+        "leakageINR": 19538505540
+      },
+      "companyCodePerformance": [
+        {
+          "code": "1000",
+          "name": "HQ Operations India",
+          "dso": 96.8,
+          "overdueRatio": 51.9,
+          "openAR": 11820093407,
+          "invoiceCount": 2559
+        },
+        {
+          "code": "2000",
+          "name": "Manufacturing Division",
+          "dso": 86.6,
+          "overdueRatio": 57.6,
+          "openAR": 9792557250,
+          "invoiceCount": 2548
+        },
+        {
+          "code": "3000",
+          "name": "Services & Solutions",
+          "dso": 106.3,
+          "overdueRatio": 59,
+          "openAR": 12606270711,
+          "invoiceCount": 2576
+        }
+      ],
+      "segmentEfficiency": [
+        {
+          "segment": "STRATEGIC",
+          "dso": 77.9,
+          "collectionRate": 78.6,
+          "overdueRatio": 37.6,
+          "efficiencyScore": 630
+        },
+        {
+          "segment": "KEY",
+          "dso": 99.5,
+          "collectionRate": 72.7,
+          "overdueRatio": 52.1,
+          "efficiencyScore": 350
+        },
+        {
+          "segment": "STANDARD",
+          "dso": 114.5,
+          "collectionRate": 68.6,
+          "overdueRatio": 72.7,
+          "efficiencyScore": 163
+        },
+        {
+          "segment": "SMB",
+          "dso": 119.9,
+          "collectionRate": 67.2,
+          "overdueRatio": 83.5,
+          "efficiencyScore": 93
+        }
+      ]
     }
   }
 } as any;

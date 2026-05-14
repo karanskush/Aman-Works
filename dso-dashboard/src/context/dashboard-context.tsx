@@ -31,7 +31,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [activeSection, setActiveSectionRaw] = useState<ActiveSection>("basic");
   const [filters, setFilters] = useState<FilterState>({
     fiscalYear: 2026,
-    quarter: "Q4",
+    quarter: "All",
   });
   const [kpiEnabled, setKpiEnabledMap] = useState<Record<string, boolean>>(getDefaultEnabledMap);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

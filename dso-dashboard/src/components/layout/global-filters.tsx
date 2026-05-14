@@ -5,19 +5,24 @@ import { Calendar, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FISCAL_YEARS = [2026];
+const FY_LABELS: Record<number, string> = {
+  2026: "2025-26",
+};
 const QUARTERS = ["All", "Q1", "Q2", "Q3", "Q4"] as const;
 const QUARTER_LABELS: Record<string, string> = {
   All: "Full Year",
-  Q1: "Q1 (Apr–Jun)",
-  Q2: "Q2 (Jul–Sep)",
-  Q3: "Q3 (Oct–Dec)",
-  Q4: "Q4 (Jan–Mar)",
+  Q1: "Q1 (Apr–Jun '25)",
+  Q2: "Q2 (Jul–Sep '25)",
+  Q3: "Q3 (Oct–Dec '25)",
+  Q4: "Q4 (Jan–Mar '26)",
 };
 
 export function GlobalFilters() {
   const { filters, setFilters, activeSection } = useDashboard();
 
   if (activeSection === "admin") return null;
+
+  const fyLabel = FY_LABELS[filters.fiscalYear] || String(filters.fiscalYear);
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -35,7 +40,7 @@ export function GlobalFilters() {
           >
             {FISCAL_YEARS.map((fy) => (
               <option key={fy} value={fy}>
-                {fy}
+                {FY_LABELS[fy] || fy}
               </option>
             ))}
           </select>
@@ -63,7 +68,7 @@ export function GlobalFilters() {
 
       {/* Active Filter Label */}
       <span className="text-[10px] text-muted/60 hidden sm:inline">
-        {QUARTER_LABELS[filters.quarter]} · FY{filters.fiscalYear}
+        {QUARTER_LABELS[filters.quarter]} · FY {fyLabel}
       </span>
     </div>
   );

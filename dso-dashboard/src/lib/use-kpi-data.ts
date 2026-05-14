@@ -22,11 +22,11 @@ export function useKPIData(): QuarterData {
 export function useQuarterLabel(): string {
   const { filters } = useDashboard();
   const labels: Record<string, string> = {
-    All: "Full Year FY2026",
-    Q1: "Q1 (Apr–Jun) FY2026",
-    Q2: "Q2 (Jul–Sep) FY2026",
-    Q3: "Q3 (Oct–Dec) FY2026",
-    Q4: "Q4 (Jan–Mar) FY2026",
+    All: "Full Year FY 2025-26",
+    Q1: "Q1 (Apr–Jun '25)",
+    Q2: "Q2 (Jul–Sep '25)",
+    Q3: "Q3 (Oct–Dec '25)",
+    Q4: "Q4 (Jan–Mar '26)",
   };
-  return labels[filters.quarter] || "FY2026";
+  return labels[filters.quarter] || "FY 2025-26";
 }
