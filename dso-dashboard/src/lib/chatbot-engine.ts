@@ -377,6 +377,361 @@ overdueDensity: `**Overdue Invoice Density — Count vs Value Gap:**
 • Focus human collectors on the 73.2% by value — especially the ${formatCurrency(peakOverdueExposureData.amount)} peak exposure
 • This dual approach could improve CEI by 10-15pp and free capacity for high-value pursuits.`,
 
+// ============================================================
+// FOLLOW-UP RESPONSES — Natural questions after seeing initial answers
+// ============================================================
+
+// After Health Score → "How to improve the score?"
+improveScore: `**How to Improve Health Score from ${overallGrade} (${overallScore}/100):**
+
+**Quickest wins by category:**
+
+**Executive (${execHealth.score}/100):** Reduce DSO below 30 days (+20pts). Biggest lever: escalate all 30+ day invoices this week, launch early payment discounts within 30 days.
+
+**Collection Efficiency (${collHealth.score}/100):** Push weekly effectiveness from ${avgCollEff}% to 70% (+25pts). Set daily collector targets, automate small invoice dunning.
+
+**Aging & Risk (${agingHealth.score}/100):** Move 15% of AR from 45→30 day bucket (+20pts). Tighten credit terms for short-term segment.
+
+**Operational (${opsHealth.score}/100):** Reduce backlog from ${backlogLatest} to <3 days (+20pts). Increase collection capacity — automate or add headcount.
+
+**Realistic 60-day target:** Grade B (65-70/100) — achievable with actions #1-5 from the priority plan.`,
+
+// After DSO → "How to reduce DSO?"
+reduceDSO: `**How to Reduce DSO from ${dsoData.overall} to <30 Days:**
+
+**Lever 1 — Fix stuck invoices (impact: −10d):**
+The P90 of ${invoiceToCashData.p90} days means 10% of invoices get stuck. Daily follow-ups on 20+ day invoices would pull P90 to ~20 days, dropping DSO to ~30.
+
+**Lever 2 — Early payment incentives (impact: −15d):**
+2/10 net 30 discount. With credit utilization at ${creditPeriodUtilizationData.overall}%, customers have no reason to pay early. A 2% discount could shift 30% of payments to day 10.
+
+**Lever 3 — Short-term credit enforcement (impact: −5d):**
+7-30 day terms have only 39-41% effectiveness. Tightening terms or requiring deposits for slow payers would reduce overdue flow.
+
+**Combined realistic impact:** DSO from ${dsoData.overall} → 25-30 days within 60 days.`,
+
+// After Revenue at Risk → "What's the dollar amount at risk?"
+dollarAtRisk: `**Dollar Value at Risk:**
+
+**Total AR trapped in Q1:** ${formatCurrency(totalARQ1)}
+**Revenue at risk (${revenueAtRiskData.value}%):** ~${formatCurrency(totalARQ1 * revenueAtRiskData.value / 100)}
+
+**By aging bucket (estimated):**
+• 45-day bucket (34% of AR): ~${formatCurrency(totalARQ1 * 0.34)} — moderate risk
+• 60-day bucket (31% of AR): ~${formatCurrency(totalARQ1 * 0.31)} — high risk
+• Peak single invoice: ${formatCurrency(peakOverdueExposureData.amount)} at ${peakOverdueExposureData.daysOverdue} days
+
+**Bad debt exposure if unaddressed:**
+• Conservative (5% of at-risk): ~${formatCurrency(totalARQ1 * revenueAtRiskData.value / 100 * 0.05)}
+• Moderate (10% of at-risk): ~${formatCurrency(totalARQ1 * revenueAtRiskData.value / 100 * 0.10)}
+• Worst case (20% of at-risk): ~${formatCurrency(totalARQ1 * revenueAtRiskData.value / 100 * 0.20)}`,
+
+// After Aging → "How to fix the aging pyramid?"
+fixAging: `**How to Fix the Inverted Aging Pyramid:**
+
+**Current:** ${agingHealthy}% in 0-30d vs ${agingRisky}% in 45-60d
+**Target:** Flip to 60%+ in 0-30d, <25% in 45-60d
+
+**Step 1 — Stop the inflow (prevents new invoices aging):**
+• Daily dunning from Day 1 (not Day 30)
+• Auto-reminders at Day 1, 7, 15 for small invoices
+• Impact: Reduces new entries into 45+ day buckets by ~40%
+
+**Step 2 — Drain the 45-day bucket (largest at 34%):**
+• Dedicated collector assigned to 30-45 day invoices only
+• Escalation protocol at Day 35 (before hitting 45)
+• Impact: Could move 10-15% from 45→30 day bucket
+
+**Step 3 — Prevent 60-day defaults:**
+• CFO-level escalation at Day 50 for any invoice >₹1M
+• Bad debt provisioning review at Day 45
+• Impact: Reduces 60-day concentration by 5-10%
+
+**Timeline:** 60-90 days to see meaningful shift. The 45-day bucket is the priority.`,
+
+// After Actions → "What's the cost of inaction?"
+costOfInaction: `**Cost of Doing Nothing — 90-Day Impact:**
+
+**Financial cost:**
+• AR continues growing at Q1 rate: +${formatCurrency(totalARQ1)} per quarter trapped
+• Financing cost at 12% annually: ~${formatCurrency(totalARQ1 * 0.03)}/quarter in interest
+• Bad debt provisioning: 8-15% of total AR → increasing P&L drag
+• Peak exposure invoice may require full write-off: ${formatCurrency(peakOverdueExposureData.amount)}
+
+**Operational cascade:**
+• DSO breaches 52 days by June → 45-day invoices auto-overdue
+• CEI drops below 75% → mandatory team restructuring (cost + disruption)
+• Backlog hits 12 days → team needs 2+ weeks just to catch up
+• Revenue at risk could exceed 80%
+
+**Strategic risk:**
+• Credit rating downgrade risk if DSO > 60 days
+• Supplier confidence erosion
+• Board-level intervention likely by Q3
+
+**Bottom line:** ~${formatCurrency(totalARQ1 * 0.15)} potential loss in next 90 days if no action taken.`,
+
+// After Forecast → "What if we improve collections by 20%?"
+scenarioImproved: `**Scenario: Collections Effectiveness Improves 20pp (${avgCollEff}% → ${avgCollEff + 20}%)**
+
+**Projected KPI improvements:**
+• **DSO:** ${dsoData.overall} → ~28 days (−12 days)
+• **Overdue Ratio:** ${overdueRatioData.overall}% → ~25% (−15pp)
+• **Revenue at Risk:** ${revenueAtRiskData.value}% → ~50% (−21pp)
+• **CEI:** ${ceiData.monthly[2].value}% → ~90% (back to strong zone)
+• **Backlog:** ${backlogLatest} → ~2.5 days (below target)
+• **Aging 45-60d:** ${agingRisky}% → ~45% (−20pp)
+
+**How to get there:**
+• Set daily targets: each collector must close ${Math.ceil(20 / 5)} more invoices/day
+• Automate small invoices → frees 30% of team capacity
+• Morning standup with aging review → accountability
+
+**Timeline:** Achievable within 45-60 days with disciplined execution.`,
+
+// After Team → "Do we need more headcount?"
+headcount: `**Headcount Analysis — Collections Team:**
+
+**Current capacity signals:**
+• Effectiveness at ${avgCollEff}% suggests team can handle about half of current load
+• Backlog growing 3.5x in 3 weeks = falling further behind
+• W11 crash to 19% = possible staffing gap or absence
+
+**Before adding headcount, try:**
+1. **Automate small invoices** (91.7% of overdue by count) → frees ~40% of capacity
+2. **Set daily targets** → current effort is reactive, not capacity-limited
+3. **Redistribute workload** → focus on 45-day bucket (34% of AR, highest ROI)
+
+**If effectiveness stays below 60% after 30 days of above:**
+• Add 1-2 collectors focused exclusively on 30-45 day invoices
+• Cost: ~₹1-2M/year salary
+• ROI: If they prevent even 5% of the 45-day bucket from aging to 60 days, savings exceed salary 10x
+
+**Verdict:** Don't hire yet. Automate + discipline first. Reassess in 30 days.`,
+
+// After Benchmarks → "Which KPI should I fix first?"
+fixFirst: `**KPI Priority Ranking — Fix Order:**
+
+**#1 — Collection Effectiveness (${avgCollEff}%)**
+Why first: It's the root cause. The ${(avgOnTime - avgCollEff).toFixed(0)}pp gap vs on-time payment proves customers will pay — team just needs to pursue. Fixing this cascades to every other KPI.
+Effort: Low (process change). Impact: High.
+
+**#2 — Aging 45-Day Bucket (34%)**
+Why second: It's the largest single concentration and feeds revenue at risk, DSO, and overdue ratio simultaneously. Moving 10% to 30-day bucket improves 4+ KPIs.
+Effort: Medium. Impact: Very high.
+
+**#3 — DSO (${dsoData.overall} days)**
+Why third: It improves automatically when #1 and #2 are fixed. Direct intervention: daily dunning on 30+ day invoices.
+Effort: Medium. Impact: High.
+
+**#4 — Credit Utilization (${creditPeriodUtilizationData.overall}%)**
+Why fourth: Early payment discounts are a strategic decision. Implement after #1-3 stabilize.
+Effort: Low. Impact: Medium-high.
+
+**Don't fix directly:** Revenue at risk, overdue ratio, CEI, turnover — these are lagging indicators that improve when #1-3 are fixed.`,
+
+// After Discounts → "What's the annual cost of the discount program?"
+discountCost: `**Early Payment Discount — Detailed Cost-Benefit:**
+
+**Annual cost estimate (2/10 net 30):**
+• Q1 AR volume: ${formatCurrency(totalARQ1)} → annualized: ~${formatCurrency(totalARQ1 * 4)}
+• If 30% adopt: ${formatCurrency(totalARQ1 * 4 * 0.3)} eligible for discount
+• 2% discount on that: **${formatCurrency(totalARQ1 * 4 * 0.3 * 0.02)}/year cost**
+
+**Annual savings:**
+• Reduced financing cost (12% on freed AR): ~${formatCurrency(totalARQ1 * 4 * 0.3 * 0.12)}/year
+• Reduced bad debt (lower aging): ~${formatCurrency(totalARQ1 * 0.02)}/year estimated
+• Reduced collections labor (fewer overdue): ~₹2-3M/year
+• **Total savings: ~${formatCurrency(totalARQ1 * 4 * 0.3 * 0.12 + totalARQ1 * 0.02)}/year**
+
+**Net benefit:** Savings exceed cost by ~5-8x. Payback period: <60 days.
+
+**Risk:** Some customers who already pay on time take the discount (free money for them). Mitigate: offer only to accounts with history of late payment.`,
+
+// "What's the cash conversion cycle?"
+cashConversion: `**Cash Conversion Cycle Analysis:**
+
+**Formula:** CCC = DSO + DIO − DPO
+_(DSO = Days Sales Outstanding, DIO = Days Inventory Outstanding, DPO = Days Payable Outstanding)_
+
+**From available data:**
+• **DSO: ${dsoData.overall} days** (we have this)
+• DIO and DPO: not available on this dashboard (requires inventory and payables data)
+
+**What we can say from DSO alone:**
+• At ${dsoData.overall} days, the receivables leg of CCC is extended
+• Industry DSO benchmark <30 days → our CCC is at least 10 days longer than optimal
+• If DSO were 25 days (achievable), CCC shortens by 15 days = significant working capital freed
+
+**DSO is the controllable lever** on this dashboard. Improving collections (currently ${avgCollEff}%) is the fastest path to shortening CCC.`,
+
+// "Correlation between DSO and aging"
+correlation: `**How KPIs Are Connected — Correlation Map:**
+
+**DSO ↔ Aging:** DSO of ${dsoData.overall}d is directly caused by ${agingRisky}% of AR in 45-60 day buckets. Every 10% moved from 45→30 day bucket reduces DSO by ~4 days.
+
+**Aging ↔ Revenue at Risk:** The ${revenueAtRiskData.value}% revenue at risk is calculated on 45-60 day invoices. Same ${agingRisky}% bucket is the numerator.
+
+**Collection Effectiveness ↔ Everything:** At ${avgCollEff}%, the team recovers less than half of what's due. This feeds: aging (invoices age because they're not collected) → DSO (longer average) → overdue ratio → revenue at risk.
+
+**Turnover ↔ DSO:** Mathematically inverse. 365/${receivablesTurnoverData.overall}x = ~83 implied DSO. As turnover falls, DSO must rise.
+
+**P90 ↔ Aging 45-60d:** The stuck 10% of invoices (P90 = ${invoiceToCashData.p90}d) flow directly into 45-60 day aging buckets.
+
+**Single lever:** Improving collection effectiveness from ${avgCollEff}% to 70% would cascade improvements across every connected KPI.`,
+
+// "Monthly trend comparison"
+monthlyTrend: `**Monthly Trend Comparison — Jan vs Feb vs Mar:**
+
+**Jan'26** ${bar(Math.round(dsoData.monthly[0].value / 45 * 100))} DSO ${dsoData.monthly[0].value}d
+**Feb'26** ${bar(Math.round(dsoData.monthly[1].value / 45 * 100))} DSO ${dsoData.monthly[1].value}d
+**Mar'26** ${bar(Math.round(dsoData.monthly[2].value / 45 * 100))} DSO ${dsoData.monthly[2].value}d
+
+• **DSO:** ${dsoData.monthly[0].value} → ${dsoData.monthly[1].value} → ${dsoData.monthly[2].value} days (↑13.5x)
+• **Overdue Ratio:** ${overdueRatioData.monthly[0].value} → ${overdueRatioData.monthly[1].value} → ${overdueRatioData.monthly[2].value}% (↑13.5x)
+• **Turnover:** ${receivablesTurnoverData.monthly[0].value} → ${receivablesTurnoverData.monthly[1].value} → ${receivablesTurnoverData.monthly[2].value}x (↓68%)
+• **CEI:** ${ceiData.monthly[0].value} → ${ceiData.monthly[1].value} → ${ceiData.monthly[2].value}% (↓7.6pp)
+• **CPU:** ${creditPeriodUtilizationData.monthly[0].value} → ${creditPeriodUtilizationData.monthly[1].value} → ${creditPeriodUtilizationData.monthly[2].value}% (↓improving)
+• **Net AR:** ${formatCurrency(netARMovementData.monthly[0].value)} → ${formatCurrency(netARMovementData.monthly[1].value)} → ${formatCurrency(netARMovementData.monthly[2].value)}
+
+**Pattern:** Every KPI worsened Jan→Mar except CPU (improving from 137% breach).`,
+
+// "Which customers are highest risk?"
+customerRisk: `**Customer Risk Segmentation (from available data):**
+
+**Highest risk — Company ${peakOverdueExposureData.companyCode}:**
+• Single invoice #${peakOverdueExposureData.invoiceNo}: ${formatCurrency(peakOverdueExposureData.amount)}
+• ${peakOverdueExposureData.daysOverdue} days overdue — approaching 60-day threshold
+• Likely 2-5% of total AR concentration
+• Action: Immediate CFO-to-CFO escalation
+
+**High risk segment — 45-60 day credit customers:**
+• ${agingRisky}% of AR = ~${formatCurrency(totalARQ1 * agingRisky / 100)} sits in this segment
+• Credit period effectiveness: 45d=40.9%, 60d=71.6%
+• Revenue at risk: ${revenueAtRiskData.value}% from this segment
+• Action: Dedicated collector, tightened terms
+
+**Volume risk — Small invoice customers:**
+• 91.7% of invoices overdue by count = thousands of small invoices
+• Only 73.2% by value — individually small but collectively clogging
+• Action: Automated dunning, self-service payment portals
+
+**Lower risk — Large 60-day accounts:**
+• 71.6% effectiveness on 60-day terms = these pay more reliably
+• Likely have dedicated AP teams
+• Action: Maintain relationship, don't tighten terms`,
+
+// "What's the ROI of fixing collections?"
+roi: `**ROI of Collections Improvement:**
+
+**Investment required:**
+• Automation tool for small invoices: ~₹5-10M one-time
+• Process changes (daily targets, standups): ₹0 (operational)
+• Optional: 1-2 additional collectors: ~₹2-4M/year
+
+**Returns if effectiveness goes from ${avgCollEff}% → 70%:**
+• AR freed: ~${formatCurrency(totalARQ1 * 0.25)} per quarter
+• Financing cost saved (12%): ~${formatCurrency(totalARQ1 * 0.25 * 0.03)}/quarter
+• Bad debt reduced: ~${formatCurrency(totalARQ1 * 0.03)}/quarter
+• Revenue at risk reduced ~20pp = fewer write-offs
+• **Total annual benefit: ~${formatCurrency((totalARQ1 * 0.25 * 0.03 + totalARQ1 * 0.03) * 4)}**
+
+**ROI:** 10-15x in year 1. Payback period: <90 days.
+**Non-financial:** Better credit rating, supplier confidence, CFO peace of mind.`,
+
+// "On-time payment weekly breakdown"
+weeklyBreakdown: `**On-Time Payment — Full Weekly Breakdown:**
+
+**W2** ${bar(onTimePaymentData.weekly[0].value)}
+**W3** ${bar(onTimePaymentData.weekly[1].value)}
+**W4** ${bar(onTimePaymentData.weekly[2].value)}
+**W5** ${bar(onTimePaymentData.weekly[3].value)}
+**W6** ${bar(onTimePaymentData.weekly[4].value)}
+**W7** ${bar(onTimePaymentData.weekly[5].value)}
+**W8** ${bar(onTimePaymentData.weekly[6].value)}
+**W9** ${bar(onTimePaymentData.weekly[7].value)}
+**W10** ${bar(onTimePaymentData.weekly[8].value)}
+**W11** ${bar(onTimePaymentData.weekly[9].value)}
+**W12** ${bar(onTimePaymentData.weekly[10].value)}
+**W13** ${bar(onTimePaymentData.weekly[11].value)}
+
+**Average:** ${avgOnTime}% | **Target:** >85% | **Met target:** ${weeksAboveTarget}/12 weeks
+**Volatility:** Range ${Math.min(...onTimePaymentData.weekly.map(w => w.value))}-${Math.max(...onTimePaymentData.weekly.map(w => w.value))}% — highly inconsistent.`,
+
+// "Net AR breakdown" / "How much cash is trapped?"
+arBreakdown: `**AR Breakdown — Where Is the Cash Trapped?**
+
+**Total Q1 AR Movement:** ${formatCurrency(totalARQ1)}
+
+**By month:**
+• Jan: ${formatCurrency(netARMovementData.monthly[0].value)} (${Math.round(netARMovementData.monthly[0].value / totalARQ1 * 100)}% of Q1)
+• Feb: ${formatCurrency(netARMovementData.monthly[1].value)} (${Math.round(netARMovementData.monthly[1].value / totalARQ1 * 100)}% of Q1)
+• Mar: ${formatCurrency(netARMovementData.monthly[2].value)} (${Math.round(netARMovementData.monthly[2].value / totalARQ1 * 100)}% of Q1)
+
+**By aging bucket (estimated):**
+• 0-30 days (${agingHealthy}%): ~${formatCurrency(totalARQ1 * agingHealthy / 100)} — lower risk
+• 45-60 days (${agingRisky}%): ~${formatCurrency(totalARQ1 * agingRisky / 100)} — high risk
+
+**Cost of trapped cash:**
+• At 12% financing: ~${formatCurrency(totalARQ1 * 0.12 / 4)}/quarter in interest
+• Annualized: ~${formatCurrency(totalARQ1 * 0.12)} if pattern persists
+• Every day DSO reduces frees ~${formatCurrency(totalARQ1 / 90)} in working capital`,
+
+// "Credit period effectiveness by term"
+cpEffDetail: `**Credit Period Effectiveness — By Term:**
+
+**7 days** ${bar(collectionPeriodEffectivenessData.data[0].value)}
+**15 days** ${bar(collectionPeriodEffectivenessData.data[1].value)}
+**30 days** ${bar(collectionPeriodEffectivenessData.data[2].value)}
+**45 days** ${bar(collectionPeriodEffectivenessData.data[3].value)}
+**60 days** ${bar(collectionPeriodEffectivenessData.data[4].value)}
+
+**The 30pp gap explained:**
+• 7-45 day terms: ~40% effectiveness → 60% of these invoices go overdue
+• 60-day terms: 71.6% → these customers pay more reliably
+
+**Why do 60-day customers pay better?**
+Likely larger, established companies with dedicated AP teams and regular payment cycles. They negotiate longer terms but honor them.
+
+**Why do short-term customers default?**
+Likely smaller businesses with less disciplined AP. They may also have cash flow issues of their own — hence why they need shorter terms.
+
+**Fix:** Different collection strategies per segment. Automate for short-term (volume), personalize for long-term (relationship).`,
+
+// "What KPIs improved this quarter?"
+whatImproved: `**Q1 2026 — What Improved vs Worsened:**
+
+**Improved:** ✅
+• **Credit Period Utilization:** 136.78% → 60.69% (Jan→Mar) — customers stopped breaching terms
+• **On-Time Payment (late Q1):** Hit 100% in W12-W13 (quarter-end push)
+• **P50 Invoice-to-Cash:** Steady at ${invoiceToCashData.p50} days — excellent median
+
+**Worsened:** ⚠️
+• **DSO:** 2 → 27 days (13.5x surge)
+• **Overdue Ratio:** 2% → 27% (13.5x)
+• **Turnover:** 3.1x → 1.0x (68% collapse)
+• **CEI:** 91.7% → 80.4% (approaching restructuring trigger)
+• **Backlog:** 1.7 → 5.9 days (3.5x in 3 weeks)
+• **Collection Effectiveness:** Erratic, average ${avgCollEff}% (target 70%)
+
+**Net assessment:** The few improvements are surface-level (quarter-end push, CPU normalization). The structural metrics are all deteriorating. Without intervention, Q2 will be significantly worse.`,
+
+// "Receivables turnover deep dive"
+turnoverDeep: `**Receivables Turnover — Deep Dive:**
+
+**Formula:** Net Credit Sales / Average Accounts Receivable
+
+**Jan** ${bar(Math.round(receivablesTurnoverData.monthly[0].value / 8 * 100))} → ${receivablesTurnoverData.monthly[0].value}x
+**Feb** ${bar(Math.round(receivablesTurnoverData.monthly[1].value / 8 * 100))} → ${receivablesTurnoverData.monthly[1].value}x
+**Mar** ${bar(Math.round(receivablesTurnoverData.monthly[2].value / 8 * 100))} → ${receivablesTurnoverData.monthly[2].value}x
+**Overall:** ${receivablesTurnoverData.overall}x (benchmark: 5-8x)
+
+**What ${receivablesTurnoverData.monthly[2].value}x means:** In March, AR was collected exactly once. Net new billings equaled collections — zero progress on the backlog.
+
+**Inverse DSO check:** 365 / ${receivablesTurnoverData.overall}x = ${Math.round(365 / receivablesTurnoverData.overall)} implied DSO. vs actual ${dsoData.overall} days. The gap suggests the overall ${receivablesTurnoverData.overall}x is buoyed by Jan's relatively better ${receivablesTurnoverData.monthly[0].value}x.
+
+**To reach 5x benchmark:** Collections must be 5x the average AR — requiring either higher collection rate or lower AR. Improving effectiveness from ${avgCollEff}% to 70% would push turnover to ~3-4x within a quarter.`,
+
 // ---- Overall Summary ----
 summary: `**Q1 2026 Working Capital — Grade ${overallGrade} (${overallScore}/100)**
 
@@ -398,15 +753,36 @@ summary: `**Q1 2026 Working Capital — Grade ${overallGrade} (${overallScore}/1
 // ============================================================
 
 const queryPatterns: [string, string[]][] = [
+  // Follow-up queries (specific — must be BEFORE broad patterns like "improve", "fix")
+  ["improveScore",     ["improve score", "improve health", "improve the score", "increase score", "get to grade", "how to improve the health", "how can we improve"]],
+  ["reduceDSO",        ["reduce dso", "lower dso", "decrease dso", "improve dso", "bring down dso"]],
+  ["dollarAtRisk",     ["dollar amount", "dollar at risk", "how much at risk", "monetary risk", "rupee", "money at risk", "total amount at risk"]],
+  ["fixAging",         ["fix aging", "fix the aging", "fix the pyramid", "improve aging", "reverse aging", "correct aging"]],
+  ["costOfInaction",   ["cost of inaction", "cost of doing nothing", "what happens if we don't", "consequence of not", "if we don't act"]],
+  ["scenarioImproved", ["what if we improve", "what if collections", "scenario", "if we improve", "if collections improve", "impact of improving"]],
+  ["headcount",        ["headcount", "more staff", "hire more", "need more people", "add people", "staffing", "do we need more"]],
+  ["fixFirst",         ["fix first", "which kpi first", "where to start", "which kpi should", "most important kpi", "highest priority kpi", "top priority kpi"]],
+  ["discountCost",     ["annual cost", "cost of discount", "discount cost", "how much will discount", "cost benefit"]],
+  ["cashConversion",   ["cash conversion", "ccc", "conversion cycle", "working capital cycle"]],
+  ["correlation",      ["correlation", "connected", "relationship between", "how are kpis", "impact on each other", "cause and effect", "interconnect", "how are they linked"]],
+  ["monthlyTrend",     ["monthly trend", "month over month", "jan feb mar", "monthly comparison", "month by month", "quarterly trend"]],
+  ["customerRisk",     ["customer risk", "which customer", "highest risk customer", "risky customer", "customer segment", "who owes"]],
+  ["roi",              ["roi", "return on investment", "payback period", "cost benefit of fixing", "benefit of improving"]],
+  ["weeklyBreakdown",  ["weekly breakdown", "week by week", "weekly trend", "weekly data", "all weeks"]],
+  ["arBreakdown",      ["ar breakdown", "cash trapped", "where is cash", "how much trapped", "how much cash", "ar detail"]],
+  ["cpEffDetail",      ["credit period detail", "term effectiveness", "effectiveness by credit term", "effectiveness by term", "effectiveness by period"]],
+  ["whatImproved",     ["what improved", "what got better", "any good news", "any positive", "bright spot", "improved this quarter"]],
+  ["turnoverDeep",     ["turnover deep", "turnover detail", "turnover analysis", "receivables turnover trend"]],
+  // Original 20 queries
   ["health",           ["health", "scorecard", "score", "grade", "rating"]],
   ["cfo",              ["cfo", "board report", "executive brief", "c-suite", "leadership", "management report"]],
   ["formulas",         ["formula", "how is it calculated", "calculation", "methodology", "how computed", "how do you calculate"]],
   ["rootCause",        ["root cause", "what's causing", "causing", "why are kpis", "diagnosis", "what went wrong", "reason for"]],
-  ["actions",          ["action", "recommend", "what should", "fix", "improve", "solution", "strategy", "what to do", "priority", "next step"]],
+  ["actions",          ["action", "recommend", "what should", "solution", "strategy", "what to do", "next step"]],
   ["benchmarks",       ["benchmark", "industry", "compare", "standard", "best practice", "how do we compare"]],
   ["liquidity",        ["liquidity", "cash flow", "cash position", "cash crunch", "working capital risk"]],
   ["forecast",         ["forecast", "projection", "predict", "next quarter", "q2", "trajectory", "what will happen"]],
-  ["team",             ["team", "collector", "staff", "headcount", "capacity", "manpower", "resource", "team performance"]],
+  ["team",             ["team perform", "collector", "staff", "manpower", "resource", "team assessment"]],
   ["discounts",        ["discount", "early payment", "incentive", "2/10", "payment terms"]],
   ["badDebt",          ["bad debt", "write off", "provision", "allowance", "default", "uncollectible"]],
   ["dso",              ["dso", "days sales outstanding", "collection days", "how long to collect"]],
@@ -418,6 +794,8 @@ const queryPatterns: [string, string[]][] = [
   ["creditUtil",       ["credit utilization", "credit period utilization", "payment timing", "paying late", "paying early"]],
   ["backlog",          ["backlog", "days to clear", "clear backlog", "collection capacity"]],
   ["overdueDensity",   ["overdue density", "count vs value", "invoice count", "value split", "density"]],
+  // Action catches (after specific fix/improve queries above)
+  ["actions",          ["fix", "improve", "priority"]],
   // Broader catches (after specific ones)
   ["revenueRisk",      ["revenue"]],
   ["dso",              ["dso"]],
@@ -425,7 +803,7 @@ const queryPatterns: [string, string[]][] = [
   ["collEffectiveness",["cei", "collection index"]],
   ["creditUtil",       ["utilization"]],
   ["overdueDensity",   ["overdue invoice", "overdue"]],
-  ["dso",              ["turnover"]],
+  ["turnoverDeep",     ["turnover"]],
 ];
 
 // Special: category-level keywords → combine multiple responses
