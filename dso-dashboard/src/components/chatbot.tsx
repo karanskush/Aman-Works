@@ -233,7 +233,7 @@ export function Chatbot() {
         {messages.length <= 2 && (
           <div className="px-4 pb-2 shrink-0">
             <div className="flex flex-wrap gap-1.5">
-              {suggestedQuestions.slice(0, 4).map((q) => (
+              {suggestedQuestions.slice(0, 6).map((q) => (
                 <button
                   key={q}
                   onClick={() => handleSend(q)}
