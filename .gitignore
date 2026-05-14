@@ -1,0 +1,5 @@
+
+# Prisma
+dso-dashboard/prisma/dev.db
+dso-dashboard/prisma/dev.db-journal
+dso-dashboard/src/generated/

@@ -1,0 +1,5 @@
+[
+  { "code": "1000", "name": "HQ Operations India", "country": "IN", "currency": "INR" },
+  { "code": "2000", "name": "Manufacturing Division", "country": "IN", "currency": "INR" },
+  { "code": "3000", "name": "Services & Solutions", "country": "IN", "currency": "INR" }
+]

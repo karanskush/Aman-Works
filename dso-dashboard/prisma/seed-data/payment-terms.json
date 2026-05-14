@@ -1,0 +1,7 @@
+[
+  { "termsCode": "Z007", "description": "Net 7 days", "creditPeriodDays": 7, "discountDays1": 3, "discountPercent1": 2.0 },
+  { "termsCode": "Z015", "description": "Net 15 days", "creditPeriodDays": 15, "discountDays1": 7, "discountPercent1": 1.5 },
+  { "termsCode": "Z030", "description": "Net 30 days", "creditPeriodDays": 30, "discountDays1": 10, "discountPercent1": 2.0, "discountDays2": 20, "discountPercent2": 1.0 },
+  { "termsCode": "Z045", "description": "Net 45 days", "creditPeriodDays": 45, "discountDays1": 15, "discountPercent1": 1.5 },
+  { "termsCode": "Z060", "description": "Net 60 days", "creditPeriodDays": 60, "discountDays1": 20, "discountPercent1": 2.0, "discountDays2": 30, "discountPercent2": 1.0 }
+]

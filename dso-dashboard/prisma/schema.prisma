@@ -1,0 +1,270 @@
+// ============================================================
+// DSO VISIBILITY & WORKING CAPITAL — DATABASE SCHEMA
+// Normalized (3NF), SAP FI/AR-aligned, optimized for KPI queries
+// Provider: SQLite (local file-based, no external DB)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================================
+// DIMENSION TABLES — Master data (low cardinality, shared)
+// ============================================================
+
+/// SAP T001 — Company Code master
+model CompanyCode {
+  id                String   @id @default(cuid())
+  code              String   @unique // BUKRS — e.g., "1000", "2000"
+  name              String   // BUTXT — Company legal name
+  country           String   // LAND1 — ISO country
+  currency          String   @default("INR") // WAERS
+  fiscalYearVariant String   @default("V3") // PERIV — Apr-Mar = V3
+  createdAt         DateTime @default(now())
+
+  invoices         Invoice[]
+  weeklyCashflows  WeeklyCashflow[]
+  monthlySnapshots MonthlySnapshot[]
+
+  @@map("company_codes")
+}
+
+/// Geographic hierarchy — State → Region → Country
+model Region {
+  id          String  @id @default(cuid())
+  state       String  // Full state name
+  stateCode   String  // SAP REGIO — 2-3 char code
+  regionName  String  // North, South, East, West, Central
+  country     String  @default("India")
+  countryCode String  @default("IN") // ISO 3166-1 alpha-2
+  zone        String? // Sub-regional grouping
+
+  customers Customer[]
+
+  @@unique([stateCode, countryCode])
+  @@map("regions")
+}
+
+/// SAP T052 — Payment Terms master
+model PaymentTerms {
+  id               String  @id @default(cuid())
+  termsCode        String  @unique // ZTERM — e.g., "Z007", "Z030"
+  description      String  // TEXT1 — e.g., "Net 30 days"
+  creditPeriodDays Int     // Days until due (7, 15, 30, 45, 60)
+  discountDays1    Int?    // Discount period 1
+  discountPercent1 Float?  // e.g., 2.0 for 2%
+  discountDays2    Int?    // Discount period 2
+  discountPercent2 Float?
+  isActive         Boolean @default(true)
+
+  customers Customer[] @relation("CustomerDefaultTerms")
+  invoices  Invoice[]
+
+  @@map("payment_terms")
+}
+
+/// Fiscal period dimension — Apr'25 = Period 1, Mar'26 = Period 12
+model FiscalPeriod {
+  id           String   @id @default(cuid())
+  fiscalYear   Int      // e.g., 2026
+  fiscalPeriod Int      // 1-12 (Apr=1)
+  periodLabel  String   // "Apr'25", "May'25"
+  startDate    DateTime
+  endDate      DateTime
+  quarter      String   // "Q1", "Q2", "Q3", "Q4"
+  isClosed     Boolean  @default(false)
+
+  invoices         Invoice[]
+  weeklyCashflows  WeeklyCashflow[]
+  monthlySnapshots MonthlySnapshot[]
+
+  @@unique([fiscalYear, fiscalPeriod])
+  @@map("fiscal_periods")
+}
+
+// ============================================================
+// CUSTOMER MASTER — SAP KNA1 + KNB1 + KNVV
+// ============================================================
+
+model Customer {
+  id              String   @id @default(cuid())
+  customerNumber  String   @unique // KUNNR
+  name            String   // NAME1
+  name2           String?  // NAME2
+  customerGroup   String   // KTOKD — DOMESTIC, EXPORT, INTERCO
+  industryCode    String?  // BRSCH — industry key
+  segment         String   // STRATEGIC, KEY, STANDARD, SMB
+  creditRating    String   // AAA, AA, A, BBB, BB, B, HIGH_RISK
+  creditLimit     Float?   // KLIMK
+  riskCategory    String   // LOW, MEDIUM, HIGH, CRITICAL
+  isBlocked       Boolean  @default(false) // AUFSD
+  regionId        String
+  paymentTermsId  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  region       Region       @relation(fields: [regionId], references: [id])
+  paymentTerms PaymentTerms @relation("CustomerDefaultTerms", fields: [paymentTermsId], references: [id])
+  invoices     Invoice[]
+
+  @@index([segment])
+  @@index([riskCategory])
+  @@index([regionId])
+  @@index([creditRating])
+  @@map("customers")
+}
+
+// ============================================================
+// FACT TABLE — Invoice line items (SAP BSID/BSAD)
+// 25,000+ rows — Core of all KPI calculations
+// ============================================================
+
+model Invoice {
+  id             String   @id @default(cuid())
+  documentNumber String   // BELNR
+  companyCodeId  String
+  customerId     String
+  fiscalPeriodId String
+  paymentTermsId String   // Invoice-level terms (may differ from customer default)
+
+  // --- Dates ---
+  documentDate DateTime // BLDAT — Invoice issue date
+  postingDate  DateTime // BUDAT — SAP posting date
+  baselineDate DateTime // ZFBDT — Payment terms base date
+  dueDate      DateTime // NETDT — Calculated due date
+
+  // --- Amounts ---
+  amount    Float // DMBTR — Amount in local currency (INR)
+  taxAmount Float @default(0) // MWSTS — GST portion
+
+  // --- Document metadata ---
+  documentType    String  @default("RV") // BLART — RV=Invoice, DZ=Payment
+  referenceNumber String? // XBLNR — PO / external ref
+
+  // --- Status & Clearing ---
+  status           String   // OPEN, CLEARED, PARTIAL
+  clearingDate     DateTime? // AUGDT
+  clearingDocument String?   // AUGBL
+
+  // --- Computed fields (snapshot values) ---
+  creditPeriodDays Int     // Denormalized from payment_terms
+  daysForPayment   Int?    // clearing_date - document_date (CLEARED only)
+  daysOutstanding  Int     // Days since document_date
+  elapsedDays      Int     // Days past due (0 if not overdue)
+  isOverdue        Boolean // today > due_date AND status != CLEARED
+  overdueCategory  String? // NOT_DUE, 1_7, 8_15, 16_30, 31_45, 46_60, 60_PLUS
+  weightedOverdue  Float   @default(0) // amount * elapsed_days
+  classification   String  // CURRENT_RECEIVABLE, CLEARED_ITEM, OVERDUE_RECEIVABLE
+  weekNumber       Int?    // ISO week
+
+  snapshotDate DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  companyCode    CompanyCode    @relation(fields: [companyCodeId], references: [id])
+  customer       Customer       @relation(fields: [customerId], references: [id])
+  fiscalPeriod   FiscalPeriod   @relation(fields: [fiscalPeriodId], references: [id])
+  paymentTerms   PaymentTerms   @relation(fields: [paymentTermsId], references: [id])
+  dunningHistory DunningHistory[]
+
+  @@unique([documentNumber, companyCodeId])
+  @@index([status, dueDate])
+  @@index([customerId, status])
+  @@index([companyCodeId, fiscalPeriodId])
+  @@index([overdueCategory, status])
+  @@index([clearingDate])
+  @@index([documentDate])
+  @@index([classification])
+  @@index([isOverdue, weightedOverdue])
+  @@index([weekNumber, status])
+  @@index([creditPeriodDays, isOverdue])
+  @@map("invoices")
+}
+
+// ============================================================
+// AGGREGATION TABLES — Pre-computed for dashboard perf
+// ============================================================
+
+model WeeklyCashflow {
+  id             String   @id @default(cuid())
+  fiscalPeriodId String
+  companyCodeId  String
+  weekNumber     Int      // ISO week (1-53)
+  weekLabel      String   // "W1", "W2"
+  weekStartDate  DateTime
+  weekEndDate    DateTime
+
+  salesAmount            Float @default(0) // Week-1: Sales
+  expectedCashInflow     Float @default(0) // Week-2: Expected Cash Inflow
+  actualCashInflow       Float @default(0) // Week-3: Actual Cash Inflow
+
+  invoicesDueCount       Int   @default(0)
+  invoicesDueAmount      Float @default(0)
+  invoicesCollectedCount Int   @default(0)
+  invoicesCollectedAmount Float @default(0)
+  overdueBalance         Float @default(0)
+  collectionRate         Float?
+
+  onTimePaymentRate       Float?
+  collectionEffectiveness Float?
+
+  fiscalPeriod FiscalPeriod @relation(fields: [fiscalPeriodId], references: [id])
+  companyCode  CompanyCode  @relation(fields: [companyCodeId], references: [id])
+
+  @@unique([companyCodeId, weekNumber, fiscalPeriodId])
+  @@index([weekNumber, companyCodeId])
+  @@map("weekly_cashflows")
+}
+
+model MonthlySnapshot {
+  id             String @id @default(cuid())
+  fiscalPeriodId String
+  companyCodeId  String
+
+  totalAR          Float
+  currentAR        Float
+  overdueAR        Float
+  beginningAR      Float
+  totalCreditSales Float
+  totalCollections Float
+
+  dso                 Float?
+  overdueRatio        Float?
+  cei                 Float?
+  receivablesTurnover Float?
+  creditPeriodUtil    Float?
+
+  invoiceCountTotal   Int
+  invoiceCountOverdue Int
+  invoiceCountCleared Int
+
+  fiscalPeriod FiscalPeriod @relation(fields: [fiscalPeriodId], references: [id])
+  companyCode  CompanyCode  @relation(fields: [companyCodeId], references: [id])
+
+  @@unique([companyCodeId, fiscalPeriodId])
+  @@map("monthly_snapshots")
+}
+
+// ============================================================
+// COLLECTION ACTIONS — SAP MHNK dunning history
+// ============================================================
+
+model DunningHistory {
+  id           String   @id @default(cuid())
+  invoiceId    String
+  dunningLevel Int      // MAHNS — 1=reminder, 2=formal, 3=final, 4=legal
+  dunningDate  DateTime // MADAT
+  dunningBlock String?  // MANSP — Block reason
+  notes        String?  // Collector notes
+  createdAt    DateTime @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@index([invoiceId])
+  @@index([dunningDate])
+  @@map("dunning_history")
+}
