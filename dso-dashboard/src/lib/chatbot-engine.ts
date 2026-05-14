@@ -46,7 +46,7 @@ const kpiKnowledgeBase: KPIEntry[] = [
     keywords: ["revenue at risk", "revenue risk", "revenue jeopardy", "cash risk"],
     name: "Revenue at Risk",
     category: "Executive",
-    situation: `Revenue at Risk is critically high at ${revenueAtRiskData.value}% (vs last week). Nearly 3 in 4 dollars of recognized revenue may not convert to cash. Combined with 40-day DSO and 40% overdue ratio, a liquidity crunch could materialize within 30 days. This is a CRITICAL alert — CFO should evaluate triggering working capital contingency protocols.`,
+    situation: `Revenue at Risk is critically high at ${revenueAtRiskData.value}% (vs last week), calculated for customers/invoices with credit periods of 45-60 days. Nearly 3 in 4 dollars of recognized revenue may not convert to cash. Combined with 40-day DSO and 40% overdue ratio, a liquidity crunch could materialize within 30 days. This is a CRITICAL alert — CFO should evaluate triggering working capital contingency protocols.`,
   },
   {
     keywords: ["receivables turnover", "turnover ratio", "collection frequency", "how often collected"],

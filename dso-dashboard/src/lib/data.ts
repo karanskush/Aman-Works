@@ -48,7 +48,7 @@ export const revenueAtRiskData = {
   changeLabel: "vs last week",
   insight: {
     businessPurpose:
-      "Revenue at Risk quantifies the percentage of booked revenue that may not convert to cash due to overdue invoices, disputes, or credit issues.",
+      "Revenue at Risk quantifies the percentage of booked revenue that may not convert to cash, calculated specifically for customers/invoices with credit periods of 45-60 days due to overdue invoices, disputes, or credit issues.",
     aiInsight:
       "71.3% revenue at risk is critically high — nearly 3 in 4 dollars of recognized revenue are in jeopardy. Combined with the 40-day DSO and 40% overdue ratio, this suggests a liquidity crunch could materialize within 30 days. CFO should trigger working capital contingency protocols.",
     trend: "warning" as const,
