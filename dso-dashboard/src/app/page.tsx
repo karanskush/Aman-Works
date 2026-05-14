@@ -4,6 +4,7 @@ import { ExecutiveKPIs } from "@/components/sections/executive-kpis";
 import { CollectionEfficiency } from "@/components/sections/collection-efficiency";
 import { AgingRisk } from "@/components/sections/aging-risk";
 import { OperationalKPIs } from "@/components/sections/operational-kpis";
+import { Chatbot } from "@/components/chatbot";
 import { BarChart3, Sparkles, Calendar } from "lucide-react";
 
 export default function Dashboard() {
@@ -51,10 +52,13 @@ export default function Dashboard() {
         {/* Footer */}
         <footer className="text-center py-6 border-t border-border">
           <p className="text-xs text-muted">
-            DSO Visibility Dashboard &middot; Hover over any KPI tile and click the info icon for business purpose & AI insights &middot; Data as of Q1 2026
+            DSO Visibility Dashboard &middot; Each tile shows business purpose & AI situation analysis &middot; Data as of Q1 2026
           </p>
         </footer>
       </main>
+
+      {/* AI Chatbot — floating at bottom right */}
+      <Chatbot />
     </div>
   );
 }
