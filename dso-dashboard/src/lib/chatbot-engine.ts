@@ -732,6 +732,562 @@ turnoverDeep: `**Receivables Turnover — Deep Dive:**
 
 **To reach 5x benchmark:** Collections must be 5x the average AR — requiring either higher collection rate or lower AR. Improving effectiveness from ${avgCollEff}% to 70% would push turnover to ~3-4x within a quarter.`,
 
+// ============================================================
+// WHY / HOW / WHEN / WHAT / IF / SHALL — Deep follow-up responses
+// ============================================================
+
+// WHY: Why is overdue ratio so high?
+whyOverdue: `**Why Is Overdue Ratio at ${overdueRatioData.overall}%?**
+
+**3 converging causes:**
+
+**1. Reactive collections (root cause):**
+Team effectiveness at ${avgCollEff}% means less than half of due amounts are actively pursued. Invoices that aren't chased simply age past their due dates.
+
+**2. Small invoice volume:**
+${overdueInvoiceDensityData.count}% of invoices overdue by count but only ${overdueInvoiceDensityData.value}% by value. Thousands of small invoices go unpursued because collectors focus on large accounts.
+
+**3. Short-term credit failure:**
+7-30 day terms have only 39-41% effectiveness. 60% of short-term invoices miss their due date and become overdue immediately.
+
+**The math:** If 60% of short-term invoices (${100 - agingHealthy}% of AR) go overdue, and collection effectiveness is ${avgCollEff}%, the overdue ratio mathematically settles around 35-45%. That's exactly where we are.
+
+**To halve it:** Automate small invoice dunning (reduces count by 40%) + improve effectiveness to 60% (reduces value by 15pp). Target: <20% within 60 days.`,
+
+// WHY: Why did turnover collapse?
+whyTurnover: `**Why Did Receivables Turnover Collapse 68% (3.1x → 1.0x)?**
+
+**Formula reminder:** Turnover = Net Credit Sales / Average AR
+
+**What happened month by month:**
+• **Jan (3.1x):** Collections were functional. AR was being cycled 3 times — not great but workable.
+• **Feb (1.4x):** AR balance jumped (${formatCurrency(netARMovementData.monthly[0].value)} Jan inflow) while collections didn't keep pace. The denominator (AR) grew faster than the numerator (sales).
+• **Mar (1.0x):** AR equaled sales. For every rupee billed, only one rupee was collected. Zero net progress on the backlog.
+
+**Root cause chain:**
+Collections team reactive → invoices age → AR balance grows → turnover falls → DSO rises → more invoices go overdue → AR grows further (vicious cycle).
+
+**The 1.0x problem:** At 1.0x, the company is on a treadmill — running but not moving forward. Any slight decline below 1.0x means AR grows faster than revenue, which is unsustainable.`,
+
+// WHY: Why did CEI decline?
+whyCEI: `**Why Is CEI Declining (91.7% → 80.4%)?**
+
+**Formula:** CEI = (Beg AR + Credit Sales − End Total AR) / (Beg AR + Credit Sales − End Current AR) x 100
+
+**What the formula reveals:**
+• **Numerator** (what was collected) is shrinking because End Total AR keeps growing — more is owed at period end.
+• **Denominator** (what could have been collected on current invoices) stays relatively stable.
+• Result: the ratio falls.
+
+**Monthly decline rate:** ~5.6pp per month (Feb 91.7% → Mar 80.4%)
+
+**Why End Total AR is growing:**
+• Collection effectiveness at ${avgCollEff}% — team collects less than half
+• New invoices keep entering faster than old ones clear
+• ${agingRisky}% stuck in 45-60 day buckets = slow to convert
+
+**75% trigger:** If CEI hits 75%, it signals the team cannot keep up and restructuring is needed. At current rate: **May 2026**.`,
+
+// WHY: Why did February AR dip?
+whyFebDip: `**Why Did February AR Dip to ${formatCurrency(netARMovementData.monthly[1].value)}?**
+
+The Feb value (${formatCurrency(netARMovementData.monthly[1].value)}) was ~85% lower than Jan (${formatCurrency(netARMovementData.monthly[0].value)}) and Mar (${formatCurrency(netARMovementData.monthly[2].value)}).
+
+**Most likely explanations:**
+1. **One-time large payment received** — A major customer (possibly Company ${peakOverdueExposureData.companyCode} or similar) cleared a large outstanding balance in February.
+2. **Year-end settlement** — Some companies settle Q4 invoices in early Q1 (Jan-Feb cycle).
+3. **Write-off or adjustment** — An accounting adjustment may have reduced the AR balance.
+
+**Why it's NOT improved collections:**
+• March rebounded to ${formatCurrency(netARMovementData.monthly[2].value)} — almost back to Jan levels
+• Collection effectiveness remained erratic throughout Q1
+• DSO continued rising through Feb (2 → 10 days)
+
+**Key insight:** The Feb dip was a one-time event, not a trend. Don't use it as evidence that the collection system worked.`,
+
+// WHY: Why do 60-day customers pay better?
+why60Day: `**Why Do 60-Day Credit Customers Pay Better (71.6% vs 39-41%)?**
+
+**60-day customers (71.6% effectiveness):**
+• Typically larger, established enterprises
+• Have dedicated Accounts Payable departments with regular payment cycles
+• Negotiate longer terms strategically but honor them consistently
+• Have credit relationships and reputational incentive to pay
+• Often have automated payment systems (ERP-integrated)
+
+**7-30 day customers (39-41% effectiveness):**
+• Typically smaller businesses or newer accounts
+• May have cash flow constraints of their own
+• Less disciplined AP processes (manual, ad-hoc)
+• Shorter terms may actually be harder to meet if their own revenue is irregular
+• May deprioritize small vendor payments
+
+**The paradox:** We give short terms to risky customers (because they're risky), but the short terms make it harder for them to pay, creating a self-fulfilling cycle.
+
+**Fix:** For chronic late-payers on short terms, consider either deposits/advances, or paradoxically, extending terms with milestone payments.`,
+
+// HOW: How to improve CEI?
+howCEI: `**How to Improve CEI from ${ceiData.monthly[2].value}% Back to >90%:**
+
+**The formula lever:** Reduce "End Total AR" — the numerator improves when less AR is outstanding at period end.
+
+**Step 1 — Increase weekly collection rate (impact: +8-10pp):**
+• Push effectiveness from ${avgCollEff}% → 65%+ through daily targets
+• More collected each week = lower End Total AR = higher CEI
+
+**Step 2 — Prevent invoice aging (impact: +5pp):**
+• Day 1 acknowledgement + Day 7 reminder for all new invoices
+• Catches issues early before they age into 45+ day buckets
+
+**Step 3 — Clear the 45-day bucket (impact: +3-5pp):**
+• Dedicated push on the 34% of AR sitting at 45 days
+• Each percentage cleared directly reduces End Total AR
+
+**Timeline:**
+• Month 1: CEI recovers to 85% (with immediate action)
+• Month 2: CEI reaches 88-90% (if discipline maintained)
+• Month 3: CEI stabilizes >90% (target zone)
+
+**Risk if no action:** CEI hits 75% by May → mandatory restructuring.`,
+
+// HOW: How to implement automation?
+howAutomate: `**How to Automate Small Invoice Collections:**
+
+**Why automate:** ${overdueInvoiceDensityData.count}% of invoices overdue by count are small. Humans shouldn't chase thousands of small invoices manually.
+
+**Implementation plan:**
+
+**Phase 1 — Email dunning automation (Week 1-2):**
+• Auto-reminder on invoice date ("Payment due in X days")
+• Auto-reminder at Day 7 ("Payment due in X days")
+• Auto-reminder at Day 15 ("Payment overdue — please remit")
+• Auto-escalation at Day 30 (transfers to human collector)
+• Tools: Any billing/ERP system, or standalone tools like Tesorio, HighRadius, YayPay
+
+**Phase 2 — Self-service payment portal (Week 3-4):**
+• Online portal where customers can view and pay invoices
+• Reduces "I didn't receive the invoice" excuses
+• Enables card/bank transfer payments
+
+**Phase 3 — Smart prioritization (Month 2):**
+• AI-based scoring: which invoices are likely to go overdue?
+• Auto-route high-risk invoices to human collectors early
+• Auto-close low-risk invoices that will pay on their own
+
+**Expected impact:** 40% reduction in overdue count within 60 days. Frees 30-40% of collector capacity for high-value accounts.
+
+**Cost:** ₹5-15M one-time + ₹1-2M/year SaaS fees. ROI: 10x in year 1.`,
+
+// HOW: How to reduce overdue ratio?
+howReduceOverdue: `**How to Reduce Overdue Ratio from ${overdueRatioData.overall}% to <20%:**
+
+**Current:** ${overdueRatioData.overall}% = nearly half of AR is past due
+
+**Lever 1 — Automate small invoice dunning (impact: −10pp):**
+91.7% overdue by count → auto-reminders at Day 1, 7, 15 would clear ~40% of the count, reducing the ratio by ~10pp.
+
+**Lever 2 — Fix collection effectiveness (impact: −8pp):**
+${avgCollEff}% → 65% means more gets collected before due date. Directly reduces overdue pool.
+
+**Lever 3 — Early payment discounts (impact: −5pp):**
+2/10 net 30 shifts payments earlier. Less hits the overdue threshold.
+
+**Lever 4 — Tighten short-term credit (impact: −5pp):**
+7-30 day terms at 39-41% effectiveness = 60% goes overdue. Require deposits or extend with milestones.
+
+**Combined:** ${overdueRatioData.overall}% → ~12-17% within 90 days. Below the 20% target.`,
+
+// HOW: How to reduce revenue at risk?
+howReduceRevRisk: `**How to Reduce Revenue at Risk from ${revenueAtRiskData.value}% to <50%:**
+
+**Formula:** Revenue at Risk = (Overdue AR for 45-60 day invoices / Total Revenue) x 100
+
+**To reduce it, shrink the numerator (overdue 45-60 day AR):**
+
+**1. Drain the 45-day bucket (34% of AR):**
+• Dedicated collector on 30-45 day invoices — catch them BEFORE they hit 45
+• Escalation at Day 35 (not Day 45)
+• Impact: −10pp revenue at risk
+
+**2. Improve credit period effectiveness for 45-day terms (40.9%):**
+• Currently only 40.9% collected within 45-day terms
+• Daily dunning + automated reminders could push to 60%
+• Impact: −8pp revenue at risk
+
+**3. Prevent inflow into 45-60 day buckets:**
+• Fix short-term collections (39-41% → 60%)
+• Fewer invoices age into the risky bucket
+• Impact: −5pp revenue at risk
+
+**Combined:** ${revenueAtRiskData.value}% → ~48% within 60 days (below 50% threshold).`,
+
+// HOW: How to clear backlog faster?
+howClearBacklog: `**How to Reduce Backlog from ${backlogLatest} to <3 Days:**
+
+**Formula:** Backlog = Overdue AR / Daily Collection Rate
+
+**Two ways to shrink it:**
+
+**Option A — Increase daily collection rate:**
+• Current effectiveness: ${avgCollEff}% → target 65%
+• Set individual daily targets: each collector must resolve X invoices/day
+• Morning standup with aged invoice review
+• Impact: backlog drops to ~3.5 days (close to target)
+
+**Option B — Reduce overdue AR balance:**
+• Automate small invoices (91.7% by count) → removes ~40% from the overdue pool
+• Launch early payment discounts → prevents new entries
+• Escalate 30+ day invoices daily (not weekly)
+• Impact: overdue AR drops ~25%, backlog to ~4.4 days
+
+**Both together:** Backlog from ${backlogLatest} → ~2.5 days within 45 days.
+
+**Warning:** If only Option A (work harder), backlog returns when effort drops. Option B (reduce inflow) is more sustainable.`,
+
+// WHEN: When will DSO breach 45 days?
+whenDSO45: `**When Will DSO Breach 45 Days?**
+
+**Current trajectory:**
+• Jan: ${dsoData.monthly[0].value}d → Feb: ${dsoData.monthly[1].value}d → Mar: ${dsoData.monthly[2].value}d
+• Average monthly increase: ~12.5 days/month
+• Overall: ${dsoData.overall} days
+
+**Projection:**
+• **April 2026:** ~39-40 days (approaching threshold)
+• **May 2026:** ~45-52 days **(breach likely)**
+• **June 2026:** ~52-60 days (if no intervention)
+
+**What happens at 45 days:**
+All invoices with 45-day credit terms automatically become overdue the day after their due date. This creates a cascading effect:
+• Overdue ratio jumps as the entire 45-day bucket (34% of AR) crosses the line
+• Revenue at risk increases further
+• Aging distribution shifts even more toward the risky end
+
+**To prevent:** Must reduce DSO growth by improving collections within the next 30 days. Target: flatten at <35 days by May.`,
+
+// WHEN: When will CEI hit restructuring trigger?
+whenCEI75: `**When Will CEI Hit the 75% Restructuring Trigger?**
+
+**Current decline rate:**
+• Feb: ${ceiData.monthly[1].value}% → Mar: ${ceiData.monthly[2].value}% = −${(ceiData.monthly[1].value - ceiData.monthly[2].value).toFixed(1)}pp/month
+
+**Projection (if trend continues):**
+• **April:** ~74-75% **(trigger hit)**
+• **May:** ~69%
+• **June:** ~63%
+
+**What happens at 75%:**
+Industry best practice triggers mandatory collections team restructuring — this could mean:
+• Process overhaul and new KPIs for collectors
+• Potential headcount changes
+• External collections agency engagement
+• Management reporting escalation
+
+**To prevent:** Must arrest the decline within 30 days. Need CEI to stabilize at >80%.
+**How:** Push collection effectiveness from ${avgCollEff}% to 60%+ (reduces End Total AR in the CEI formula).`,
+
+// WHEN: When to expect improvement?
+whenResults: `**When to Expect Results After Taking Action:**
+
+**Week 1-2 (immediate actions):**
+• Peak invoice escalation → could resolve ${formatCurrency(peakOverdueExposureData.amount)} quickly
+• Daily dunning started → on-time payment should stabilize above 75%
+• Collection effectiveness: too early to see improvement
+
+**Week 3-4 (early wins):**
+• Automated small invoice reminders live → overdue count starts dropping
+• Weekly effectiveness should reach 55-60%
+• Backlog growth should stop (plateaus)
+
+**Month 2 (visible improvement):**
+• DSO: ${dsoData.overall} → ~32-35 days
+• Overdue ratio: ${overdueRatioData.overall}% → ~28-30%
+• CEI: should stabilize above 80%
+• Backlog: should start declining
+
+**Month 3 (target zone):**
+• DSO: <30 days
+• Overdue ratio: <25%
+• CEI: >85%
+• Revenue at risk: <55%
+• Health score: Grade B (65-70)
+
+**Key dependency:** Results require consistent daily execution, not one-time effort.`,
+
+// WHAT: What is the biggest risk right now?
+biggestRisk: `**Single Biggest Risk Right Now:**
+
+**Liquidity crunch within 30 days.**
+
+**Why:** ${revenueAtRiskData.value}% of revenue may not convert to cash. ${formatCurrency(totalARQ1)} is trapped in AR. DSO is rising at 12.5 days/month.
+
+**The cascade:**
+1. Revenue at risk stays >70% → cash inflow drops below operating needs
+2. Working capital shortfall → may need emergency credit line
+3. If DSO hits 45d → 34% of AR (45-day bucket) auto-overdue → ratio spikes further
+4. CEI hits 75% trigger → forced restructuring adds cost + disruption
+
+**Second biggest risk:** Invoice #${peakOverdueExposureData.invoiceNo} (${formatCurrency(peakOverdueExposureData.amount)}) crossing 60 days → bad debt provision jumps from 10% to 25% = ${formatCurrency(peakOverdueExposureData.amount * 0.15)} additional P&L hit.
+
+**Third:** Collections team burnout — ${avgCollEff}% effectiveness with growing backlog. If key collectors leave, the situation deteriorates rapidly.`,
+
+// WHAT: What's the ideal aging distribution?
+idealAging: `**Ideal vs Current Aging Distribution:**
+
+**Healthy distribution:**
+**0-7d** ${bar(30)} (target)
+**8-15d** ${bar(25)} (target)
+**16-30d** ${bar(20)} (target)
+**31-45d** ${bar(15)} (target)
+**46-60d** ${bar(10)} (target)
+
+**Our current:**
+**7d** ${bar(agingBucketData.data[0].percentage)}
+**15d** ${bar(agingBucketData.data[1].percentage)}
+**30d** ${bar(agingBucketData.data[2].percentage)}
+**45d** ${bar(agingBucketData.data[3].percentage)}
+**60d** ${bar(agingBucketData.data[4].percentage)}
+
+**Gap:** Our pyramid is inverted. ${agingHealthy}% in 0-30d (should be 75%+) and ${agingRisky}% in 45-60d (should be <25%).
+
+**To reach healthy:** Move ~30pp from the 45-60 buckets to the 0-30 buckets. This requires sustained collection improvement over 2-3 months.`,
+
+// WHAT: What credit terms should we offer?
+creditTerms: `**Credit Terms Strategy Recommendation:**
+
+**Current effectiveness by term:**
+• 7d: 39.9% | 15d: 39.1% | 30d: 40.0% | 45d: 40.9% | 60d: 71.6%
+
+**Recommended restructuring:**
+
+**For new/small customers (currently on 7-15 day terms):**
+• Require 50% advance payment + balance on delivery
+• These customers have ~40% effectiveness — too risky for open credit
+• Alternative: Offer 15-day terms with automated dunning from Day 1
+
+**For mid-size customers (30-day terms):**
+• Maintain 30-day terms but add: auto-reminder Day 1, 15, 25
+• Offer 2/10 net 30 discount for early payment
+• Escalation to account manager at Day 25 (before overdue)
+
+**For large/established customers (45-60 day terms):**
+• Maintain current terms — 71.6% effectiveness is acceptable
+• Don't tighten (they may switch vendors)
+• Focus on relationship management
+
+**Net impact:** Reduces overdue ratio by ~10-15pp within 60 days. Revenue at risk drops proportionally.`,
+
+// WHAT: What's the P&L impact?
+plImpact: `**P&L Impact of Current AR Situation:**
+
+**Direct costs (quarterly):**
+• Bad debt provisioning (8-15% of AR): ${formatCurrency(totalARQ1 * 0.08)} to ${formatCurrency(totalARQ1 * 0.15)}
+• Financing cost on trapped AR (12% annual / 4): ~${formatCurrency(totalARQ1 * 0.03)}
+• Collections overhead (staff, systems): ~₹3-5M/quarter
+• **Total quarterly P&L drag: ${formatCurrency(totalARQ1 * 0.08 + totalARQ1 * 0.03)} to ${formatCurrency(totalARQ1 * 0.15 + totalARQ1 * 0.03)}**
+
+**If peak exposure writes off:**
+• Additional ${formatCurrency(peakOverdueExposureData.amount)} hit to P&L
+• Could trigger audit committee review
+
+**Opportunity cost:**
+• ${formatCurrency(totalARQ1)} trapped in AR instead of generating returns
+• At 15% ROI, opportunity cost = ~${formatCurrency(totalARQ1 * 0.15 / 4)}/quarter
+
+**After fixing collections:**
+• Bad debt provisioning drops to 3-5%: saves ${formatCurrency(totalARQ1 * 0.05)}/quarter
+• Financing cost halves: saves ${formatCurrency(totalARQ1 * 0.015)}/quarter
+• **Net P&L improvement: ${formatCurrency(totalARQ1 * 0.05 + totalARQ1 * 0.015)}/quarter**`,
+
+// IF: If we tighten credit terms, what happens?
+ifTightenCredit: `**Scenario: Tightening Credit Terms**
+
+**Option A — Reduce all terms by 15 days:**
+• Positive: Invoices due earlier → aging shifts left → DSO drops ~5-10 days
+• Negative: Customer pushback. Some may delay further or switch vendors.
+• Net: Moderate improvement but relationship risk.
+
+**Option B — Require deposits for slow payers:**
+• Positive: Reduces risk on the 40% of accounts with <40% effectiveness
+• Negative: Operational complexity. Some customers refuse.
+• Net: Good for small/new accounts. Don't apply to established 60-day customers (71.6% effectiveness).
+
+**Option C — Tiered credit (recommended):**
+• New customers: advance payment until track record established
+• Slow payers (<50% on-time): move to shorter terms + deposits
+• Good payers (>80% on-time): maintain or extend terms
+• Net: Best balance of risk reduction and relationship preservation.
+
+**Impact on KPIs:**
+• DSO: −5 to −10 days
+• Overdue ratio: −10pp
+• Revenue at risk: −10pp
+• Customer retention risk: low if tiered approach used`,
+
+// IF: If we add 2 collectors, what changes?
+ifAddCollectors: `**Scenario: Adding 2 Collectors to the Team**
+
+**Assumptions:**
+• Each collector handles ~100-150 accounts
+• Focused on 30-45 day invoices (highest ROI bucket)
+• Cost: ~₹1-2M/year each (₹2-4M total)
+
+**Projected impact:**
+• 45-day bucket: 34% → ~24% of AR (10pp improvement)
+• Collection effectiveness: ${avgCollEff}% → ~55% (+10pp)
+• DSO: ${dsoData.overall} → ~34 days (−6 days)
+• Backlog: ${backlogLatest} → ~4 days (−${(backlogLatest - 4).toFixed(1)} days)
+• Revenue at risk: ${revenueAtRiskData.value}% → ~60% (−11pp)
+
+**Cost-benefit:**
+• Annual cost: ₹2-4M
+• Annual savings (reduced bad debt + financing): ~${formatCurrency(totalARQ1 * 0.04)}
+• **ROI: 5-10x in year 1**
+
+**But consider:** Would automation achieve the same result at lower cost? Automating small invoices frees existing capacity equivalent to ~1.5 collectors. Try automation first, add headcount if still needed after 30 days.`,
+
+// SHALL: Should we write off the peak exposure?
+shallWriteOff: `**Should We Write Off Invoice #${peakOverdueExposureData.invoiceNo}?**
+
+**Current status:** ${formatCurrency(peakOverdueExposureData.amount)} | ${peakOverdueExposureData.daysOverdue} days overdue | Company ${peakOverdueExposureData.companyCode}
+
+**Not yet. Here's why:**
+• At ${peakOverdueExposureData.daysOverdue} days, it's at the DSO average — not yet in default territory
+• ${peakOverdueExposureData.daysOverdue} < 60 days — industry standard doesn't trigger write-off until 90-180 days
+• The company may be a major account with payment history worth preserving
+
+**What to do instead:**
+1. **Now:** Provision 50% (${formatCurrency(peakOverdueExposureData.amount * 0.5)}) as allowance for doubtful accounts
+2. **This week:** CFO-to-CFO call with Company ${peakOverdueExposureData.companyCode}
+3. **If no response in 10 days:** Send formal demand letter
+4. **At 60 days:** Increase provision to 75%
+5. **At 90 days:** Consider write-off or collections agency
+
+**Write-off triggers:**
+• Customer declares bankruptcy
+• No response after multiple escalations + demand letter
+• Customer disputes the invoice with valid grounds
+• Invoice exceeds 180 days with no payment plan`,
+
+// SHALL: Should we restructure the collections team?
+shallRestructure: `**Should We Restructure the Collections Team?**
+
+**Current evidence:**
+• CEI at ${ceiData.monthly[2].value}% and falling (75% = mandatory trigger)
+• Collection effectiveness: ${avgCollEff}% (target 70%)
+• On-time payment: ${avgOnTime}% — customers CAN pay, team doesn't pursue
+• Backlog growing 3.5x → team falling behind
+
+**Verdict: Not yet, but prepare.**
+
+**Try these first (30-day window):**
+1. Individual daily targets with accountability
+2. Morning standup with aging review
+3. Automate small invoice dunning (frees 40% capacity)
+4. Reassign underperformers to less critical buckets
+
+**Restructure IF after 30 days:**
+• Effectiveness still below 55%
+• CEI continues declining toward 75%
+• Backlog exceeds 8 days
+
+**Restructuring options:**
+• **Light:** Reorganize into aging-bucket teams (0-30d, 30-45d, 45-60d)
+• **Medium:** Replace underperformers, add 1-2 specialists for 30-45d bucket
+• **Heavy:** Outsource small invoice collections to agency, keep humans for high-value
+
+**Cost of restructuring:** 1-2 month productivity dip during transition. Factor this into timing.`,
+
+// SHALL: Should we hire a collections agency?
+shallAgency: `**Should We Hire an External Collections Agency?**
+
+**When it makes sense:**
+• For invoices >90 days overdue (we're not there yet for most)
+• When internal team can't keep up (backlog at ${backlogLatest} days — approaching)
+• For the small invoice tail (91.7% overdue by count)
+
+**For our situation — partial outsourcing recommended:**
+
+**Outsource:** Small invoices (<₹500K) that are 30+ days overdue
+• Agency commission: typically 10-25% of collected amount
+• Worth it because: our team spends time on these with ${avgCollEff}% effectiveness
+• Better to pay 15% commission and collect 60-70% than collect nothing
+
+**Keep in-house:** Large invoices (>₹500K) and strategic accounts
+• Relationship matters — agency calls can damage partnerships
+• Peak exposure (${formatCurrency(peakOverdueExposureData.amount)}) needs CFO-level handling, not an agency
+
+**Hybrid approach:**
+• Phase 1: Automate first (cheaper than agency)
+• Phase 2: If automation doesn't reduce count by 30% in 30 days, engage agency for the tail
+• Phase 3: Re-evaluate at 60 days
+
+**Expected impact:** Overdue count drops from 91.7% to ~60% within 60 days.`,
+
+// WHAT: What percentage pays on time?
+pctOnTime: `**Payment Behavior Breakdown:**
+
+**By the numbers:**
+• **Average on-time payment rate:** ${avgOnTime}% of invoices paid within terms
+• **Consistently on-time:** ~30-35% of customers (estimated from W12-W13 data)
+• **Sometimes on-time:** ~30-35% (the volatile middle)
+• **Rarely on-time:** ~30-35% (driving the 91.7% overdue count)
+
+**Weekly variation:**
+• Best weeks: W12-W13 at 100% (quarter-end push)
+• Worst weeks: W2 at ${onTimePaymentData.weekly[0].value}%, W10 at ${onTimePaymentData.weekly[8].value}%
+• Only ${weeksAboveTarget} of 12 weeks met the 85% target
+
+**Credit period split:**
+• 60-day customers: 71.6% pay within terms — best segment
+• 7-45 day customers: 39-41% pay within terms — worst segment
+• The gap suggests ~60% of short-term customers are chronically late
+
+**Key insight:** The problem isn't that no one pays — it's that collections effort doesn't match customer willingness. The ${(avgOnTime - avgCollEff).toFixed(0)}pp gap between customer payment and team effectiveness is the real issue.`,
+
+// WHAT: What was the worst week?
+worstWeek: `**Worst Performing Weeks in Q1:**
+
+**Worst for On-Time Payment:**
+1. **W2: ${onTimePaymentData.weekly[0].value}%** — Quarter start, likely AR backlog from holidays
+2. **W5: ${onTimePaymentData.weekly[3].value}%** — Mid-Jan dip
+3. **W10: ${onTimePaymentData.weekly[8].value}%** — Mid-quarter lull
+
+**Worst for Collection Effectiveness:**
+1. **W2: ${collectionEffectivenessWeeklyData.weekly[0].value}%** — Team possibly still ramping up
+2. **W11: ${collectionEffectivenessWeeklyData.weekly[9].value}%** — Critical crash, possible staffing gap
+3. **W9: ${collectionEffectivenessWeeklyData.weekly[7].value}%** — Below 40% threshold
+
+**Pattern:** Mid-quarter (W5, W9-W10) and quarter-start (W2) are consistently weak. Quarter-end (W12-W13) shows push effort. This feast-or-famine pattern is the core operational problem.
+
+**Fix:** Distribute effort evenly. Weekly targets should be the same regardless of where we are in the quarter.`,
+
+// IF: What if we do nothing for 6 months?
+ifNothing6m: `**6-Month Inaction Scenario (Q2-Q3 2026):**
+
+**Month 1-2 (Q2 start):**
+• DSO: ${dsoData.overall} → 52 days
+• CEI: ${ceiData.monthly[2].value}% → 69% (below restructuring trigger)
+• Backlog: ${backlogLatest} → 12 days
+• Revenue at risk: ${revenueAtRiskData.value}% → 82%
+
+**Month 3-4 (Q2 end):**
+• DSO: 60+ days (critical — credit rating risk)
+• AR trapped: ~${formatCurrency(totalARQ1 * 2)} cumulative
+• Mandatory collections restructuring triggered
+• Board-level reporting required
+
+**Month 5-6 (Q3 start):**
+• Potential credit rating downgrade
+• Supplier terms tightened (may demand advance payment)
+• Working capital credit line likely needed: ${formatCurrency(totalARQ1 * 2)}
+• Bad debt write-offs: ${formatCurrency(totalARQ1 * 0.15)} to ${formatCurrency(totalARQ1 * 0.25)}
+• Possible auditor qualification on financial statements
+
+**Total financial impact of 6-month inaction:** ${formatCurrency(totalARQ1 * 0.25 + totalARQ1 * 2 * 0.06)} in losses + financing costs.
+
+**Bottom line:** The cost of inaction in 6 months exceeds 10x the cost of fixing it now.`,
+
 // ---- Overall Summary ----
 summary: `**Q1 2026 Working Capital — Grade ${overallGrade} (${overallScore}/100)**
 
@@ -773,6 +1329,36 @@ const queryPatterns: [string, string[]][] = [
   ["cpEffDetail",      ["credit period detail", "term effectiveness", "effectiveness by credit term", "effectiveness by term", "effectiveness by period"]],
   ["whatImproved",     ["what improved", "what got better", "any good news", "any positive", "bright spot", "improved this quarter"]],
   ["turnoverDeep",     ["turnover deep", "turnover detail", "turnover analysis", "receivables turnover trend"]],
+  // WHY follow-ups
+  ["whyOverdue",       ["why is overdue", "why overdue", "why is the overdue", "why 40%", "why so many overdue"]],
+  ["whyTurnover",      ["why did turnover", "why turnover", "turnover collapse", "why is turnover"]],
+  ["whyCEI",           ["why is cei", "why cei", "why is the cei", "why declining cei", "cei declining"]],
+  ["whyFebDip",        ["february dip", "feb dip", "why did february", "why feb", "feb ar drop"]],
+  ["why60Day",         ["why 60 day", "why do 60", "why longer terms", "why 60-day", "60 day better"]],
+  // HOW follow-ups
+  ["howCEI",           ["improve cei", "increase cei", "how to improve cei", "fix cei", "recover cei"]],
+  ["howAutomate",      ["automate", "automation", "automated", "dunning system", "collection tool", "collection software"]],
+  ["howReduceOverdue", ["reduce overdue", "lower overdue", "decrease overdue", "cut overdue"]],
+  ["howReduceRevRisk", ["reduce revenue at risk", "lower revenue at risk", "decrease revenue risk", "bring down revenue"]],
+  ["howClearBacklog",  ["reduce backlog", "clear backlog faster", "speed up backlog", "fix backlog"]],
+  // WHEN follow-ups
+  ["whenDSO45",        ["when will dso", "dso breach", "dso exceed", "dso cross 45", "when dso 45"]],
+  ["whenCEI75",        ["when will cei", "cei trigger", "cei 75", "restructuring trigger", "when restructur"]],
+  ["whenResults",      ["when to expect", "how long to see", "when will results", "how long until", "timeline for", "when will kpi"]],
+  // WHAT follow-ups
+  ["biggestRisk",      ["biggest risk", "main risk", "top risk", "most critical", "what worries", "greatest danger"]],
+  ["idealAging",       ["ideal aging", "healthy aging", "target aging", "what should aging", "normal aging"]],
+  ["creditTerms",      ["credit terms", "credit policy", "what terms", "restructure terms", "change terms"]],
+  ["plImpact",         ["p&l", "profit and loss", "p&l impact", "income statement", "financial impact", "bottom line impact"]],
+  ["pctOnTime",        ["percentage pay", "how many pay on time", "what percent", "who pays on time", "payment behavior"]],
+  ["worstWeek",        ["worst week", "weakest week", "lowest week", "bad week", "which week"]],
+  // IF/SHALL follow-ups
+  ["ifTightenCredit",  ["tighten credit", "stricter terms", "if we tighten", "shorten terms", "reduce credit"]],
+  ["ifAddCollectors",  ["add collector", "add 2 collector", "if we add", "extra collector", "more collector"]],
+  ["shallWriteOff",    ["write off", "should we write", "write-off", "is it time to write", "abandon invoice"]],
+  ["shallRestructure", ["restructure team", "restructure collection", "should we restructure", "reorganize team"]],
+  ["shallAgency",      ["collection agency", "outsource collection", "external agency", "third party collection", "hire agency", "should we hire a"]],
+  ["ifNothing6m",      ["6 month", "six month", "half year", "what if nothing", "if no action for"]],
   // Original 20 queries
   ["health",           ["health", "scorecard", "score", "grade", "rating"]],
   ["cfo",              ["cfo", "board report", "executive brief", "c-suite", "leadership", "management report"]],
