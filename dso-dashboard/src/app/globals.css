@@ -110,3 +110,50 @@ section + section {
     transform: none;
   }
 }
+
+/* Sidebar transition */
+.sidebar-transition {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Admin toggle animation */
+.toggle-track {
+  transition: background-color 0.2s ease;
+}
+
+/* Insight card hover */
+.insight-card {
+  transition: all 0.3s ease;
+}
+.insight-card:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Severity pulse for critical items */
+@keyframes severity-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}
+.severity-critical {
+  animation: severity-pulse 2s ease-in-out infinite;
+}
+
+/* Health gauge animation */
+@keyframes gauge-fill {
+  from { stroke-dasharray: 0 339.3; }
+}
+.gauge-circle {
+  animation: gauge-fill 1.5s ease-out;
+}
+
+/* Mobile bottom nav safe area */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-nav-safe {
+    padding-bottom: calc(0.375rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Table striping for admin */
+.admin-table tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--card-hover) 30%, transparent);
+}
