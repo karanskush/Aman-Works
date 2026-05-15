@@ -9,6 +9,8 @@ import {
   type KPIDefinition,
   type KPICategory,
 } from "@/lib/kpi-registry";
+import { getAdvancedKPIValues } from "@/lib/advanced-kpi-values";
+import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import {
@@ -397,8 +399,25 @@ function KPIVisualization({ kpi }: { kpi: KPIDefinition }) {
   }
 }
 
+// Merges static KPI metadata with dynamic per-slice values so every tile
+// refreshes when the (year, quarter) filter changes.
+function useDynamicKPI(kpi: KPIDefinition): KPIDefinition {
+  const slice = useKPIData();
+  const dyn = getAdvancedKPIValues(kpi.id, slice);
+  if (!dyn) return kpi;
+  return {
+    ...kpi,
+    primaryValue: dyn.primaryValue,
+    primaryUnit: dyn.primaryUnit,
+    insight: dyn.insight,
+    trend: dyn.trend,
+    details: dyn.details,
+  };
+}
+
 // ---- Advanced KPI Tile ----
-function AdvancedKPITile({ kpi }: { kpi: KPIDefinition }) {
+function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
+  const kpi = useDynamicKPI(staticKpi);
   const [showModal, setShowModal] = useState(false);
   const trend = trendConfig[kpi.trend];
   const TrendIcon = trend.icon;
@@ -520,13 +539,14 @@ export function AdvancedDashboard() {
   const { kpiEnabled } = useDashboard();
   const enabledKPIs = getEnabledKPIs("advanced", kpiEnabled);
   const categories = getCategoriesForSection("advanced");
+  const quarterLabel = useQuarterLabel();
 
   return (
     <section className="space-y-8">
       <SectionHeader
         icon={Layers}
         title="Advanced KPIs"
-        subtitle={`${enabledKPIs.length} metrics computed from 25,000 invoices · Metadata-driven`}
+        subtitle={`${enabledKPIs.length} metrics · ${quarterLabel}`}
         iconColor="text-accent-purple"
       />
 

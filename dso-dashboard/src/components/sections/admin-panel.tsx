@@ -16,7 +16,7 @@ export function AdminPanel() {
   const { kpiEnabled, toggleKPI, setKPIEnabled } = useDashboard();
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<KPICategory | "all">("all");
-  const [sectionFilter, setSectionFilter] = useState<"all" | "advanced" | "ai-insights">("all");
+  const [sectionFilter, setSectionFilter] = useState<"all" | "basic" | "advanced" | "ai-insights">("all");
 
   const filteredKPIs = useMemo(() => {
     return KPI_REGISTRY.filter((kpi) => {
@@ -69,7 +69,7 @@ export function AdminPanel() {
             <Filter className="w-3.5 h-3.5 text-muted" />
             <span className="text-xs text-muted">Section:</span>
           </div>
-          {(["all", "advanced", "ai-insights"] as const).map((s) => (
+          {(["all", "basic", "advanced", "ai-insights"] as const).map((s) => (
             <button
               key={s}
               onClick={() => setSectionFilter(s)}
@@ -80,7 +80,7 @@ export function AdminPanel() {
                   : "bg-card-hover text-muted hover:text-foreground"
               )}
             >
-              {s === "all" ? "All" : s === "advanced" ? "Advanced" : "AI Insights"}
+              {s === "all" ? "All" : s === "basic" ? "Basic" : s === "advanced" ? "Advanced" : "AI Insights"}
             </button>
           ))}
 
@@ -200,10 +200,16 @@ export function AdminPanel() {
                           "text-xs font-medium px-2 py-0.5 rounded-full",
                           kpi.dashboardSection === "advanced"
                             ? "bg-accent-purple/10 text-accent-purple"
-                            : "bg-accent-cyan/10 text-accent-cyan"
+                            : kpi.dashboardSection === "ai-insights"
+                            ? "bg-accent-cyan/10 text-accent-cyan"
+                            : "bg-accent-blue/10 text-accent-blue"
                         )}
                       >
-                        {kpi.dashboardSection === "advanced" ? "Advanced" : "AI Insights"}
+                        {kpi.dashboardSection === "advanced"
+                          ? "Advanced"
+                          : kpi.dashboardSection === "ai-insights"
+                          ? "AI Insights"
+                          : "Basic"}
                       </span>
                     </td>
 

@@ -2,31 +2,46 @@
 
 import { useMemo } from "react";
 import { useDashboard } from "@/context/dashboard-context";
-import { COMPUTED_KPI_DATA, type QuarterKey, type QuarterData } from "./computed-kpis";
+import {
+  COMPUTED_KPI_DATA,
+  EMPTY_QUARTER_DATA,
+  type QuarterKey,
+  type QuarterData,
+  type FYKey,
+} from "./computed-kpis";
 
 /**
- * Hook that returns pre-computed KPI data filtered by the current dashboard context.
- * Reads the quarter filter from DashboardContext and returns the corresponding data slice.
- * No network calls — data is statically imported from the pre-computed module.
+ * Returns the pre-computed KPI slice matching the current (fiscalYear, quarter) filter.
+ * Data is statically imported — no network calls.
  */
 export function useKPIData(): QuarterData {
   const { filters } = useDashboard();
-  const quarter: QuarterKey = filters.quarter === "All" ? "All" : filters.quarter;
-
-  return useMemo(() => COMPUTED_KPI_DATA[quarter], [quarter]);
+  const fy = filters.fiscalYear as FYKey;
+  const quarter = filters.quarter as QuarterKey;
+  return useMemo(() => COMPUTED_KPI_DATA[fy]?.[quarter] ?? EMPTY_QUARTER_DATA, [fy, quarter]);
 }
 
+const FY_LABELS: Record<FYKey, string> = {
+  2024: "FY 2023-24",
+  2025: "FY 2024-25",
+  2026: "FY 2025-26",
+};
+
 /**
- * Returns just the quarter label for display purposes.
+ * Human-readable label for the current filter, e.g. "Q1 (Apr–Jun '23) · FY 2023-24".
  */
 export function useQuarterLabel(): string {
   const { filters } = useDashboard();
-  const labels: Record<string, string> = {
-    All: "Full Year FY 2025-26",
-    Q1: "Q1 (Apr–Jun '25)",
-    Q2: "Q2 (Jul–Sep '25)",
-    Q3: "Q3 (Oct–Dec '25)",
-    Q4: "Q4 (Jan–Mar '26)",
+  const fy = filters.fiscalYear as FYKey;
+  const fyLabel = FY_LABELS[fy];
+  const prevShort = (fy - 1).toString().slice(2);
+  const curShort = fy.toString().slice(2);
+  const map: Record<QuarterKey, string> = {
+    All: `Full Year · ${fyLabel}`,
+    Q1: `Q1 (Apr–Jun '${prevShort}) · ${fyLabel}`,
+    Q2: `Q2 (Jul–Sep '${prevShort}) · ${fyLabel}`,
+    Q3: `Q3 (Oct–Dec '${prevShort}) · ${fyLabel}`,
+    Q4: `Q4 (Jan–Mar '${curShort}) · ${fyLabel}`,
   };
-  return labels[filters.quarter] || "FY 2025-26";
+  return map[filters.quarter as QuarterKey] ?? fyLabel;
 }

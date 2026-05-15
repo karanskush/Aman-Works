@@ -5,6 +5,10 @@
 // ============================================================
 
 export type KPICategory =
+  | "basic-executive"
+  | "basic-collection"
+  | "basic-aging"
+  | "basic-operational"
   | "dso-decomposition"
   | "organization-health"
   | "predictive"
@@ -15,7 +19,7 @@ export type KPICategory =
   | "working-capital"
   | "benchmarking";
 
-export type DashboardSection = "advanced" | "ai-insights";
+export type DashboardSection = "basic" | "advanced" | "ai-insights";
 
 export type VisualizationType =
   | "waterfall"
@@ -53,6 +57,10 @@ export interface KPIDefinition {
 }
 
 export const CATEGORY_LABELS: Record<KPICategory, string> = {
+  "basic-executive": "Executive KPIs",
+  "basic-collection": "Collection Efficiency",
+  "basic-aging": "Aging & Risk",
+  "basic-operational": "Operational",
   "dso-decomposition": "DSO Decomposition",
   "organization-health": "Organization Health",
   "predictive": "Predictive & Leading Indicators",
@@ -65,6 +73,10 @@ export const CATEGORY_LABELS: Record<KPICategory, string> = {
 };
 
 export const CATEGORY_COLORS: Record<KPICategory, string> = {
+  "basic-executive": "#1d4ed8",
+  "basic-collection": "#16a34a",
+  "basic-aging": "#dc2626",
+  "basic-operational": "#d97706",
   "dso-decomposition": "#3b82f6",
   "organization-health": "#7c3aed",
   "predictive": "#dc2626",
@@ -80,7 +92,143 @@ export const CATEGORY_COLORS: Record<KPICategory, string> = {
 // FULL KPI REGISTRY — 25 Advanced KPIs
 // ============================================================
 
+// Helper: build a minimal Basic KPI registry entry. Basic dashboard
+// sections render their own visualizations from useKPIData() — these
+// entries exist so the Admin panel can toggle individual Basic tiles.
+function basicEntry(
+  id: string,
+  shortName: string,
+  name: string,
+  category: KPICategory,
+  businessPurpose: string,
+  formula: string,
+): KPIDefinition {
+  return {
+    id,
+    name,
+    shortName,
+    category,
+    categoryLabel: CATEGORY_LABELS[category],
+    dashboardSection: "basic",
+    businessPurpose,
+    formula,
+    visualization: "kpi-card",
+    refreshFrequency: "Live",
+    trend: "stable",
+    primaryValue: "—",
+    primaryUnit: "",
+    insight: businessPurpose,
+    details: {},
+    enabled: true,
+  };
+}
+
 export const KPI_REGISTRY: KPIDefinition[] = [
+  // ============================================================
+  // BASIC DASHBOARD KPIs — per-tile admin toggles
+  // Visualization & values come from useKPIData() in each section;
+  // these entries only drive admin visibility.
+  // ============================================================
+  basicEntry(
+    "basic-dso", "DSO", "Days Sales Outstanding",
+    "basic-executive",
+    "Average days to collect payment after a sale. Lower = faster cash conversion. Benchmark: < 45 days.",
+    "DSO = (Open AR / Total Credit Sales) × Days in Period",
+  ),
+  basicEntry(
+    "basic-overdue-ratio", "Overdue Ratio", "Overdue AR Ratio",
+    "basic-executive",
+    "Share of AR past due. > 30% signals systemic collection failure. Target: < 20%.",
+    "Overdue Ratio = (Overdue AR / Total AR) × 100",
+  ),
+  basicEntry(
+    "basic-revenue-at-risk", "Revenue at Risk", "Revenue at Risk",
+    "basic-executive",
+    "Share of revenue tied up in overdue invoices with longer credit terms — direct working-capital exposure.",
+    "Revenue at Risk = (Overdue AR for 45–60 day terms / Total Open AR) × 100",
+  ),
+  basicEntry(
+    "basic-receivables-turnover", "Receivables Turnover", "Receivables Turnover Ratio",
+    "basic-executive",
+    "How many times AR is collected per period. Higher = more efficient. Benchmark: 5–8×.",
+    "Turnover = Net Credit Sales / Average AR",
+  ),
+  basicEntry(
+    "basic-net-ar-movement", "Net AR Movement", "Net AR Movement Waterfall",
+    "basic-executive",
+    "Monthly change in total receivables. Persistently positive = cash trap.",
+    "Net Movement = AR End − AR Start of Period",
+  ),
+  basicEntry(
+    "basic-cei", "CEI", "Collection Effectiveness Index",
+    "basic-collection",
+    "How well the team converts outstanding AR into cash. > 90% strong, < 80% needs restructuring.",
+    "CEI = (Beg AR + Sales − End Total AR) / (Beg AR + Sales − End Current AR) × 100",
+  ),
+  basicEntry(
+    "basic-on-time-payment", "On-Time Payment Rate", "On-Time Payment Rate (Weekly)",
+    "basic-collection",
+    "Weekly compliance with payment terms. Target > 85%.",
+    "On-Time Rate = (Invoices Paid Within Terms / Total Invoices Due) × 100",
+  ),
+  basicEntry(
+    "basic-collection-effectiveness-weekly", "Collection Effectiveness (Weekly)", "Weekly Collection Effectiveness",
+    "basic-collection",
+    "Active collection performance week-by-week. Target > 70%.",
+    "Weekly Effectiveness = (Amount Collected / Amount Due) × 100",
+  ),
+  basicEntry(
+    "basic-credit-period-effectiveness", "Credit Period Effectiveness", "Credit Period Effectiveness",
+    "basic-collection",
+    "Segments collection performance by credit-term length. Reveals which terms yield best conversion.",
+    "Per-Term Effectiveness = (Collected Within Term / Due Within Term) × 100",
+  ),
+  basicEntry(
+    "basic-aging-buckets", "Aging Buckets", "Aging Bucket Distribution",
+    "basic-aging",
+    "Receivable concentration across time-since-due bands. Inverted pyramid = high default risk.",
+    "Aging % = (AR in Bucket / Total Open AR) × 100",
+  ),
+  basicEntry(
+    "basic-aging-donut", "Aging Composition", "Aging Composition (Donut)",
+    "basic-aging",
+    "Donut split of AR across aging buckets — complements the bar distribution.",
+    "Aging Composition = AR per Bucket as % of Total Open AR",
+  ),
+  basicEntry(
+    "basic-overdue-density", "Overdue Density", "Overdue Invoice Density",
+    "basic-aging",
+    "Compares overdue invoices by count vs value. Large gap → many small invoices or few large ones.",
+    "Count Density = Overdue Count / Total · Value Density = Overdue Value / Total",
+  ),
+  basicEntry(
+    "basic-peak-exposure", "Peak Overdue Exposure", "Peak Overdue Exposure",
+    "basic-aging",
+    "The single largest overdue receivable — highest concentration risk for bad-debt impact.",
+    "Peak Exposure = MAX(Individual Overdue Invoice Amounts)",
+  ),
+  basicEntry(
+    "basic-invoice-to-cash", "Invoice-to-Cash", "Invoice-to-Cash (P50/P90)",
+    "basic-operational",
+    "Elapsed days from issuance to cash. Wide P50–P90 gap = bimodal distribution (fast payers + stuck).",
+    "I2C = Percentile of (Clearing Date − Document Date) across cleared invoices",
+  ),
+  basicEntry(
+    "basic-credit-period-utilization", "Credit Period Utilization", "Credit Period Utilization",
+    "basic-operational",
+    "How much of the credit window customers use. > 100% means paying beyond terms.",
+    "CPU = (Actual Pay Days / Allowed Credit Period) × 100",
+  ),
+  basicEntry(
+    "basic-days-to-clear-backlog", "Days to Clear Backlog", "Days to Clear Backlog (Weekly)",
+    "basic-operational",
+    "Time to clear current overdue backlog at present pace. Target < 3 days.",
+    "Backlog Days = Overdue AR Balance / Avg Daily Collection Rate",
+  ),
+
+  // ============================================================
+  // ADVANCED KPIs
+  // ============================================================
   // ---- DSO DECOMPOSITION ----
   {
     id: "dso-bridge",

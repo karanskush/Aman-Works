@@ -11,6 +11,7 @@ import {
   netARMovementInsight,
 } from "@/lib/data";
 import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
+import { useDashboard } from "@/context/dashboard-context";
 import { formatCurrency } from "@/lib/utils";
 import { BarChart3, AlertTriangle } from "lucide-react";
 import {
@@ -75,10 +76,91 @@ function WaterfallChart() {
   );
 }
 
+function isOn(map: Record<string, boolean>, id: string): boolean {
+  return map[id] !== false;
+}
+
 export function ExecutiveKPIs() {
   const kpiData = useKPIData();
   const quarterLabel = useQuarterLabel();
+  const { kpiEnabled } = useDashboard();
   const { executive } = kpiData;
+
+  const tiles = [
+    isOn(kpiEnabled, "basic-dso") && (
+      <KPICard
+        key="dso"
+        title="Days Sales Outstanding"
+        value={executive.dso.overall}
+        suffix="days"
+        valueLabel={quarterLabel}
+        insight={dsoInsight}
+        glowClass="glow-amber"
+      >
+        <MiniSparkline data={executive.dso.monthly} color="#d97706" />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-overdue-ratio") && (
+      <KPICard
+        key="overdue-ratio"
+        title="Overdue Ratio"
+        value={executive.overdueRatio.overall}
+        suffix="%"
+        valueLabel={quarterLabel}
+        insight={overdueRatioInsight}
+        glowClass="glow-red"
+      >
+        <MiniSparkline data={executive.overdueRatio.monthly} color="#dc2626" />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-revenue-at-risk") && (
+      <KPICard
+        key="revenue-at-risk"
+        title="Revenue at Risk"
+        value={executive.revenueAtRisk.value}
+        suffix="%"
+        insight={revenueAtRiskInsight}
+        glowClass="glow-red"
+      >
+        <div className="flex items-center gap-2 mt-2">
+          <AlertTriangle className="w-4 h-4 text-accent-red pulse-alert" />
+          <span className="text-xs text-accent-red">of open AR at risk</span>
+        </div>
+        <div className="mt-3 h-2 rounded-full bg-border overflow-hidden">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-accent-red to-accent-amber transition-all duration-1000"
+            style={{ width: `${Math.min(executive.revenueAtRisk.value, 100)}%` }}
+          />
+        </div>
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-receivables-turnover") && (
+      <KPICard
+        key="receivables-turnover"
+        title="Receivables Turnover Ratio"
+        value={executive.receivablesTurnover.overall}
+        suffix="x"
+        valueLabel={quarterLabel}
+        insight={receivablesTurnoverInsight}
+      >
+        <MiniSparkline data={executive.receivablesTurnover.monthly} color="#dc2626" />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-net-ar-movement") && (
+      <KPICard
+        key="net-ar-movement"
+        title="Net AR Movement (Waterfall)"
+        value=""
+        insight={netARMovementInsight}
+        compact
+        className="md:col-span-2"
+      >
+        <WaterfallChart />
+      </KPICard>
+    ),
+  ].filter(Boolean);
+
+  if (tiles.length === 0) return null;
 
   return (
     <section>
@@ -87,73 +169,11 @@ export function ExecutiveKPIs() {
         title="Executive KPIs"
         subtitle="C-suite visibility into receivables health"
       />
-
-      {/* Row 1: DSO, Overdue Ratio, Revenue at Risk */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <KPICard
-          title="Days Sales Outstanding"
-          value={executive.dso.overall}
-          suffix="days"
-          valueLabel={quarterLabel}
-          insight={dsoInsight}
-          glowClass="glow-amber"
-        >
-          <MiniSparkline data={executive.dso.monthly} color="#d97706" />
-        </KPICard>
-
-        <KPICard
-          title="Overdue Ratio"
-          value={executive.overdueRatio.overall}
-          suffix="%"
-          valueLabel={quarterLabel}
-          insight={overdueRatioInsight}
-          glowClass="glow-red"
-        >
-          <MiniSparkline data={executive.overdueRatio.monthly} color="#dc2626" />
-        </KPICard>
-
-        <KPICard
-          title="Revenue at Risk"
-          value={executive.revenueAtRisk.value}
-          suffix="%"
-          insight={revenueAtRiskInsight}
-          glowClass="glow-red"
-        >
-          <div className="flex items-center gap-2 mt-2">
-            <AlertTriangle className="w-4 h-4 text-accent-red pulse-alert" />
-            <span className="text-xs text-accent-red">of open AR at risk</span>
-          </div>
-          <div className="mt-3 h-2 rounded-full bg-border overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-accent-red to-accent-amber transition-all duration-1000"
-              style={{ width: `${Math.min(executive.revenueAtRisk.value, 100)}%` }}
-            />
-          </div>
-        </KPICard>
-      </div>
-
-      {/* Row 2: Receivables Turnover + Net AR Movement */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <KPICard
-          title="Receivables Turnover Ratio"
-          value={executive.receivablesTurnover.overall}
-          suffix="x"
-          valueLabel={quarterLabel}
-          insight={receivablesTurnoverInsight}
-          className="md:col-span-2"
-        >
-          <MiniSparkline data={executive.receivablesTurnover.monthly} color="#dc2626" />
-        </KPICard>
-
-        <KPICard
-          title="Net AR Movement (Waterfall)"
-          value=""
-          insight={netARMovementInsight}
-          compact
-          className="md:col-span-3"
-        >
-          <WaterfallChart />
-        </KPICard>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
+      >
+        {tiles}
       </div>
     </section>
   );

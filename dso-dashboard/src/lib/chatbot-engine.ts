@@ -7,8 +7,9 @@
 import { COMPUTED_KPI_DATA } from "./computed-kpis";
 import { formatCurrency } from "./utils";
 
-// Use "All" quarter as the default for chatbot responses (full year view)
-const _all = COMPUTED_KPI_DATA["All"];
+// Use FY2026 "All" as the default slice for chatbot responses (full year view).
+// The chatbot remains FY-agnostic — for filter-aware Q&A the dashboard itself is authoritative.
+const _all = COMPUTED_KPI_DATA[2026]["All"];
 
 // Compatibility layer — maps computed data to the shape the chatbot expects
 const dsoData = { overall: _all.executive.dso.overall, monthly: _all.executive.dso.monthly };

@@ -1,25 +1,27 @@
 "use client";
 
 import { useDashboard } from "@/context/dashboard-context";
-import { getEnabledKPIs, CATEGORY_COLORS, type KPIDefinition } from "@/lib/kpi-registry";
+import { getEnabledKPIs } from "@/lib/kpi-registry";
+import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import {
   Brain,
   AlertTriangle,
   TrendingDown,
-  TrendingUp,
   Shield,
   Zap,
   DollarSign,
   Target,
   ArrowRight,
   Clock,
-  Users,
   BarChart3,
   Lightbulb,
-  ChevronRight,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
 } from "lucide-react";
+import type { ReactNode } from "react";
 import {
   RadarChart,
   PolarGrid,
@@ -35,226 +37,41 @@ import {
   Cell,
   LabelList,
 } from "recharts";
+import type { AIInsightCard } from "@/lib/computed-kpis";
 
 // ============================================================
-// AI INSIGHTS ENGINE — Rule-based Statistical Analysis
-// No external AI APIs. Pure computation + narrative generation.
+// AI INSIGHTS — entirely rendered from useKPIData().aiInsights.
+// Values, narratives, observations, risks/opportunities, and
+// actions all change with the active (FY, quarter) filter.
+// Generation logic lives in prisma/compute-dashboard-data.ts.
+// No external/AI APIs.
 // ============================================================
 
-interface InsightCard {
-  id: string;
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  iconColor: string;
-  bgColor: string;
-  borderColor: string;
-  severity: "critical" | "warning" | "info" | "positive";
-  headline: string;
-  narrative: string;
-  metrics: { label: string; value: string; color?: string }[];
-  actions?: string[];
+function renderCardIcon(iconKey: string, className: string): ReactNode {
+  switch (iconKey) {
+    case "summary": return <BarChart3 className={className} />;
+    case "drivers": return <TrendingDown className={className} />;
+    case "risk": return <AlertTriangle className={className} />;
+    case "aging": return <Clock className={className} />;
+    case "collections": return <Zap className={className} />;
+    case "forecast": return <Target className={className} />;
+    case "working-capital": return <DollarSign className={className} />;
+    case "benchmark": return <Shield className={className} />;
+    default: return <Sparkles className={className} />;
+  }
 }
 
-function generateInsights(): InsightCard[] {
-  return [
-    {
-      id: "exec-summary",
-      title: "Executive Summary",
-      icon: BarChart3,
-      iconColor: "text-accent-blue",
-      bgColor: "bg-accent-blue/5",
-      borderColor: "border-accent-blue/20",
-      severity: "warning",
-      headline: "AR Health Grade D (49/100) — Structural issues require immediate CFO attention",
-      narrative:
-        "The receivables portfolio is under significant stress. DSO at 96.7 days is nearly double the 50-day benchmark. While the collections team shows strong chase effectiveness (CEI 97%), the fundamental problem is 56% of AR is overdue with ₹19.5B trapped beyond credit terms. The paradox: the team converts what it chases, but too much AR sits un-chased in the 60+ day bucket.",
-      metrics: [
-        { label: "Health Score", value: "49/100", color: "text-accent-amber" },
-        { label: "DSO", value: "96.7 days", color: "text-accent-red" },
-        { label: "CEI", value: "97%", color: "text-accent-green" },
-        { label: "Cash Trapped", value: "₹19.5B", color: "text-accent-red" },
-      ],
-      actions: [
-        "Immediate: Close 12.5-day dunning gap to 1-3 days",
-        "30-day: Launch STANDARD/SMB collection blitz",
-        "90-day: Implement automated Level-1 dunning",
-      ],
-    },
-    {
-      id: "dso-drivers",
-      title: "DSO Driver Analysis",
-      icon: Target,
-      iconColor: "text-accent-purple",
-      bgColor: "bg-accent-purple/5",
-      borderColor: "border-accent-purple/20",
-      severity: "critical",
-      headline: "DSO 96.7d driven by SMB/STANDARD segments and 12.5-day dunning gap",
-      narrative:
-        "The DSO bridge reveals STANDARD and SMB segments push DSO UP by 5.3 days combined (27% of sales). But the bigger driver is the process gap: first dunning happens 12.5 days after an invoice goes overdue. That's 12.5 days of free float given to every delinquent customer. The terms mix is NOT the problem — customers pay 6 days before terms on average. The issue is structural: 42.3% of AR stuck in 60+ day overdue with no active collection.",
-      metrics: [
-        { label: "Blended DSO", value: "96.7 days", color: "text-accent-red" },
-        { label: "Best Possible", value: "41.5 days", color: "text-accent-green" },
-        { label: "Dunning Gap", value: "12.5 days", color: "text-accent-amber" },
-        { label: "Terms Drag", value: "-6.0 days", color: "text-accent-green" },
-      ],
-      actions: [
-        "Automate day-1 dunning for all overdue invoices",
-        "Create STANDARD/SMB dedicated collection team",
-        "Reduce dunning gap from 12.5 to 3 days = ~10 day DSO improvement",
-      ],
-    },
-    {
-      id: "risk-alerts",
-      title: "Risk & Anomaly Detection",
-      icon: AlertTriangle,
-      iconColor: "text-accent-red",
-      bgColor: "bg-accent-red/5",
-      borderColor: "border-accent-red/20",
-      severity: "critical",
-      headline: "88 customers deteriorating + 349 breaching credit limits",
-      narrative:
-        "Payment Behavior Deterioration Index flags 88 customers sliding toward default. Top alert: Hindalco Group surged from 4 to 23 day average payments — a 525% deterioration. Simultaneously, 349 of 350 customers exceed 100% credit limit utilization. The 16.9% dunning block rate (above 10-15% industry avg) suggests either systemic invoicing errors or team avoidance of difficult conversations.",
-      metrics: [
-        { label: "PBDI Alerts", value: "88 customers", color: "text-accent-red" },
-        { label: "Credit Breaches", value: "349 customers", color: "text-accent-red" },
-        { label: "Block Rate", value: "16.9%", color: "text-accent-amber" },
-        { label: "Disputed AR", value: "₹3.2B", color: "text-accent-amber" },
-      ],
-      actions: [
-        "CFO-to-CFO escalation for top 5 PBDI customers",
-        "Review and recalibrate credit limits across portfolio",
-        "Audit dunning block reasons — separate disputes from avoidance",
-      ],
-    },
-    {
-      id: "aging-movement",
-      title: "Aging Movement & Migration",
-      icon: Clock,
-      iconColor: "text-accent-amber",
-      bgColor: "bg-accent-amber/5",
-      borderColor: "border-accent-amber/20",
-      severity: "warning",
-      headline: "Inverted aging pyramid — 65% of AR in 45-60 day buckets",
-      narrative:
-        "Only 35% of AR sits in the healthy 0-30 day range. The 45-day bucket (34%) is the largest concentration — these invoices are transitioning from 'late' to 'at risk.' Combined with 91.7% overdue by count (but 73.2% by value), the problem is a high volume of small invoices clogging the pipeline. Large accounts (26.8% of value) pay reliably, but the long tail drags all metrics down.",
-      metrics: [
-        { label: "0-30 Days", value: "35%", color: "text-accent-green" },
-        { label: "45-60 Days", value: "65%", color: "text-accent-red" },
-        { label: "Overdue by Count", value: "91.7%", color: "text-accent-red" },
-        { label: "Overdue by Value", value: "73.2%", color: "text-accent-amber" },
-      ],
-      actions: [
-        "Automate collections for invoices below ₹1L threshold",
-        "Concentrate human collectors on large-value overdue",
-        "Move 10% from 45→30 bucket to improve DSO by ~4 days",
-      ],
-    },
-    {
-      id: "collections-deep-dive",
-      title: "Collections Efficiency Analysis",
-      icon: Users,
-      iconColor: "text-accent-green",
-      bgColor: "bg-accent-green/5",
-      borderColor: "border-accent-green/20",
-      severity: "warning",
-      headline: "Team is reactive, not proactive — 45.3% avg effectiveness vs 70% target",
-      narrative:
-        "The critical paradox: On-Time Payment Rate hit 100% in W12-13, but weekly collection effectiveness was only 54% and 38%. This means payments came in passively (customer-initiated), not from active dunning effort. The team converts well when they chase (CEI 97%), but they aren't chasing enough volume. Only 4 of 12 weeks exceeded the 70% target. W11's crash to 19% likely indicates staffing or process gaps.",
-      metrics: [
-        { label: "Avg Effectiveness", value: "45.3%", color: "text-accent-amber" },
-        { label: "Target", value: "70%", color: "text-accent-green" },
-        { label: "CEI", value: "97%", color: "text-accent-green" },
-        { label: "Weeks Above Target", value: "2/12", color: "text-accent-red" },
-      ],
-      actions: [
-        "Set weekly collection targets with accountability",
-        "Implement daily dunning dashboards per collector",
-        "Hire/reallocate to close W11-type staffing gaps",
-      ],
-    },
-    {
-      id: "cash-forecast",
-      title: "Cash Flow Forecast & Projections",
-      icon: TrendingUp,
-      iconColor: "text-accent-cyan",
-      bgColor: "bg-accent-cyan/5",
-      borderColor: "border-accent-cyan/20",
-      severity: "info",
-      headline: "₹8.2B expected in next 30 days — but forecast accuracy is only 58%",
-      narrative:
-        "Based on historical payment curves by segment, ₹8.2B is expected to flow in over the next 30 days. STRATEGIC segment is most predictable (78% confidence), while SMB is least (41%). The 42.1% MAPE (Mean Absolute Percentage Error) means treasury forecasts are off by nearly half — systematic under-forecasting bias detected. Cash Conversion Efficiency at 68.4% means only ₹0.68 collected per ₹1 billed.",
-      metrics: [
-        { label: "30d Forecast", value: "₹8.2B", color: "text-accent-blue" },
-        { label: "Confidence", value: "62%", color: "text-accent-amber" },
-        { label: "MAPE", value: "42.1%", color: "text-accent-red" },
-        { label: "Cash Conversion", value: "68.4%", color: "text-accent-amber" },
-      ],
-      actions: [
-        "Recalibrate forecast models using segment-level curves",
-        "Flag STRATEGIC collections as most reliable for treasury planning",
-        "Increase forecast frequency from monthly to weekly",
-      ],
-    },
-    {
-      id: "working-capital",
-      title: "Working Capital Opportunities",
-      icon: DollarSign,
-      iconColor: "text-accent-teal",
-      bgColor: "bg-accent-teal/5",
-      borderColor: "border-accent-teal/20",
-      severity: "info",
-      headline: "₹12.4B working capital releasable through 5 targeted initiatives",
-      narrative:
-        "At 10% cost of capital, each DSO day costs ₹9.4M — total carrying cost is ₹1.27B/year. Five quantified initiatives can release ₹12.4B: closing the dunning gap (₹3.5B), STANDARD/SMB blitz (₹2.8B), discount awareness (₹2.1B), dispute fast-track (₹2.0B), and posting lag elimination (₹2.0B). The 6.3% early payment discount capture rate represents ₹1.63B in missed savings.",
-      metrics: [
-        { label: "Releasable Capital", value: "₹12.4B", color: "text-accent-teal" },
-        { label: "Daily Carrying Cost", value: "₹9.4M", color: "text-accent-red" },
-        { label: "Annual Cost", value: "₹1.27B", color: "text-accent-red" },
-        { label: "Missed Discounts", value: "₹1.63B", color: "text-accent-amber" },
-      ],
-      actions: [
-        "Priority 1: Close dunning gap (₹3.5B impact, 30-day payback)",
-        "Priority 2: STANDARD/SMB collection blitz (₹2.8B)",
-        "Priority 3: Discount program awareness (₹2.1B)",
-        "Priority 4: Dispute resolution fast-track (₹2.0B)",
-        "Priority 5: Same-day invoice posting (₹2.0B)",
-      ],
-    },
-    {
-      id: "benchmarking",
-      title: "Internal Benchmarking Insights",
-      icon: Zap,
-      iconColor: "text-[#6366f1]",
-      bgColor: "bg-[#6366f1]/5",
-      borderColor: "border-[#6366f1]/20",
-      severity: "info",
-      headline: "Manufacturing Division leads; Services Division needs targeted intervention",
-      narrative:
-        "Manufacturing (2000) achieves the best DSO at 86.6 days — 20 days better than Services (3000) at 106.3 days. By segment, STRATEGIC is 6.8x more capital-efficient than SMB (efficiency score 630 vs 93), driven primarily by SMB's 83.5% overdue ratio. The consistency score of 48/100 means payment behavior is generally unpredictable — the most predictable customers are ironically late but consistent.",
-      metrics: [
-        { label: "Best Unit", value: "Mfg 86.6d", color: "text-accent-green" },
-        { label: "Worst Unit", value: "Svc 106.3d", color: "text-accent-red" },
-        { label: "STRATEGIC Score", value: "630", color: "text-accent-green" },
-        { label: "SMB Score", value: "93", color: "text-accent-red" },
-      ],
-      actions: [
-        "Replicate Manufacturing Division's processes across Services",
-        "SMB segment: automate collections or tighten credit terms",
-        "Use consistency scores for cash flow forecasting",
-      ],
-    },
-  ];
+function severityStyles(severity: AIInsightCard["severity"]) {
+  return {
+    critical: { label: "Critical", bg: "bg-accent-red/10", text: "text-accent-red", border: "border-accent-red/20", accent: "text-accent-red" },
+    warning: { label: "Warning", bg: "bg-accent-amber/10", text: "text-accent-amber", border: "border-accent-amber/20", accent: "text-accent-amber" },
+    info: { label: "Insight", bg: "bg-accent-blue/10", text: "text-accent-blue", border: "border-accent-blue/20", accent: "text-accent-blue" },
+    positive: { label: "Positive", bg: "bg-accent-green/10", text: "text-accent-green", border: "border-accent-green/20", accent: "text-accent-green" },
+  }[severity];
 }
 
-// ---- Severity Badge ----
-function SeverityBadge({ severity }: { severity: InsightCard["severity"] }) {
-  const config = {
-    critical: { label: "Critical", bg: "bg-accent-red/10", text: "text-accent-red", border: "border-accent-red/20" },
-    warning: { label: "Warning", bg: "bg-accent-amber/10", text: "text-accent-amber", border: "border-accent-amber/20" },
-    info: { label: "Insight", bg: "bg-accent-blue/10", text: "text-accent-blue", border: "border-accent-blue/20" },
-    positive: { label: "Positive", bg: "bg-accent-green/10", text: "text-accent-green", border: "border-accent-green/20" },
-  };
-  const c = config[severity];
+function SeverityBadge({ severity }: { severity: AIInsightCard["severity"] }) {
+  const c = severityStyles(severity);
   return (
     <span className={cn("text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border", c.bg, c.text, c.border)}>
       {c.label}
@@ -262,12 +79,11 @@ function SeverityBadge({ severity }: { severity: InsightCard["severity"] }) {
   );
 }
 
-// ---- Health Score Gauge ----
-function HealthGauge() {
-  const score = 49;
+function HealthGauge({ score, grade }: { score: number; grade: string }) {
   const circumference = 2 * Math.PI * 54;
-  const progress = (score / 100) * circumference;
+  const progress = (Math.max(0, Math.min(100, score)) / 100) * circumference;
   const gradeColor = score >= 80 ? "#16a34a" : score >= 65 ? "#3b82f6" : score >= 50 ? "#d97706" : "#dc2626";
+  const label = grade === "A" ? "Excellent" : grade === "B" ? "Solid" : grade === "C" ? "Mixed" : grade === "D" ? "Needs Attention" : "Critical";
 
   return (
     <div className="flex flex-col items-center">
@@ -294,27 +110,18 @@ function HealthGauge() {
         </div>
       </div>
       <div className="mt-2 px-3 py-1 rounded-full text-xs font-bold" style={{ color: gradeColor, backgroundColor: gradeColor + "15" }}>
-        Grade D — Needs Attention
+        Grade {grade} — {label}
       </div>
     </div>
   );
 }
 
-// ---- Health Radar ----
-function HealthRadarChart() {
-  const data = [
-    { dimension: "DSO", value: 0 },
-    { dimension: "CEI", value: 96 },
-    { dimension: "Overdue", value: 44 },
-    { dimension: "Aging", value: 44 },
-    { dimension: "Concentration", value: 76 },
-    { dimension: "Trend", value: 37 },
-  ];
-
+function HealthRadarChart({ data }: { data: { dim: string; value: number }[] }) {
+  const chartData = data.map(d => ({ dimension: d.dim, value: d.value }));
   return (
     <div className="w-full h-[200px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
+        <RadarChart data={chartData} cx="50%" cy="50%" outerRadius="70%">
           <PolarGrid stroke="#e2e6ed" />
           <PolarAngleAxis dataKey="dimension" tick={{ fill: "#6b7280", fontSize: 10 }} />
           <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
@@ -325,15 +132,7 @@ function HealthRadarChart() {
   );
 }
 
-// ---- Segment Efficiency Comparison ----
-function SegmentComparison() {
-  const data = [
-    { name: "STRATEGIC", score: 630, dso: 77.9 },
-    { name: "KEY", score: 350, dso: 99.5 },
-    { name: "STANDARD", score: 163, dso: 114.5 },
-    { name: "SMB", score: 93, dso: 119.9 },
-  ];
-
+function SegmentComparison({ data }: { data: { name: string; score: number; dso: number }[] }) {
   return (
     <div className="w-full h-[160px]">
       <ResponsiveContainer width="100%" height="100%">
@@ -353,25 +152,25 @@ function SegmentComparison() {
   );
 }
 
-// ---- Opportunity Waterfall ----
-function OpportunityWaterfall() {
-  const data = [
-    { name: "Dunning Gap", value: 3.5 },
-    { name: "SMB/STD Blitz", value: 2.8 },
-    { name: "Discount Prog", value: 2.1 },
-    { name: "Dispute Track", value: 2.0 },
-    { name: "Posting Lag", value: 2.0 },
-  ];
+function fmtCrore(value: number): string {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) return `₹${(value / 1_000_000_000).toFixed(1)}B`;
+  if (abs >= 10_000_000) return `₹${(value / 10_000_000).toFixed(1)}Cr`;
+  if (abs >= 100_000) return `₹${(value / 100_000).toFixed(1)}L`;
+  return `₹${Math.round(value).toLocaleString("en-IN")}`;
+}
 
+function OpportunityWaterfall({ data }: { data: { name: string; value: number }[] }) {
+  const sorted = [...data].sort((a, b) => b.value - a.value);
   return (
-    <div className="w-full h-[160px]">
+    <div className="w-full h-[180px]">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 20, right: 10, bottom: 0, left: 10 }} layout="vertical">
-          <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 10 }} />
-          <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 10 }} width={90} />
-          <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 11 }} formatter={(v) => [`₹${v}B`, "Impact"]} />
+        <BarChart data={sorted} margin={{ top: 12, right: 60, bottom: 0, left: 10 }} layout="vertical">
+          <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 10 }} tickFormatter={fmtCrore} />
+          <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 10 }} width={120} />
+          <Tooltip contentStyle={{ background: "#fff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 11 }} formatter={(v) => [fmtCrore(Number(v)), "Impact"]} />
           <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={20} fill="#0d9488" fillOpacity={0.8}>
-            <LabelList dataKey="value" position="right" fill="#1a1d23" fontSize={10} fontWeight={600} formatter={(v) => `₹${v}B`} />
+            <LabelList dataKey="value" position="right" fill="#1a1d23" fontSize={10} fontWeight={600} formatter={(v) => fmtCrore(Number(v ?? 0))} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -379,17 +178,17 @@ function OpportunityWaterfall() {
   );
 }
 
-// ---- Insight Card Component ----
-function InsightCardComponent({ card }: { card: InsightCard }) {
-  const Icon = card.icon;
+function InsightCardComponent({ card }: { card: AIInsightCard }) {
+  const sev = severityStyles(card.severity);
+  const risks = card.risksAndOpportunities.filter(r => r.type === "risk");
+  const opps = card.risksAndOpportunities.filter(r => r.type === "opportunity");
 
   return (
-    <div className={cn("glass-card p-5 space-y-4 border-l-4", card.borderColor)} style={{ borderLeftColor: card.iconColor.includes("[") ? card.iconColor.replace("text-", "").replace("[", "").replace("]", "") : undefined }}>
-      {/* Header */}
+    <div className={cn("glass-card p-5 space-y-4 border-l-4", sev.border)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className={cn("p-2 rounded-xl", card.bgColor)}>
-            <Icon className={cn("w-5 h-5", card.iconColor)} />
+          <div className={cn("p-2 rounded-xl", sev.bg)}>
+            {renderCardIcon(card.iconKey, cn("w-5 h-5", sev.accent))}
           </div>
           <div>
             <h3 className="text-sm font-semibold">{card.title}</h3>
@@ -398,10 +197,8 @@ function InsightCardComponent({ card }: { card: InsightCard }) {
         </div>
       </div>
 
-      {/* Headline */}
       <p className="text-sm font-medium text-foreground leading-snug">{card.headline}</p>
 
-      {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {card.metrics.map((m) => (
           <div key={m.label} className="p-2 rounded-lg bg-card-hover text-center">
@@ -411,13 +208,61 @@ function InsightCardComponent({ card }: { card: InsightCard }) {
         ))}
       </div>
 
-      {/* Narrative */}
       <div className="p-3 rounded-lg bg-accent-purple/5 border border-accent-purple/10">
         <p className="text-xs text-foreground/80 leading-relaxed">{card.narrative}</p>
       </div>
 
-      {/* Actions */}
-      {card.actions && card.actions.length > 0 && (
+      {card.keyObservations.length > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-accent-blue" />
+            <span className="text-[10px] font-bold text-accent-blue uppercase tracking-wider">
+              Key Observations
+            </span>
+          </div>
+          <ul className="space-y-1">
+            {card.keyObservations.map((obs, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-foreground/75">
+                <span className="text-accent-blue/60 mt-1 shrink-0">•</span>
+                <span>{obs}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {(risks.length > 0 || opps.length > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {risks.length > 0 && (
+            <div className="p-2.5 rounded-lg bg-accent-red/5 border border-accent-red/10">
+              <div className="flex items-center gap-1.5 mb-1">
+                <AlertCircle className="w-3.5 h-3.5 text-accent-red" />
+                <span className="text-[10px] font-bold text-accent-red uppercase tracking-wider">Risks</span>
+              </div>
+              <ul className="space-y-1">
+                {risks.map((r, i) => (
+                  <li key={i} className="text-[11px] text-foreground/75 leading-relaxed">{r.text}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {opps.length > 0 && (
+            <div className="p-2.5 rounded-lg bg-accent-green/5 border border-accent-green/10">
+              <div className="flex items-center gap-1.5 mb-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-accent-green" />
+                <span className="text-[10px] font-bold text-accent-green uppercase tracking-wider">Opportunities</span>
+              </div>
+              <ul className="space-y-1">
+                {opps.map((o, i) => (
+                  <li key={i} className="text-[11px] text-foreground/75 leading-relaxed">{o.text}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {card.actions.length > 0 && (
         <div className="space-y-1.5">
           <div className="flex items-center gap-1.5">
             <Lightbulb className="w-3.5 h-3.5 text-accent-amber" />
@@ -437,84 +282,89 @@ function InsightCardComponent({ card }: { card: InsightCard }) {
   );
 }
 
-// ---- Main AI Insights Dashboard ----
+// Map insight card IDs to the KPI registry IDs that toggle their visibility.
+const CARD_TO_KPI: Record<string, string> = {
+  "exec-summary": "executive-summary",
+  "risk-alerts": "risk-heatmap",
+  "cash-forecast": "cash-forecast",
+  "working-capital": "working-capital-opportunity",
+  "collections-deep-dive": "collections-efficiency-trend",
+};
+
 export function AIInsightsDashboard() {
   const { kpiEnabled } = useDashboard();
   const enabledKPIs = getEnabledKPIs("ai-insights", kpiEnabled);
-  const insights = generateInsights();
+  const enabledIds = new Set(enabledKPIs.map(k => k.id));
+  const slice = useKPIData();
+  const ai = slice.aiInsights;
+  const quarterLabel = useQuarterLabel();
 
-  // Filter insights based on enabled AI Insights KPIs
-  const enabledIds = new Set(enabledKPIs.map((k) => k.id));
-  const visibleInsights = insights.filter((card) => {
-    // Map insight cards to KPI IDs
-    const cardToKPI: Record<string, string> = {
-      "exec-summary": "executive-summary",
-      "risk-alerts": "risk-heatmap",
-      "cash-forecast": "cash-forecast",
-      "working-capital": "working-capital-opportunity",
-      "collections-deep-dive": "collections-efficiency-trend",
-    };
-    const kpiId = cardToKPI[card.id];
-    // Show if no KPI mapping (always show) or if mapped KPI is enabled
+  const visibleCards = ai.cards.filter(card => {
+    const kpiId = CARD_TO_KPI[card.id];
     return !kpiId || enabledIds.has(kpiId);
   });
+
+  const totalUnlock = ai.opportunityWaterfall.reduce((s, o) => s + o.value, 0);
 
   return (
     <section className="space-y-6">
       <SectionHeader
         icon={Brain}
         title="AI Insights"
-        subtitle="Executive intelligence — rule-based analysis across all KPI dimensions"
+        subtitle={`Executive intelligence · ${quarterLabel}`}
         iconColor="text-accent-cyan"
       />
 
-      {/* Health Score Summary Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="glass-card p-5 flex flex-col items-center justify-center">
           <h4 className="text-sm font-medium text-muted mb-3">AR Health Score</h4>
-          <HealthGauge />
+          <HealthGauge score={ai.healthGauge.score} grade={ai.healthGauge.grade} />
         </div>
         <div className="glass-card p-5">
           <h4 className="text-sm font-medium text-muted mb-3">Health Dimensions</h4>
-          <HealthRadarChart />
+          <HealthRadarChart data={ai.healthRadar} />
           <div className="grid grid-cols-3 gap-1.5 mt-2">
-            {[
-              { label: "DSO", value: "0", color: "text-accent-red" },
-              { label: "CEI", value: "96", color: "text-accent-green" },
-              { label: "Overdue", value: "44", color: "text-accent-amber" },
-              { label: "Aging", value: "44", color: "text-accent-amber" },
-              { label: "Concentration", value: "76", color: "text-accent-green" },
-              { label: "Trend", value: "37", color: "text-accent-red" },
-            ].map((d) => (
-              <div key={d.label} className="text-center">
-                <span className="text-[9px] text-muted block">{d.label}</span>
-                <span className={cn("text-xs font-bold", d.color)}>{d.value}</span>
-              </div>
-            ))}
+            {ai.healthRadar.map((d) => {
+              const color = d.value >= 70 ? "text-accent-green" : d.value >= 50 ? "text-accent-amber" : "text-accent-red";
+              return (
+                <div key={d.dim} className="text-center">
+                  <span className="text-[9px] text-muted block">{d.dim}</span>
+                  <span className={cn("text-xs font-bold", color)}>{d.value}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="glass-card p-5">
           <h4 className="text-sm font-medium text-muted mb-3">Segment Efficiency</h4>
-          <SegmentComparison />
-          <p className="text-[10px] text-muted text-center mt-1">STRATEGIC 6.8x more efficient than SMB</p>
+          <SegmentComparison data={ai.segmentEfficiencyChart} />
+          {ai.segmentEfficiencyChart.length >= 2 ? (
+            <p className="text-[10px] text-muted text-center mt-1">
+              {(() => {
+                const sorted = [...ai.segmentEfficiencyChart].sort((a, b) => b.score - a.score);
+                const best = sorted[0];
+                const worst = sorted[sorted.length - 1];
+                const ratio = worst.score > 0 ? best.score / worst.score : 0;
+                return `${best.name} ${ratio.toFixed(1)}× more efficient than ${worst.name}`;
+              })()}
+            </p>
+          ) : null}
         </div>
       </div>
 
-      {/* Working Capital Opportunity */}
       <div className="glass-card p-5">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-semibold flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-accent-teal" />
             Working Capital Release Roadmap
           </h4>
-          <span className="text-lg font-bold text-accent-teal">₹12.4B releasable</span>
+          <span className="text-lg font-bold text-accent-teal">{fmtCrore(totalUnlock)} releasable</span>
         </div>
-        <OpportunityWaterfall />
+        <OpportunityWaterfall data={ai.opportunityWaterfall} />
       </div>
 
-      {/* Insight Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {visibleInsights.map((card) => (
+        {visibleCards.map((card) => (
           <InsightCardComponent key={card.id} card={card} />
         ))}
       </div>

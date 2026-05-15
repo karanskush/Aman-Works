@@ -1,6 +1,7 @@
 // ============================================================
-// SEED SCRIPT — Generates 25,000 realistic invoice line items
-// Deterministic (seeded PRNG), SAP-aligned, KPI-realistic
+// SEED SCRIPT — Generates ~66K realistic invoice line items
+// across 3 fiscal years (FY2024, FY2025, FY2026).
+// Deterministic (seeded PRNG per FY), SAP-aligned, KPI-realistic.
 // Run: npx tsx prisma/seed.ts
 // ============================================================
 
@@ -18,10 +19,11 @@ const dbPath = resolve(__dirname, "dev.db");
 const adapter = new PrismaLibSql({ url: `file:${dbPath}` });
 const prisma = new PrismaClient({ adapter });
 
-// ---- Seeded PRNG for reproducibility ----
+// ---- Seeded PRNG (Park-Miller). Can be re-seeded between phases. ----
 let seed = 42;
+function setSeed(s: number) { seed = s; }
 function rand(): number {
-  seed = (seed * 16807 + 0) % 2147483647;
+  seed = (seed * 16807) % 2147483647;
   return (seed - 1) / 2147483646;
 }
 function randInt(min: number, max: number): number {
@@ -40,24 +42,35 @@ function weightedPick<T>(items: T[], weights: number[]): T {
   return items[items.length - 1];
 }
 
-// ---- Constants ----
-const INVOICE_COUNT = 25000;
-const FY_START = new Date("2025-04-01");
-const FY_END = new Date("2026-03-31");
+// ---- Multi-FY configuration ----
+type FYConfig = {
+  year: 2024 | 2025 | 2026;
+  start: Date;
+  end: Date;
+  invoiceCount: number;
+  seed: number;
+  // Adjusts per-segment on-time probability — older FYs paid more reliably.
+  onTimeMultiplier: number;
+};
+
+const FY_CONFIGS: FYConfig[] = [
+  { year: 2024, start: new Date("2023-04-01"), end: new Date("2024-03-31"), invoiceCount: 22000, seed: 71,  onTimeMultiplier: 1.10 },
+  { year: 2025, start: new Date("2024-04-01"), end: new Date("2025-03-31"), invoiceCount: 22000, seed: 131, onTimeMultiplier: 0.95 },
+  { year: 2026, start: new Date("2025-04-01"), end: new Date("2026-03-31"), invoiceCount: 22000, seed: 251, onTimeMultiplier: 0.85 },
+];
+
 const SNAPSHOT_DATE = new Date("2026-03-31");
 
 const SEGMENTS = ["STRATEGIC", "KEY", "STANDARD", "SMB"] as const;
 const SEGMENT_WEIGHTS = [5, 15, 50, 30];
 const CREDIT_RATINGS = ["AAA", "AA", "A", "BBB", "BB", "B", "HIGH_RISK"] as const;
 const CREDIT_RATING_WEIGHTS = [3, 8, 15, 30, 25, 12, 7];
-const RISK_CATEGORIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 const CUSTOMER_GROUPS = ["DOMESTIC", "DOMESTIC", "DOMESTIC", "EXPORT", "INTERCO"] as const;
 const INDUSTRIES = ["MANU", "TECH", "PHRM", "AUTO", "FMCG", "CHEM", "ENER", "INFR", "RETL", "AGRI"];
 
-// On-time probability by segment
+// On-time probability by segment (base; multiplied per-FY)
 const ON_TIME_PROB: Record<string, number> = { STRATEGIC: 0.80, KEY: 0.65, STANDARD: 0.45, SMB: 0.35 };
 
-// Region weights (heavier in major business states)
 const REGION_WEIGHTS = [18, 14, 12, 10, 8, 8, 4, 5, 6, 4, 3, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
 function riskFromRating(rating: string): string {
@@ -77,14 +90,6 @@ function diffDays(a: Date, b: Date): number {
   return Math.max(0, Math.round((b.getTime() - a.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
-function isoWeek(d: Date): number {
-  const date = new Date(d.getTime());
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
-  const week1 = new Date(date.getFullYear(), 0, 4);
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
-}
-
 function fiscalPeriodFromDate(d: Date): { year: number; period: number } {
   const month = d.getMonth(); // 0-indexed
   if (month >= 3) return { year: d.getFullYear() + 1, period: month - 2 }; // Apr=1
@@ -93,7 +98,7 @@ function fiscalPeriodFromDate(d: Date): { year: number; period: number } {
 
 // ---- Main seed function ----
 async function main() {
-  console.log("🌱 Seeding DSO database...\n");
+  console.log("🌱 Seeding DSO database (3 FYs)...\n");
 
   // Clean existing data
   await prisma.dunningHistory.deleteMany();
@@ -106,69 +111,82 @@ async function main() {
   await prisma.region.deleteMany();
   await prisma.companyCode.deleteMany();
 
+  // Use a stable seed for shared dimensions.
+  setSeed(42);
+
   // ---- 1. Regions ----
   console.log("  Creating regions...");
   const regions = await Promise.all(
-    regionsData.map((r) =>
-      prisma.region.create({ data: r })
-    )
+    regionsData.map((r: typeof regionsData[number]) => prisma.region.create({ data: r }))
   );
   console.log(`  ✓ ${regions.length} regions`);
 
   // ---- 2. Payment Terms ----
   console.log("  Creating payment terms...");
   const terms = await Promise.all(
-    paymentTermsData.map((t) =>
-      prisma.paymentTerms.create({ data: t })
-    )
+    paymentTermsData.map((t: typeof paymentTermsData[number]) => prisma.paymentTerms.create({ data: t }))
   );
   console.log(`  ✓ ${terms.length} payment terms`);
 
   // ---- 3. Company Codes ----
   console.log("  Creating company codes...");
   const companies = await Promise.all(
-    companyCodesData.map((c) =>
-      prisma.companyCode.create({ data: c })
-    )
+    companyCodesData.map((c: typeof companyCodesData[number]) => prisma.companyCode.create({ data: c }))
   );
   console.log(`  ✓ ${companies.length} company codes`);
 
-  // ---- 4. Fiscal Periods ----
-  console.log("  Creating fiscal periods...");
+  // ---- 4. Fiscal Periods (3 FYs × 12 periods = 36) ----
+  console.log("  Creating fiscal periods (3 FYs)...");
   const monthNames = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
-  const periods: Awaited<ReturnType<typeof prisma.fiscalPeriod.create>>[] = [];
-  for (let p = 1; p <= 12; p++) {
-    const year = p <= 9 ? 2025 : 2026;
-    const month = ((p + 2) % 12); // Apr=3, May=4, ... Mar=2 (0-indexed)
-    const startDate = new Date(year, month, 1);
-    const endDate = new Date(year, month + 1, 0);
-    const yearSuffix = year.toString().slice(2);
-    const quarter = p <= 3 ? "Q1" : p <= 6 ? "Q2" : p <= 9 ? "Q3" : "Q4";
-    const fp = await prisma.fiscalPeriod.create({
-      data: {
-        fiscalYear: 2026,
-        fiscalPeriod: p,
-        periodLabel: `${monthNames[p - 1]}'${yearSuffix}`,
-        startDate,
-        endDate,
-        quarter,
-        isClosed: p <= 9,
-      },
-    });
-    periods.push(fp);
+  const periodsByFY: Map<number, Awaited<ReturnType<typeof prisma.fiscalPeriod.create>>[]> = new Map();
+  for (const fyCfg of FY_CONFIGS) {
+    const fy = fyCfg.year;
+    const fyPeriods: Awaited<ReturnType<typeof prisma.fiscalPeriod.create>>[] = [];
+    for (let p = 1; p <= 12; p++) {
+      const calendarYear = p <= 9 ? fy - 1 : fy;
+      const month = (p + 2) % 12; // Apr=3, May=4, ... Mar=2 (0-indexed)
+      const startDate = new Date(calendarYear, month, 1);
+      const endDate = new Date(calendarYear, month + 1, 0);
+      const yearSuffix = calendarYear.toString().slice(2);
+      const quarter = p <= 3 ? "Q1" : p <= 6 ? "Q2" : p <= 9 ? "Q3" : "Q4";
+      const fp = await prisma.fiscalPeriod.create({
+        data: {
+          fiscalYear: fy,
+          fiscalPeriod: p,
+          periodLabel: `${monthNames[p - 1]}'${yearSuffix}`,
+          startDate,
+          endDate,
+          quarter,
+          // Closed if the entire period is before the snapshot.
+          isClosed: endDate < SNAPSHOT_DATE,
+        },
+      });
+      fyPeriods.push(fp);
+    }
+    periodsByFY.set(fy, fyPeriods);
   }
-  console.log(`  ✓ ${periods.length} fiscal periods`);
+  const totalPeriods = [...periodsByFY.values()].reduce((s, arr) => s + arr.length, 0);
+  console.log(`  ✓ ${totalPeriods} fiscal periods`);
 
-  // ---- 5. Customers ----
+  // ---- 5. Customers (shared across FYs) ----
   console.log("  Creating customers...");
+  setSeed(42); // make customer generation order-independent of FY loops
   const CUSTOMER_COUNT = 350;
   const customers: Awaited<ReturnType<typeof prisma.customer.create>>[] = [];
   for (let i = 0; i < CUSTOMER_COUNT; i++) {
     const segment = weightedPick([...SEGMENTS], SEGMENT_WEIGHTS);
     const rating = weightedPick([...CREDIT_RATINGS], CREDIT_RATING_WEIGHTS);
     const region = weightedPick(regions, REGION_WEIGHTS.slice(0, regions.length));
-    const termIdx = segment === "STRATEGIC" ? randInt(3, 4) : segment === "KEY" ? randInt(2, 4) : segment === "STANDARD" ? randInt(1, 3) : randInt(0, 2);
-    const creditLimit = segment === "STRATEGIC" ? randInt(50, 200) * 1000000 : segment === "KEY" ? randInt(10, 50) * 1000000 : segment === "STANDARD" ? randInt(2, 15) * 1000000 : randInt(1, 5) * 1000000;
+    const termIdx =
+      segment === "STRATEGIC" ? randInt(3, 4) :
+      segment === "KEY" ? randInt(2, 4) :
+      segment === "STANDARD" ? randInt(1, 3) :
+      randInt(0, 2);
+    const creditLimit =
+      segment === "STRATEGIC" ? randInt(50, 200) * 1_000_000 :
+      segment === "KEY" ? randInt(10, 50) * 1_000_000 :
+      segment === "STANDARD" ? randInt(2, 15) * 1_000_000 :
+      randInt(1, 5) * 1_000_000;
 
     const cust = await prisma.customer.create({
       data: {
@@ -189,170 +207,179 @@ async function main() {
   }
   console.log(`  ✓ ${customers.length} customers`);
 
-  // ---- 6. Invoices ----
-  console.log(`  Creating ${INVOICE_COUNT} invoices...`);
-
-  // Batch insert for performance
+  // ---- 6. Invoices per FY ----
   const BATCH_SIZE = 500;
   let invoiceCount = 0;
 
-  for (let batch = 0; batch < Math.ceil(INVOICE_COUNT / BATCH_SIZE); batch++) {
-    const batchData = [];
-    const batchSize = Math.min(BATCH_SIZE, INVOICE_COUNT - batch * BATCH_SIZE);
+  for (const fyCfg of FY_CONFIGS) {
+    const fy = fyCfg.year;
+    const fyPeriods = periodsByFY.get(fy)!;
+    setSeed(fyCfg.seed);
+    console.log(`  Creating ${fyCfg.invoiceCount} invoices for FY${fy}...`);
 
-    for (let i = 0; i < batchSize; i++) {
-      const globalIdx = batch * BATCH_SIZE + i;
-      const customer = pick(customers);
-      const company = pick(companies);
+    for (let batch = 0; batch < Math.ceil(fyCfg.invoiceCount / BATCH_SIZE); batch++) {
+      const batchData: Parameters<typeof prisma.invoice.createMany>[0]["data"] = [];
+      const batchSize = Math.min(BATCH_SIZE, fyCfg.invoiceCount - batch * BATCH_SIZE);
 
-      // Random date within FY (slight Q4 spike)
-      const periodIdx = weightedPick(
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-        [7, 7, 7, 8, 8, 8, 8, 8, 9, 10, 10, 10]
-      );
-      const period = periods[periodIdx];
-      const dayInMonth = randInt(1, 28);
-      const docYear = periodIdx <= 8 ? 2025 : 2026;
-      const docMonth = (periodIdx + 3) % 12;
-      const documentDate = new Date(docYear, docMonth, dayInMonth);
+      for (let i = 0; i < batchSize; i++) {
+        const globalIdx = batch * BATCH_SIZE + i;
+        const customer = pick(customers);
+        const company = pick(companies);
 
-      // Payment terms for this invoice
-      const custTerms = terms.find(t => t.id === customer.paymentTermsId)!;
-      const invoiceTerms = rand() < 0.85 ? custTerms : pick(terms); // 15% get different terms
-      const creditPeriodDays = invoiceTerms.creditPeriodDays;
-      const baselineDate = documentDate;
-      const dueDate = addDays(baselineDate, creditPeriodDays);
+        // Random period within FY (slight Q4 spike).
+        const periodIdx = weightedPick(
+          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+          [7, 7, 7, 8, 8, 8, 8, 8, 9, 10, 10, 10]
+        );
+        const period = fyPeriods[periodIdx];
+        const dayInMonth = randInt(1, 28);
+        const docYear = periodIdx <= 8 ? fy - 1 : fy;
+        const docMonth = (periodIdx + 3) % 12;
+        const documentDate = new Date(docYear, docMonth, dayInMonth);
 
-      // Amount: log-normal distribution (many small, few large)
-      const logAmount = 11 + rand() * 5 + (customer.segment === "STRATEGIC" ? 3 : customer.segment === "KEY" ? 2 : 0);
-      const amount = Math.round(Math.exp(logAmount) * 100) / 100;
-      const taxAmount = Math.round(amount * 0.18 * 100) / 100; // 18% GST
+        // Posting lag (0–7 days, weighted toward 0–2) — feeds the Posting Lag KPI.
+        const postingLagDays = weightedPick([0, 1, 2, 3, 4, 5, 6, 7], [25, 20, 15, 10, 8, 7, 8, 7]);
+        const postingDate = addDays(documentDate, postingLagDays);
 
-      // Payment behavior
-      const onTimeProb = ON_TIME_PROB[customer.segment] || 0.4;
-      const paysOnTime = rand() < onTimeProb;
+        // Payment terms for this invoice (15% deviate from customer default).
+        const custTerms = terms.find((t: typeof terms[number]) => t.id === customer.paymentTermsId)!;
+        const invoiceTerms = rand() < 0.85 ? custTerms : pick(terms);
+        const creditPeriodDays = invoiceTerms.creditPeriodDays;
+        const baselineDate = documentDate;
+        const dueDate = addDays(baselineDate, creditPeriodDays);
 
-      let status: string;
-      let clearingDate: Date | null = null;
-      let daysForPayment: number | null = null;
+        // Amount: log-normal distribution (many small, few large).
+        const logAmount = 11 + rand() * 5 + (customer.segment === "STRATEGIC" ? 3 : customer.segment === "KEY" ? 2 : 0);
+        const amount = Math.round(Math.exp(logAmount) * 100) / 100;
+        const taxAmount = Math.round(amount * 0.18 * 100) / 100;
 
-      // Determine if invoice is old enough to be cleared
-      const daysSinceIssue = diffDays(documentDate, SNAPSHOT_DATE);
+        // Payment behavior — per-FY multiplier diverges values year over year.
+        const baseProb = ON_TIME_PROB[customer.segment] || 0.4;
+        const onTimeProb = Math.min(0.97, baseProb * fyCfg.onTimeMultiplier);
+        const paysOnTime = rand() < onTimeProb;
 
-      if (daysSinceIssue < creditPeriodDays * 0.5) {
-        // Very recent: mostly open
-        status = rand() < 0.15 ? "CLEARED" : "OPEN";
-      } else if (paysOnTime) {
-        // Pays within terms
-        status = "CLEARED";
-        const payDays = randInt(Math.max(1, creditPeriodDays - 10), creditPeriodDays);
-        clearingDate = addDays(documentDate, payDays);
-        if (clearingDate > SNAPSHOT_DATE) {
-          status = "OPEN";
-          clearingDate = null;
-        }
-      } else {
-        // Late payer
-        if (rand() < 0.55 && daysSinceIssue > creditPeriodDays + 10) {
+        let status: string;
+        let clearingDate: Date | null = null;
+        let daysForPayment: number | null = null;
+
+        const daysSinceIssue = diffDays(documentDate, SNAPSHOT_DATE);
+
+        if (daysSinceIssue < creditPeriodDays * 0.5) {
+          status = rand() < 0.15 ? "CLEARED" : "OPEN";
+          if (status === "CLEARED") {
+            const payDays = randInt(1, Math.max(1, Math.floor(creditPeriodDays * 0.5)));
+            clearingDate = addDays(documentDate, payDays);
+            if (clearingDate > SNAPSHOT_DATE) {
+              status = "OPEN";
+              clearingDate = null;
+            }
+          }
+        } else if (paysOnTime) {
           status = "CLEARED";
-          const lateDays = randInt(creditPeriodDays + 5, Math.min(creditPeriodDays + 40, daysSinceIssue));
-          clearingDate = addDays(documentDate, lateDays);
+          const payDays = randInt(Math.max(1, creditPeriodDays - 10), creditPeriodDays);
+          clearingDate = addDays(documentDate, payDays);
           if (clearingDate > SNAPSHOT_DATE) {
             status = "OPEN";
             clearingDate = null;
           }
-        } else if (rand() < 0.05) {
-          status = "PARTIAL";
         } else {
-          status = "OPEN";
+          if (rand() < 0.55 && daysSinceIssue > creditPeriodDays + 10) {
+            status = "CLEARED";
+            const lateDays = randInt(creditPeriodDays + 5, Math.min(creditPeriodDays + 40, daysSinceIssue));
+            clearingDate = addDays(documentDate, lateDays);
+            if (clearingDate > SNAPSHOT_DATE) {
+              status = "OPEN";
+              clearingDate = null;
+            }
+          } else if (rand() < 0.05) {
+            status = "PARTIAL";
+          } else {
+            status = "OPEN";
+          }
         }
+
+        if (status === "CLEARED" && clearingDate) {
+          daysForPayment = diffDays(documentDate, clearingDate);
+        }
+
+        const daysOutstanding = diffDays(documentDate, SNAPSHOT_DATE);
+        const isOverdue = status !== "CLEARED" && SNAPSHOT_DATE > dueDate;
+        const elapsedDays = isOverdue ? diffDays(dueDate, SNAPSHOT_DATE) : 0;
+
+        let overdueCategory: string;
+        if (!isOverdue || status === "CLEARED") {
+          overdueCategory = "NOT_DUE";
+        } else if (elapsedDays <= 7) overdueCategory = "1_7";
+        else if (elapsedDays <= 15) overdueCategory = "8_15";
+        else if (elapsedDays <= 30) overdueCategory = "16_30";
+        else if (elapsedDays <= 45) overdueCategory = "31_45";
+        else if (elapsedDays <= 60) overdueCategory = "46_60";
+        else overdueCategory = "60_PLUS";
+
+        const classification = status === "CLEARED"
+          ? "CLEARED_ITEM"
+          : isOverdue
+            ? "OVERDUE_RECEIVABLE"
+            : "CURRENT_RECEIVABLE";
+
+        const weightedOverdue = isOverdue ? amount * elapsedDays : 0;
+
+        // Globally-unique week number across FYs: encode FY into upper digits.
+        // Per-FY week index: 1..52, days since FY start divided by 7.
+        const fyWeekIdx = Math.min(52, Math.floor(diffDays(fyCfg.start, documentDate) / 7) + 1);
+        const weekNumber = fy * 1000 + fyWeekIdx;
+
+        const fp = fiscalPeriodFromDate(documentDate);
+        const matchedPeriod = fyPeriods.find(pp => pp.fiscalYear === fp.year && pp.fiscalPeriod === fp.period) || period;
+
+        batchData.push({
+          documentNumber: `${fy}${String(globalIdx + 1).padStart(7, "0")}`,
+          companyCodeId: company.id,
+          customerId: customer.id,
+          fiscalPeriodId: matchedPeriod.id,
+          paymentTermsId: invoiceTerms.id,
+          documentDate,
+          postingDate,
+          baselineDate,
+          dueDate,
+          amount,
+          taxAmount,
+          documentType: "RV",
+          referenceNumber: rand() < 0.7 ? `PO-${randInt(100000, 999999)}` : null,
+          status,
+          clearingDate,
+          clearingDocument: clearingDate ? `${fy}${String(randInt(100000, 999999))}` : null,
+          creditPeriodDays,
+          daysForPayment,
+          daysOutstanding,
+          elapsedDays,
+          isOverdue,
+          overdueCategory,
+          weightedOverdue,
+          classification,
+          weekNumber,
+          snapshotDate: SNAPSHOT_DATE,
+        });
       }
 
-      if (status === "CLEARED" && clearingDate) {
-        daysForPayment = diffDays(documentDate, clearingDate);
-      }
-
-      const daysOutstanding = diffDays(documentDate, SNAPSHOT_DATE);
-      const isOverdue = status !== "CLEARED" && SNAPSHOT_DATE > dueDate;
-      const elapsedDays = isOverdue ? diffDays(dueDate, SNAPSHOT_DATE) : 0;
-
-      let overdueCategory: string;
-      if (!isOverdue || status === "CLEARED") {
-        overdueCategory = "NOT_DUE";
-      } else if (elapsedDays <= 7) {
-        overdueCategory = "1_7";
-      } else if (elapsedDays <= 15) {
-        overdueCategory = "8_15";
-      } else if (elapsedDays <= 30) {
-        overdueCategory = "16_30";
-      } else if (elapsedDays <= 45) {
-        overdueCategory = "31_45";
-      } else if (elapsedDays <= 60) {
-        overdueCategory = "46_60";
-      } else {
-        overdueCategory = "60_PLUS";
-      }
-
-      const classification = status === "CLEARED"
-        ? "CLEARED_ITEM"
-        : isOverdue
-          ? "OVERDUE_RECEIVABLE"
-          : "CURRENT_RECEIVABLE";
-
-      const weightedOverdue = isOverdue ? amount * elapsedDays : 0;
-      const weekNumber = isoWeek(documentDate);
-
-      const fp = fiscalPeriodFromDate(documentDate);
-      const matchedPeriod = periods.find(p => p.fiscalYear === fp.year && p.fiscalPeriod === fp.period) || period;
-
-      batchData.push({
-        documentNumber: `${docYear}${String(globalIdx + 1).padStart(6, "0")}`,
-        companyCodeId: company.id,
-        customerId: customer.id,
-        fiscalPeriodId: matchedPeriod.id,
-        paymentTermsId: invoiceTerms.id,
-        documentDate,
-        postingDate: documentDate,
-        baselineDate,
-        dueDate,
-        amount,
-        taxAmount,
-        documentType: "RV",
-        referenceNumber: rand() < 0.7 ? `PO-${randInt(100000, 999999)}` : null,
-        status,
-        clearingDate,
-        clearingDocument: clearingDate ? `${docYear}${String(randInt(100000, 999999))}` : null,
-        creditPeriodDays,
-        daysForPayment,
-        daysOutstanding,
-        elapsedDays,
-        isOverdue,
-        overdueCategory,
-        weightedOverdue,
-        classification,
-        weekNumber,
-        snapshotDate: SNAPSHOT_DATE,
-      });
+      await prisma.invoice.createMany({ data: batchData });
+      invoiceCount += batchData.length;
     }
-
-    await prisma.invoice.createMany({ data: batchData });
-    invoiceCount += batchData.length;
-    if ((batch + 1) % 10 === 0) {
-      console.log(`    ... ${invoiceCount} invoices created`);
-    }
+    console.log(`    ✓ FY${fy} done (${invoiceCount} cumulative)`);
   }
-  console.log(`  ✓ ${invoiceCount} invoices`);
+  console.log(`  ✓ ${invoiceCount} invoices across 3 FYs`);
 
-  // ---- 7. Dunning History (for overdue invoices) ----
+  // ---- 7. Dunning History (overdue invoices, up to 6000 total) ----
   console.log("  Creating dunning history...");
   const overdueInvoices = await prisma.invoice.findMany({
     where: { isOverdue: true },
     select: { id: true, elapsedDays: true, documentDate: true, dueDate: true },
-    take: 5000,
+    take: 6000,
   });
 
+  setSeed(909);
   let dunningCount = 0;
-  const dunningBatch = [];
+  const dunningBatch: Parameters<typeof prisma.dunningHistory.createMany>[0]["data"] = [];
   for (const inv of overdueInvoices) {
     const levels = inv.elapsedDays > 45 ? 3 : inv.elapsedDays > 30 ? 2 : 1;
     for (let l = 1; l <= levels; l++) {
@@ -361,117 +388,128 @@ async function main() {
         dunningLevel: l,
         dunningDate: addDays(inv.dueDate, l * 10 + randInt(0, 5)),
         dunningBlock: l >= 3 && rand() < 0.2 ? "R" : null,
-        notes: l === 1 ? "Auto-reminder sent" : l === 2 ? "Formal notice — no response to L1" : l === 3 ? "Final warning — escalated to manager" : "Legal proceedings initiated",
+        notes:
+          l === 1 ? "Auto-reminder sent" :
+          l === 2 ? "Formal notice — no response to L1" :
+          l === 3 ? "Final warning — escalated to manager" :
+          "Legal proceedings initiated",
       });
       dunningCount++;
     }
   }
-
-  // Batch insert dunning
   for (let i = 0; i < dunningBatch.length; i += 1000) {
     await prisma.dunningHistory.createMany({ data: dunningBatch.slice(i, i + 1000) });
   }
   console.log(`  ✓ ${dunningCount} dunning records`);
 
-  // ---- 8. Monthly Snapshots ----
+  // ---- 8. Monthly Snapshots — per FY × company × period ----
   console.log("  Computing monthly snapshots...");
-  for (const company of companies) {
-    let prevAR = 0;
-    for (const period of periods) {
-      const invoices = await prisma.invoice.findMany({
-        where: { companyCodeId: company.id, fiscalPeriodId: period.id },
-      });
+  let snapshotCount = 0;
+  for (const fyCfg of FY_CONFIGS) {
+    const fyPeriods = periodsByFY.get(fyCfg.year)!;
+    for (const company of companies) {
+      let prevAR = 0;
+      for (const period of fyPeriods) {
+        const invoices = await prisma.invoice.findMany({
+          where: { companyCodeId: company.id, fiscalPeriodId: period.id },
+        });
 
-      const totalSales = invoices.reduce((s, i) => s + i.amount, 0);
-      const cleared = invoices.filter(i => i.status === "CLEARED");
-      const collections = cleared.reduce((s, i) => s + i.amount, 0);
-      const openInvs = invoices.filter(i => i.status !== "CLEARED");
-      const totalAR = openInvs.reduce((s, i) => s + i.amount, 0);
-      const overdueInvs = openInvs.filter(i => i.isOverdue);
-      const overdueAR = overdueInvs.reduce((s, i) => s + i.amount, 0);
-      const currentAR = totalAR - overdueAR;
-      const beginningAR = prevAR;
+        const totalSales = invoices.reduce((s, i) => s + i.amount, 0);
+        const cleared = invoices.filter(i => i.status === "CLEARED");
+        const collections = cleared.reduce((s, i) => s + i.amount, 0);
+        const openInvs = invoices.filter(i => i.status !== "CLEARED");
+        const totalAR = openInvs.reduce((s, i) => s + i.amount, 0);
+        const overdueInvs = openInvs.filter(i => i.isOverdue);
+        const overdueAR = overdueInvs.reduce((s, i) => s + i.amount, 0);
+        const currentAR = totalAR - overdueAR;
+        const beginningAR = prevAR;
 
-      const dso = totalSales > 0 ? (totalAR / totalSales) * 30 : null;
-      const overdueRatio = totalAR > 0 ? (overdueAR / totalAR) * 100 : null;
-      const turnover = totalAR > 0 ? totalSales / ((beginningAR + totalAR) / 2 || 1) : null;
-      const ceiDenom = beginningAR + totalSales - currentAR;
-      const cei = ceiDenom > 0 ? ((beginningAR + totalSales - totalAR) / ceiDenom) * 100 : null;
+        const dso = totalSales > 0 ? (totalAR / totalSales) * 30 : null;
+        const overdueRatio = totalAR > 0 ? (overdueAR / totalAR) * 100 : null;
+        const turnover = totalAR > 0 ? totalSales / ((beginningAR + totalAR) / 2 || 1) : null;
+        const ceiDenom = beginningAR + totalSales - currentAR;
+        const cei = ceiDenom > 0 ? ((beginningAR + totalSales - totalAR) / ceiDenom) * 100 : null;
+        const cpu = cleared.length > 0
+          ? cleared.filter(i => i.daysForPayment != null && i.creditPeriodDays > 0)
+              .reduce((s, i) => s + (i.daysForPayment! / i.creditPeriodDays) * 100, 0) /
+            Math.max(1, cleared.filter(i => i.daysForPayment != null).length)
+          : null;
 
-      await prisma.monthlySnapshot.create({
-        data: {
-          fiscalPeriodId: period.id,
-          companyCodeId: company.id,
-          totalAR,
-          currentAR,
-          overdueAR,
-          beginningAR,
-          totalCreditSales: totalSales,
-          totalCollections: collections,
-          dso,
-          overdueRatio,
-          cei,
-          receivablesTurnover: turnover,
-          invoiceCountTotal: invoices.length,
-          invoiceCountOverdue: overdueInvs.length,
-          invoiceCountCleared: cleared.length,
-        },
-      });
-      prevAR = totalAR;
+        await prisma.monthlySnapshot.create({
+          data: {
+            fiscalPeriodId: period.id,
+            companyCodeId: company.id,
+            totalAR, currentAR, overdueAR, beginningAR,
+            totalCreditSales: totalSales,
+            totalCollections: collections,
+            dso, overdueRatio, cei,
+            receivablesTurnover: turnover,
+            creditPeriodUtil: cpu,
+            invoiceCountTotal: invoices.length,
+            invoiceCountOverdue: overdueInvs.length,
+            invoiceCountCleared: cleared.length,
+          },
+        });
+        snapshotCount++;
+        prevAR = totalAR;
+      }
     }
   }
-  console.log(`  ✓ ${companies.length * periods.length} monthly snapshots`);
+  console.log(`  ✓ ${snapshotCount} monthly snapshots`);
 
-  // ---- 9. Weekly Cashflows ----
+  // ---- 9. Weekly Cashflows — per FY × company × ISO-week-of-FY ----
   console.log("  Computing weekly cashflows...");
   let wcfCount = 0;
-  for (const company of companies) {
-    for (let w = 1; w <= 52; w++) {
-      // Find the fiscal period for this week
-      const weekStart = new Date(2025, 3, 1 + (w - 1) * 7); // Approx
-      if (weekStart > FY_END) break;
-      const weekEnd = addDays(weekStart, 6);
-      const fp = fiscalPeriodFromDate(weekStart);
-      const matchedPeriod = periods.find(p => p.fiscalYear === fp.year && p.fiscalPeriod === fp.period) || periods[0];
+  for (const fyCfg of FY_CONFIGS) {
+    const fyPeriods = periodsByFY.get(fyCfg.year)!;
+    for (const company of companies) {
+      for (let w = 1; w <= 52; w++) {
+        const weekStart = addDays(fyCfg.start, (w - 1) * 7);
+        if (weekStart > fyCfg.end) break;
+        const weekEnd = addDays(weekStart, 6);
+        const fp = fiscalPeriodFromDate(weekStart);
+        const matchedPeriod =
+          fyPeriods.find(p => p.fiscalYear === fp.year && p.fiscalPeriod === fp.period) || fyPeriods[0];
 
-      const weekInvs = await prisma.invoice.findMany({
-        where: {
-          companyCodeId: company.id,
-          weekNumber: w,
-        },
-      });
+        const encodedWeek = fyCfg.year * 1000 + w;
+        const weekInvs = await prisma.invoice.findMany({
+          where: { companyCodeId: company.id, weekNumber: encodedWeek },
+        });
 
-      const due = weekInvs.filter(i => i.dueDate >= weekStart && i.dueDate <= weekEnd);
-      const collected = weekInvs.filter(i => i.status === "CLEARED" && i.clearingDate && i.clearingDate >= weekStart && i.clearingDate <= weekEnd);
-      const salesAmt = weekInvs.reduce((s, i) => s + i.amount, 0);
-      const dueAmt = due.reduce((s, i) => s + i.amount, 0);
-      const collectedAmt = collected.reduce((s, i) => s + i.amount, 0);
-      const overdueBalance = weekInvs.filter(i => i.isOverdue).reduce((s, i) => s + i.amount, 0);
-      const onTimeRate = due.length > 0 ? (collected.length / due.length) * 100 : null;
-      const effectiveness = dueAmt > 0 ? (collectedAmt / dueAmt) * 100 : null;
+        const due = weekInvs.filter(i => i.dueDate >= weekStart && i.dueDate <= weekEnd);
+        const collected = weekInvs.filter(
+          i => i.status === "CLEARED" && i.clearingDate && i.clearingDate >= weekStart && i.clearingDate <= weekEnd,
+        );
+        const salesAmt = weekInvs.reduce((s, i) => s + i.amount, 0);
+        const dueAmt = due.reduce((s, i) => s + i.amount, 0);
+        const collectedAmt = collected.reduce((s, i) => s + i.amount, 0);
+        const overdueBalance = weekInvs.filter(i => i.isOverdue).reduce((s, i) => s + i.amount, 0);
+        const onTimeRate = due.length > 0 ? (collected.length / due.length) * 100 : null;
+        const effectiveness = dueAmt > 0 ? (collectedAmt / dueAmt) * 100 : null;
 
-      await prisma.weeklyCashflow.create({
-        data: {
-          fiscalPeriodId: matchedPeriod.id,
-          companyCodeId: company.id,
-          weekNumber: w,
-          weekLabel: `W${w}`,
-          weekStartDate: weekStart,
-          weekEndDate: weekEnd,
-          salesAmount: salesAmt,
-          expectedCashInflow: dueAmt,
-          actualCashInflow: collectedAmt,
-          invoicesDueCount: due.length,
-          invoicesDueAmount: dueAmt,
-          invoicesCollectedCount: collected.length,
-          invoicesCollectedAmount: collectedAmt,
-          overdueBalance,
-          collectionRate: collectedAmt / 7,
-          onTimePaymentRate: onTimeRate,
-          collectionEffectiveness: effectiveness,
-        },
-      });
-      wcfCount++;
+        await prisma.weeklyCashflow.create({
+          data: {
+            fiscalPeriodId: matchedPeriod.id,
+            companyCodeId: company.id,
+            weekNumber: encodedWeek,
+            weekLabel: `W${w}`,
+            weekStartDate: weekStart,
+            weekEndDate: weekEnd,
+            salesAmount: salesAmt,
+            expectedCashInflow: dueAmt,
+            actualCashInflow: collectedAmt,
+            invoicesDueCount: due.length,
+            invoicesDueAmount: dueAmt,
+            invoicesCollectedCount: collected.length,
+            invoicesCollectedAmount: collectedAmt,
+            overdueBalance,
+            collectionRate: collectedAmt / 7,
+            onTimePaymentRate: onTimeRate,
+            collectionEffectiveness: effectiveness,
+          },
+        });
+        wcfCount++;
+      }
     }
   }
   console.log(`  ✓ ${wcfCount} weekly cashflows`);
@@ -483,10 +521,11 @@ async function main() {
   const totalDunning = await prisma.dunningHistory.count();
 
   console.log(`\n✅ Seed complete!`);
+  console.log(`   FYs: ${FY_CONFIGS.map(c => c.year).join(", ")}`);
   console.log(`   Invoices: ${totalInvoices} (${totalCleared} cleared, ${totalOverdue} overdue)`);
   console.log(`   Customers: ${customers.length}`);
   console.log(`   Dunning records: ${totalDunning}`);
-  console.log(`   Monthly snapshots: ${companies.length * periods.length}`);
+  console.log(`   Monthly snapshots: ${snapshotCount}`);
   console.log(`   Weekly cashflows: ${wcfCount}`);
   console.log(`   DB file: prisma/dev.db`);
 }

@@ -9,6 +9,7 @@ import {
   daysToClearBacklogInsight,
 } from "@/lib/data";
 import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
+import { useDashboard } from "@/context/dashboard-context";
 import { Activity } from "lucide-react";
 import {
   BarChart,
@@ -101,9 +102,55 @@ function BacklogChart() {
   );
 }
 
+function isOn(map: Record<string, boolean>, id: string): boolean {
+  return map[id] !== false;
+}
+
 export function OperationalKPIs() {
   const kpiData = useKPIData();
   const quarterLabel = useQuarterLabel();
+  const { kpiEnabled } = useDashboard();
+
+  const tiles = [
+    isOn(kpiEnabled, "basic-invoice-to-cash") && (
+      <KPICard
+        key="invoice-to-cash"
+        title="Invoice to Cash Cycle Time"
+        value=""
+        insight={invoiceToCashInsight}
+        compact
+      >
+        <InvoiceToCashGauge />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-credit-period-utilization") && (
+      <KPICard
+        key="cpu"
+        title="Credit Period Utilization"
+        value={kpiData.operational.creditPeriodUtilization.overall}
+        suffix="%"
+        valueLabel={quarterLabel}
+        insight={creditPeriodUtilizationInsight}
+        glowClass="glow-amber"
+      >
+        <MiniSparkline data={kpiData.operational.creditPeriodUtilization.monthly} color="#d97706" />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-days-to-clear-backlog") && (
+      <KPICard
+        key="backlog"
+        title="Days to Clear Backlog"
+        value=""
+        insight={daysToClearBacklogInsight}
+        compact
+        className="md:col-span-2"
+      >
+        <BacklogChart />
+      </KPICard>
+    ),
+  ].filter(Boolean);
+
+  if (tiles.length === 0) return null;
 
   return (
     <section>
@@ -113,39 +160,12 @@ export function OperationalKPIs() {
         subtitle="Process efficiency and backlog health metrics"
         iconColor="text-accent-purple"
       />
-
-      {/* Row 1: Invoice to Cash + Credit Period Utilization */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <KPICard
-          title="Invoice to Cash Cycle Time"
-          value=""
-          insight={invoiceToCashInsight}
-          compact
-        >
-          <InvoiceToCashGauge />
-        </KPICard>
-
-        <KPICard
-          title="Credit Period Utilization"
-          value={kpiData.operational.creditPeriodUtilization.overall}
-          suffix="%"
-          valueLabel={quarterLabel}
-          insight={creditPeriodUtilizationInsight}
-          glowClass="glow-amber"
-        >
-          <MiniSparkline data={kpiData.operational.creditPeriodUtilization.monthly} color="#d97706" />
-        </KPICard>
-      </div>
-
-      {/* Row 2: Days to Clear Backlog (full width) */}
-      <KPICard
-        title="Days to Clear Backlog"
-        value=""
-        insight={daysToClearBacklogInsight}
-        compact
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}
       >
-        <BacklogChart />
-      </KPICard>
+        {tiles}
+      </div>
     </section>
   );
 }

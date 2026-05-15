@@ -10,6 +10,7 @@ import {
   collectionPeriodEffectivenessInsight,
 } from "@/lib/data";
 import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
+import { useDashboard } from "@/context/dashboard-context";
 import { PiggyBank } from "lucide-react";
 import {
   BarChart,
@@ -116,9 +117,66 @@ function CollectionPeriodChart() {
   );
 }
 
+function isOn(map: Record<string, boolean>, id: string): boolean {
+  return map[id] !== false;
+}
+
 export function CollectionEfficiency() {
   const kpiData = useKPIData();
   const quarterLabel = useQuarterLabel();
+  const { kpiEnabled } = useDashboard();
+
+  const tiles = [
+    isOn(kpiEnabled, "basic-cei") && (
+      <KPICard
+        key="cei"
+        title="Collection Effectiveness Index (CEI)"
+        value={kpiData.collection.cei.overall}
+        suffix="%"
+        valueLabel={quarterLabel}
+        insight={ceiInsight}
+        glowClass="glow-green"
+      >
+        <MiniSparkline data={kpiData.collection.cei.monthly} color="#16a34a" />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-on-time-payment") && (
+      <KPICard
+        key="on-time"
+        title="On-Time Payment Rate %"
+        value=""
+        insight={onTimePaymentInsight}
+        compact
+        className="md:col-span-2"
+      >
+        <OnTimePaymentChart />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-collection-effectiveness-weekly") && (
+      <KPICard
+        key="coll-eff"
+        title="Collection Effectiveness (Weekly)"
+        value=""
+        insight={collectionEffectivenessInsight}
+        compact
+      >
+        <CollectionEffectivenessChart />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-credit-period-effectiveness") && (
+      <KPICard
+        key="cp-eff"
+        title="Credit Period Effectiveness"
+        value=""
+        insight={collectionPeriodEffectivenessInsight}
+        compact
+      >
+        <CollectionPeriodChart />
+      </KPICard>
+    ),
+  ].filter(Boolean);
+
+  if (tiles.length === 0) return null;
 
   return (
     <section>
@@ -128,51 +186,11 @@ export function CollectionEfficiency() {
         subtitle="How effectively are we converting receivables to cash?"
         iconColor="text-accent-green"
       />
-
-      {/* Row 1: CEI (smaller) + On-Time Payment Rate (larger) */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-        <KPICard
-          title="Collection Effectiveness Index (CEI)"
-          value={kpiData.collection.cei.overall}
-          suffix="%"
-          valueLabel={quarterLabel}
-          insight={ceiInsight}
-          glowClass="glow-green"
-          className="md:col-span-2"
-        >
-          <MiniSparkline data={kpiData.collection.cei.monthly} color="#16a34a" />
-        </KPICard>
-
-        <KPICard
-          title="On-Time Payment Rate %"
-          value=""
-          insight={onTimePaymentInsight}
-          compact
-          className="md:col-span-3"
-        >
-          <OnTimePaymentChart />
-        </KPICard>
-      </div>
-
-      {/* Row 2: Weekly Collection Effectiveness + Credit Period Effectiveness */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <KPICard
-          title="Collection Effectiveness (Weekly)"
-          value=""
-          insight={collectionEffectivenessInsight}
-          compact
-        >
-          <CollectionEffectivenessChart />
-        </KPICard>
-
-        <KPICard
-          title="Credit Period Effectiveness"
-          value=""
-          insight={collectionPeriodEffectivenessInsight}
-          compact
-        >
-          <CollectionPeriodChart />
-        </KPICard>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
+      >
+        {tiles}
       </div>
     </section>
   );

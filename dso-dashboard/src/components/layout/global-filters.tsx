@@ -1,28 +1,37 @@
 "use client";
 
-import { useDashboard } from "@/context/dashboard-context";
+import { useDashboard, type FiscalYear, type QuarterFilter } from "@/context/dashboard-context";
 import { Calendar, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const FISCAL_YEARS = [2026];
-const FY_LABELS: Record<number, string> = {
+const FISCAL_YEARS: FiscalYear[] = [2024, 2025, 2026];
+const FY_LABELS: Record<FiscalYear, string> = {
+  2024: "2023-24",
+  2025: "2024-25",
   2026: "2025-26",
 };
-const QUARTERS = ["All", "Q1", "Q2", "Q3", "Q4"] as const;
-const QUARTER_LABELS: Record<string, string> = {
-  All: "Full Year",
-  Q1: "Q1 (Apr–Jun '25)",
-  Q2: "Q2 (Jul–Sep '25)",
-  Q3: "Q3 (Oct–Dec '25)",
-  Q4: "Q4 (Jan–Mar '26)",
-};
+
+const QUARTERS: QuarterFilter[] = ["All", "Q1", "Q2", "Q3", "Q4"];
+
+// Build a quarter label like "Q1 (Apr–Jun '23)" given the selected FY.
+function quarterDisplay(q: QuarterFilter, fy: FiscalYear): string {
+  if (q === "All") return "Full Year";
+  const fyShortPrev = (fy - 1).toString().slice(2); // e.g. 2024 → "23"
+  const fyShortCur = fy.toString().slice(2);
+  switch (q) {
+    case "Q1": return `Q1 (Apr–Jun '${fyShortPrev})`;
+    case "Q2": return `Q2 (Jul–Sep '${fyShortPrev})`;
+    case "Q3": return `Q3 (Oct–Dec '${fyShortPrev})`;
+    case "Q4": return `Q4 (Jan–Mar '${fyShortCur})`;
+  }
+}
 
 export function GlobalFilters() {
   const { filters, setFilters, activeSection } = useDashboard();
 
   if (activeSection === "admin") return null;
 
-  const fyLabel = FY_LABELS[filters.fiscalYear] || String(filters.fiscalYear);
+  const fyLabel = FY_LABELS[filters.fiscalYear];
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -34,13 +43,13 @@ export function GlobalFilters() {
           <select
             value={filters.fiscalYear}
             onChange={(e) =>
-              setFilters({ ...filters, fiscalYear: parseInt(e.target.value) })
+              setFilters({ ...filters, fiscalYear: parseInt(e.target.value, 10) as FiscalYear })
             }
             className="bg-transparent text-foreground font-medium outline-none cursor-pointer appearance-none pr-4"
           >
             {FISCAL_YEARS.map((fy) => (
               <option key={fy} value={fy}>
-                {FY_LABELS[fy] || fy}
+                {FY_LABELS[fy]}
               </option>
             ))}
           </select>
@@ -66,9 +75,8 @@ export function GlobalFilters() {
         ))}
       </div>
 
-      {/* Active Filter Label */}
       <span className="text-[10px] text-muted/60 hidden sm:inline">
-        {QUARTER_LABELS[filters.quarter]} · FY {fyLabel}
+        {quarterDisplay(filters.quarter, filters.fiscalYear)} · FY {fyLabel}
       </span>
     </div>
   );

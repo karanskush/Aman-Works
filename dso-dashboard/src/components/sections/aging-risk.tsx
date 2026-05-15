@@ -7,7 +7,8 @@ import {
   overdueInvoiceDensityInsight,
   peakOverdueExposureInsight,
 } from "@/lib/data";
-import { useKPIData } from "@/lib/use-kpi-data";
+import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
+import { useDashboard } from "@/context/dashboard-context";
 import { formatCurrency } from "@/lib/utils";
 import { ShieldAlert, FileWarning, DollarSign, Hash, Building2, Clock } from "lucide-react";
 import {
@@ -232,7 +233,69 @@ function PeakExposureCard() {
   );
 }
 
+function isOn(map: Record<string, boolean>, id: string): boolean {
+  return map[id] !== false;
+}
+
 export function AgingRisk() {
+  const { kpiEnabled } = useDashboard();
+  const quarterLabel = useQuarterLabel();
+
+  const tiles = [
+    isOn(kpiEnabled, "basic-aging-buckets") && (
+      <KPICard
+        key="aging-buckets"
+        title="Aging Bucket Distribution"
+        value=""
+        valueLabel={quarterLabel}
+        insight={agingBucketInsight}
+        compact
+        className="md:col-span-2"
+      >
+        <AgingBucketChart />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-aging-donut") && (
+      <KPICard
+        key="aging-donut"
+        title="Aging Composition"
+        value=""
+        insight={{
+          ...agingBucketInsight,
+          aiInsight: "Donut view shows the proportional weight of each aging bucket. A healthy portfolio has the majority in green (Not Due) with minimal red (60+ days).",
+        }}
+        compact
+      >
+        <AgingDonut />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-overdue-density") && (
+      <KPICard
+        key="overdue-density"
+        title="Overdue Invoice Density vs Value Split"
+        value=""
+        insight={overdueInvoiceDensityInsight}
+        compact
+      >
+        <DualTile />
+      </KPICard>
+    ),
+    isOn(kpiEnabled, "basic-peak-exposure") && (
+      <KPICard
+        key="peak-exposure"
+        title="Peak Overdue Exposure"
+        value=""
+        insight={peakOverdueExposureInsight}
+        compact
+        glowClass="glow-red"
+      >
+        <PeakExposureCard />
+      </KPICard>
+    ),
+  ].filter(Boolean);
+
+  if (tiles.length === 0) return null;
+
   return (
     <section>
       <SectionHeader
@@ -241,52 +304,11 @@ export function AgingRisk() {
         subtitle="Credit risk exposure and overdue concentration analysis"
         iconColor="text-accent-amber"
       />
-
-      {/* Row 1: Aging Bucket Chart (2/3) + Donut (1/3) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <KPICard
-          title="Aging Bucket Distribution"
-          value=""
-          insight={agingBucketInsight}
-          compact
-          className="md:col-span-2"
-        >
-          <AgingBucketChart />
-        </KPICard>
-
-        <KPICard
-          title="Aging Composition"
-          value=""
-          insight={{
-            ...agingBucketInsight,
-            aiInsight: "Donut view shows the proportional weight of each aging bucket. A healthy portfolio has the majority in green (Not Due) with minimal red (60+ days).",
-          }}
-          compact
-        >
-          <AgingDonut />
-        </KPICard>
-      </div>
-
-      {/* Row 2: Overdue Invoice Density + Peak Overdue Exposure */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <KPICard
-          title="Overdue Invoice Density vs Value Split"
-          value=""
-          insight={overdueInvoiceDensityInsight}
-          compact
-        >
-          <DualTile />
-        </KPICard>
-
-        <KPICard
-          title="Peak Overdue Exposure"
-          value=""
-          insight={peakOverdueExposureInsight}
-          compact
-          glowClass="glow-red"
-        >
-          <PeakExposureCard />
-        </KPICard>
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}
+      >
+        {tiles}
       </div>
     </section>
   );
