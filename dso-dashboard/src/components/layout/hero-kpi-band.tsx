@@ -5,20 +5,19 @@ import { useDashboard } from "@/context/dashboard-context";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { DeltaInline, type Tone } from "@/components/ui/status";
 import { cn } from "@/lib/utils";
-import { TrendingUp, TrendingDown, Minus, Info } from "lucide-react";
+import { Info, Sparkles } from "lucide-react";
 import { COMPUTED_KPI_DATA, type FYKey, type QuarterKey } from "@/lib/computed-kpis";
 import type { ActiveSection } from "@/context/dashboard-context";
-import type { ReactNode } from "react";
-
-type DeltaTone = "good" | "bad" | "neutral";
 
 interface HeroMetric {
   label: string;
   value: string;
   sublabel?: string;
-  delta?: { value: string; tone: DeltaTone };
+  delta?: { value: string; tone: Tone };
   tooltip?: string;
+  accent: string;
 }
 
 function fmtINR(value: number): string {
@@ -29,8 +28,6 @@ function fmtINR(value: number): string {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
-// Returns the slice immediately before the current selection. Within an FY
-// Q4→Q3→Q2→Q1; Q1 falls back to previous FY's "All". "All" compares to prev FY's "All".
 function previousSlice(fy: FYKey, q: QuarterKey) {
   const all = COMPUTED_KPI_DATA;
   const prevFY: Record<FYKey, FYKey | null> = { 2024: null, 2025: 2024, 2026: 2025 };
@@ -41,69 +38,78 @@ function previousSlice(fy: FYKey, q: QuarterKey) {
   const order: QuarterKey[] = ["Q1", "Q2", "Q3", "Q4"];
   const idx = order.indexOf(q);
   if (idx > 0) return all[fy]?.[order[idx - 1]];
-  // Q1: fall back to prev FY's "All"
   const pf = prevFY[fy];
   return pf ? all[pf]?.["All"] : undefined;
 }
 
-function deltaStr(curr: number, prev: number | undefined, suffix = "", goodIsDown = false): { value: string; tone: DeltaTone } | undefined {
+function deltaStr(
+  curr: number,
+  prev: number | undefined,
+  suffix = "",
+  goodIsDown = false,
+): { value: string; tone: Tone } | undefined {
   if (prev === undefined || prev === 0) return undefined;
   const diff = curr - prev;
-  if (Math.abs(diff) < 0.05) return { value: "no change", tone: "neutral" };
+  if (Math.abs(diff) < 0.05) return { value: `0${suffix}`, tone: "neutral" };
   const sign = diff >= 0 ? "+" : "";
   const goingDown = diff < 0;
-  const tone: DeltaTone = goodIsDown
-    ? (goingDown ? "good" : "bad")
-    : (goingDown ? "bad" : "good");
+  const tone: Tone = goodIsDown ? (goingDown ? "success" : "danger") : goingDown ? "danger" : "success";
   return { value: `${sign}${diff.toFixed(1)}${suffix}`, tone };
 }
 
-function MetricCell({ metric }: { metric: HeroMetric }) {
-  const toneClass: Record<DeltaTone, string> = {
-    good: "text-accent-green",
-    bad: "text-accent-red",
-    neutral: "text-muted-foreground",
-  };
-  const toneIcon: Record<DeltaTone, ReactNode> = {
-    good: <TrendingDown className="h-3 w-3" />,
-    bad: <TrendingUp className="h-3 w-3" />,
-    neutral: <Minus className="h-3 w-3" />,
-  };
-
+function MetricCell({ metric, index, total }: { metric: HeroMetric; index: number; total: number }) {
   return (
-    <div className="flex-1 min-w-0 px-4 py-3 first:pl-5 last:pr-5">
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+    <div
+      className={cn(
+        "relative flex-1 min-w-0 px-5 py-5 first:pl-6 last:pr-6",
+        "transition-colors hover:bg-card-hover/40"
+      )}
+    >
+      {/* Accent stripe on top */}
+      <div
+        aria-hidden
+        className="absolute left-5 right-5 top-0 h-px"
+        style={{ background: `linear-gradient(to right, ${metric.accent}, transparent)`, opacity: 0.65 }}
+      />
+
+      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] font-medium text-muted-foreground">
         <span>{metric.label}</span>
         {metric.tooltip && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <button type="button" className="inline-flex">
-                <Info className="h-3 w-3 opacity-60" />
+              <button type="button" className="inline-flex" aria-label="Details">
+                <Info className="h-3 w-3 opacity-60 hover:opacity-100 transition-opacity" />
               </button>
             </TooltipTrigger>
-            <TooltipContent side="top">{metric.tooltip}</TooltipContent>
+            <TooltipContent side="bottom" className="max-w-[260px]">
+              {metric.tooltip}
+            </TooltipContent>
           </Tooltip>
         )}
       </div>
-      <div className="mt-1 flex items-baseline gap-2">
-        <span className="text-2xl font-semibold tracking-tight numeric text-foreground">{metric.value}</span>
+
+      <div className="mt-2 flex items-baseline gap-2">
+        <span className="display text-3xl md:text-[34px] font-semibold tracking-tight text-foreground numeric">
+          {metric.value}
+        </span>
         {metric.sublabel && <span className="text-xs text-muted-foreground">{metric.sublabel}</span>}
       </div>
-      {metric.delta && (
-        <div className={cn("mt-1 inline-flex items-center gap-1 text-[11px] font-medium", toneClass[metric.delta.tone])}>
-          {toneIcon[metric.delta.tone]}
-          <span className="numeric">{metric.delta.value}</span>
-          <span className="text-muted-foreground font-normal">vs prev</span>
+
+      {metric.delta ? (
+        <div className="mt-2 flex items-center gap-2">
+          <DeltaInline value={metric.delta.value} tone={metric.delta.tone} />
+          <span className="text-[10px] text-muted-foreground">vs prev period</span>
         </div>
+      ) : (
+        <div className="mt-2 text-[10px] text-muted-foreground/70">no prior period</div>
+      )}
+
+      {/* Faint vertical divider on right (except last) */}
+      {index < total - 1 && (
+        <div aria-hidden className="hidden md:block absolute right-0 top-5 bottom-5 w-px bg-border" />
       )}
     </div>
   );
-}
-
-function gradeTone(score: number): DeltaTone {
-  if (score >= 65) return "good";
-  if (score >= 35) return "neutral";
-  return "bad";
 }
 
 export function HeroKPIBand({ section }: { section: ActiveSection }) {
@@ -111,7 +117,6 @@ export function HeroKPIBand({ section }: { section: ActiveSection }) {
   const { filters } = useDashboard();
   const prev = previousSlice(filters.fiscalYear, filters.quarter);
 
-  // Build a section-tailored band of 4 headline metrics.
   let metrics: HeroMetric[] = [];
 
   if (section === "basic" || section === "advanced" || section === "ai-insights") {
@@ -120,6 +125,13 @@ export function HeroKPIBand({ section }: { section: ActiveSection }) {
     const cei = slice.collection.cei.overall;
     const health = slice.advanced.arHealthScore;
 
+    const healthDelta = prev
+      ? {
+          value: `${health.score - prev.advanced.arHealthScore.score >= 0 ? "+" : ""}${health.score - prev.advanced.arHealthScore.score}`,
+          tone: (health.score - prev.advanced.arHealthScore.score >= 0 ? "success" : "danger") as Tone,
+        }
+      : undefined;
+
     metrics = [
       {
         label: "DSO",
@@ -127,27 +139,29 @@ export function HeroKPIBand({ section }: { section: ActiveSection }) {
         sublabel: "of credit sales",
         delta: deltaStr(dso, prev?.executive.dso.overall, "pp", true),
         tooltip: "DSO = (Average AR / Total Credit Sales) × 100. Lower is better.",
+        accent: "var(--accent-blue)",
       },
       {
         label: "Overdue Ratio",
         value: `${overdue.toFixed(1)}%`,
         delta: deltaStr(overdue, prev?.executive.overdueRatio.overall, "pp", true),
-        tooltip: "Share of open AR past due date.",
+        tooltip: "Share of open AR past due date. < 20% is healthy.",
+        accent: "var(--accent-red)",
       },
       {
         label: "CEI",
         value: `${cei.toFixed(0)}%`,
         delta: deltaStr(cei, prev?.collection.cei.overall, "pp", false),
-        tooltip: "Collection Effectiveness Index. Higher is better.",
+        tooltip: "Collection Effectiveness Index. > 85% is strong.",
+        accent: "var(--accent-green)",
       },
       {
         label: "AR Health",
-        value: `${health.score}`,
-        sublabel: `/ 100 (${health.grade})`,
-        delta: prev
-          ? { value: `${health.score - prev.advanced.arHealthScore.score >= 0 ? "+" : ""}${health.score - prev.advanced.arHealthScore.score}`, tone: gradeTone(health.score) }
-          : undefined,
-        tooltip: "Composite score across DSO, CEI, Overdue, Aging, Concentration, Trend.",
+        value: String(health.score),
+        sublabel: `/ 100 · ${health.grade}`,
+        delta: healthDelta,
+        tooltip: "Composite score: DSO · CEI · Overdue · Aging · Concentration · Trend.",
+        accent: "var(--primary)",
       },
     ];
   }
@@ -155,17 +169,21 @@ export function HeroKPIBand({ section }: { section: ActiveSection }) {
   if (metrics.length === 0) return null;
 
   return (
-    <Card className="overflow-hidden">
-      <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-border">
-        {metrics.map((m) => (
-          <MetricCell key={m.label} metric={m} />
+    <Card className="overflow-hidden bg-dot-grid">
+      <div className="flex flex-col md:flex-row divide-y md:divide-y-0 divide-border">
+        {metrics.map((m, i) => (
+          <MetricCell key={m.label} metric={m} index={i} total={metrics.length} />
         ))}
-        <div className="flex items-center gap-2 px-4 py-3 sm:py-0 sm:px-5 bg-card-hover/40">
-          <Badge variant="neutral">
+        <div className="hidden md:flex flex-col items-end justify-center gap-2 px-5 py-4 border-l border-border bg-secondary/40">
+          <Badge variant="primary" size="lg" className="rounded-md">
+            <Sparkles className="h-3 w-3" />
             {filters.quarter === "All" ? "Full Year" : filters.quarter}
-            <span className="ml-1 opacity-60">·</span>
-            <span className="ml-1">FY {filters.fiscalYear - 1}-{String(filters.fiscalYear).slice(2)}</span>
+            <span className="opacity-50 mx-0.5">·</span>
+            <span className="font-semibold">FY{String(filters.fiscalYear).slice(2)}</span>
           </Badge>
+          <span className="text-[10px] text-muted-foreground/80 numeric">
+            {slice.summary.totalInvoices.toLocaleString("en-IN")} invoices · {fmtINR(slice.summary.totalSales)} billed
+          </span>
         </div>
       </div>
     </Card>

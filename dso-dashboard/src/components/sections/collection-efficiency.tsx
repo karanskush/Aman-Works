@@ -187,8 +187,8 @@ export function CollectionEfficiency() {
         iconColor="text-accent-green"
       />
       <div
-        className="grid gap-4"
-        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
+        className="grid gap-3"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}
       >
         {tiles}
       </div>

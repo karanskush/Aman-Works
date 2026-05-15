@@ -439,6 +439,7 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
   const [showModal, setShowModal] = useState(false);
   const trend = trendConfig[kpi.trend];
   const TrendIcon = trend.icon;
+  const categoryColor = CATEGORY_COLORS[kpi.category];
 
   const open = () => setShowModal(true);
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -450,43 +451,57 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
 
   return (
     <div
-      className="glass-card p-4 relative group cursor-pointer transition-colors hover:border-accent-purple/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className={cn(
+        "relative rounded-xl bg-card text-card-foreground border border-border shadow-[var(--shadow-xs)] cursor-pointer overflow-hidden",
+        "hover:border-border-strong hover:shadow-[var(--shadow-md)] transition-all duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "p-5"
+      )}
       role="button"
       tabIndex={0}
       aria-label={`${kpi.shortName} — open insight`}
       onClick={open}
       onKeyDown={onKeyDown}
     >
-      {/* Category badge */}
-      <div className="flex items-center justify-between mb-2">
+      {/* Top accent stripe — category color */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-0.5"
+        style={{ background: `linear-gradient(to right, ${categoryColor}, transparent)` }}
+      />
+
+      {/* Category + trend */}
+      <div className="flex items-center justify-between mb-3">
         <span
-          className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+          className="text-[9px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full"
           style={{
-            color: CATEGORY_COLORS[kpi.category],
-            backgroundColor: CATEGORY_COLORS[kpi.category] + "12",
+            color: categoryColor,
+            backgroundColor: `color-mix(in oklab, ${categoryColor} 12%, transparent)`,
           }}
         >
           {kpi.categoryLabel}
         </span>
-        <div className={cn("flex items-center gap-1 text-[10px]", trend.color)}>
+        <div className={cn("flex items-center gap-1 text-[10px] font-medium", trend.color)}>
           <TrendIcon className="w-3 h-3" />
           <span>{trend.label}</span>
         </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-sm font-medium text-muted mb-1">{kpi.shortName}</h3>
+      <h3 className="text-[13px] font-medium text-foreground mb-1.5 tracking-tight">{kpi.shortName}</h3>
 
-      {/* Business Purpose */}
-      <p className="text-[11px] leading-relaxed text-muted/70 mb-3 line-clamp-2">
+      {/* Purpose preview */}
+      <p className="text-[11px] leading-relaxed text-muted-foreground mb-3.5 line-clamp-2">
         {kpi.businessPurpose}
       </p>
 
-      {/* Primary Value */}
-      <div className="mb-3">
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-2xl font-bold tracking-tight">{kpi.primaryValue}</span>
-          <span className="text-sm text-muted">{kpi.primaryUnit}</span>
+      {/* Primary value */}
+      <div className="mb-3.5">
+        <div className="flex items-baseline gap-1.5 display">
+          <span className="text-2xl font-semibold tracking-[-0.02em] text-foreground numeric leading-none">
+            {kpi.primaryValue}
+          </span>
+          <span className="text-xs text-muted-foreground">{kpi.primaryUnit}</span>
         </div>
       </div>
 
@@ -494,24 +509,18 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
       <KPIVisualization kpi={kpi} />
 
       {/* AI Insight teaser — non-interactive; the whole tile is the click target */}
-      <div
-        className={cn(
-          "mt-3 w-full rounded-lg border transition-all",
-          "bg-gradient-to-r from-accent-purple/10 to-accent-blue/5",
-          "border-accent-purple/25 group-hover:border-accent-purple/45"
-        )}
-      >
+      <div className="mt-4 rounded-lg border border-border bg-secondary/40 group-hover:bg-secondary/60 transition-colors">
         <div className="flex items-center justify-between px-3 pt-2 pb-1">
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-accent-purple" />
-            <span className="text-[10px] font-bold text-accent-purple uppercase tracking-wider">AI Insight</span>
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="text-[10px] font-semibold text-primary uppercase tracking-[0.12em]">AI Insight</span>
           </div>
-          <div className="flex items-center gap-0.5 text-accent-purple/70">
-            <span className="text-[9px] font-medium">Click for details</span>
+          <div className="flex items-center gap-0.5 text-primary/70">
+            <span className="text-[9px] font-medium uppercase tracking-wider">Open</span>
             <ChevronRight className="w-3 h-3" />
           </div>
         </div>
-        <p className="px-3 pb-2.5 text-[11px] leading-relaxed text-foreground/60 line-clamp-2">
+        <p className="px-3 pb-2.5 text-[11px] leading-relaxed text-foreground/70 line-clamp-2">
           {kpi.insight}
         </p>
       </div>
@@ -530,24 +539,24 @@ function CategorySection({
   kpis: KPIDefinition[];
 }) {
   if (kpis.length === 0) return null;
+  const color = CATEGORY_COLORS[category];
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <div
-          className="w-1 h-5 rounded-full"
-          style={{ backgroundColor: CATEGORY_COLORS[category] }}
-        />
-        <h3 className="text-sm font-semibold" style={{ color: CATEGORY_COLORS[category] }}>
-          {CATEGORY_LABELS[category]}
-        </h3>
-        <span className="text-[10px] text-muted bg-card-hover px-2 py-0.5 rounded-full">
-          {kpis.length} KPI{kpis.length > 1 ? "s" : ""}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between border-b border-border pb-2">
+        <div className="flex items-center gap-2">
+          <span className="inline-block h-2 w-2 rounded-full" style={{ background: color }} />
+          <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color }}>
+            {CATEGORY_LABELS[category]}
+          </h3>
+        </div>
+        <span className="text-[10px] text-muted-foreground numeric">
+          {kpis.length} {kpis.length === 1 ? "KPI" : "KPIs"}
         </span>
       </div>
       <div
         className={cn(
-          "grid gap-4",
+          "grid gap-3",
           kpis.length === 1
             ? "grid-cols-1"
             : kpis.length === 2

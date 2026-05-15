@@ -1,101 +1,121 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Tokens — light + dark, tuned for finance / enterprise feel
+   DSO Visibility — design tokens
+   Linear-inspired modern finance dashboard palette using OKLCH.
    ============================================================ */
+
 :root {
-  /* Surface */
-  --background: #f7f8fa;
-  --foreground: #0b0d12;
-  --card: #ffffff;
-  --card-foreground: #0b0d12;
-  --card-hover: #f1f3f7;
-  --popover: #ffffff;
-  --popover-foreground: #0b0d12;
+  /* ---- Surface ---- */
+  --background: oklch(98.4% 0.003 250);
+  --foreground: oklch(20% 0.025 260);
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(20% 0.025 260);
+  --card-hover: oklch(96.6% 0.005 250);
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(20% 0.025 260);
 
-  /* Lines & ink */
-  --border: #e4e7ec;
-  --input: #e4e7ec;
-  --ring: rgba(15, 23, 42, 0.18);
+  /* ---- Lines & ink ---- */
+  --border: oklch(92% 0.006 250);
+  --border-strong: oklch(86% 0.008 250);
+  --input: oklch(92% 0.006 250);
+  --ring: oklch(60% 0.18 265 / 50%);
 
-  /* Text */
-  --muted: #5b6471;
-  --muted-foreground: #5b6471;
+  /* ---- Text ---- */
+  --muted: oklch(54% 0.018 255);
+  --muted-foreground: oklch(54% 0.018 255);
+  --subtle: oklch(70% 0.012 255);
 
-  /* Brand / semantic */
-  --primary: #0f172a;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f3f7;
-  --secondary-foreground: #0b0d12;
-  --accent: #f1f3f7;
-  --accent-foreground: #0b0d12;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
+  /* ---- Brand & semantic ---- */
+  --primary: oklch(50% 0.21 268);                /* indigo / violet 600 */
+  --primary-foreground: oklch(99% 0 0);
+  --primary-soft: oklch(95% 0.04 268);
+  --secondary: oklch(96% 0.005 250);
+  --secondary-foreground: oklch(22% 0.02 260);
+  --accent: oklch(96% 0.005 250);
+  --accent-foreground: oklch(22% 0.02 260);
+  --destructive: oklch(57% 0.22 27);
+  --destructive-foreground: oklch(99% 0 0);
 
-  /* Status accents (legacy names kept for existing code) */
-  --accent-blue: #3b82f6;
-  --accent-green: #15803d;
-  --accent-red: #dc2626;
-  --accent-amber: #b45309;
-  --accent-purple: #6d28d9;
-  --accent-cyan: #0891b2;
-  --accent-teal: #0d9488;
+  /* ---- Status colors (legacy aliases kept) ---- */
+  --accent-blue: oklch(58% 0.18 256);
+  --accent-green: oklch(58% 0.16 145);
+  --accent-red: oklch(57% 0.22 27);
+  --accent-amber: oklch(70% 0.16 70);
+  --accent-purple: oklch(54% 0.21 295);
+  --accent-cyan: oklch(64% 0.13 215);
+  --accent-teal: oklch(57% 0.11 195);
 
-  /* Glow tints */
-  --glow-blue: rgba(59, 130, 246, 0.10);
-  --glow-green: rgba(21, 128, 61, 0.10);
-  --glow-red: rgba(220, 38, 38, 0.10);
-  --glow-amber: rgba(180, 83, 9, 0.10);
+  /* Soft surfaces for status callouts */
+  --status-success-bg: oklch(96% 0.04 145);
+  --status-warning-bg: oklch(96% 0.05 70);
+  --status-danger-bg: oklch(96% 0.04 27);
+  --status-info-bg: oklch(96% 0.04 256);
 
-  /* Radius */
+  /* ---- Radius ---- */
   --radius: 0.625rem;
 
-  /* Density (overridden by .density-compact / .density-comfortable) */
+  /* ---- Elevation ---- */
+  --shadow-xs: 0 1px 1px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.06), 0 1px 1px 0 rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 16px 40px -8px rgba(15, 23, 42, 0.12), 0 4px 12px -4px rgba(15, 23, 42, 0.06);
+
+  /* ---- Density ---- */
   --density-padding: 1rem;
   --density-gap: 1rem;
   --density-font-base: 0.875rem;
 }
 
 .dark {
-  --background: #0a0d14;
-  --foreground: #e6e9ef;
-  --card: #11151d;
-  --card-foreground: #e6e9ef;
-  --card-hover: #1a2030;
-  --popover: #11151d;
-  --popover-foreground: #e6e9ef;
+  /* True deep base inspired by Linear / Cursor — slight blue tint, layered surfaces */
+  --background: oklch(14% 0.012 260);
+  --foreground: oklch(95% 0.008 250);
+  --card: oklch(17% 0.014 260);
+  --card-foreground: oklch(95% 0.008 250);
+  --card-hover: oklch(21% 0.016 260);
+  --popover: oklch(18% 0.015 260);
+  --popover-foreground: oklch(95% 0.008 250);
 
-  --border: #1f2735;
-  --input: #1f2735;
-  --ring: rgba(248, 250, 252, 0.18);
+  --border: oklch(25% 0.014 260);
+  --border-strong: oklch(32% 0.016 260);
+  --input: oklch(25% 0.014 260);
+  --ring: oklch(70% 0.16 265 / 50%);
 
-  --muted: #8b94a6;
-  --muted-foreground: #8b94a6;
+  --muted: oklch(65% 0.014 255);
+  --muted-foreground: oklch(65% 0.014 255);
+  --subtle: oklch(50% 0.012 255);
 
-  --primary: #e6e9ef;
-  --primary-foreground: #0a0d14;
-  --secondary: #1a2030;
-  --secondary-foreground: #e6e9ef;
-  --accent: #1a2030;
-  --accent-foreground: #e6e9ef;
-  --destructive: #ef4444;
-  --destructive-foreground: #0a0d14;
+  --primary: oklch(72% 0.18 265);
+  --primary-foreground: oklch(14% 0.012 260);
+  --primary-soft: oklch(28% 0.06 268);
+  --secondary: oklch(22% 0.014 260);
+  --secondary-foreground: oklch(95% 0.008 250);
+  --accent: oklch(22% 0.014 260);
+  --accent-foreground: oklch(95% 0.008 250);
+  --destructive: oklch(67% 0.21 22);
+  --destructive-foreground: oklch(14% 0.012 260);
 
-  --accent-blue: #60a5fa;
-  --accent-green: #4ade80;
-  --accent-red: #f87171;
-  --accent-amber: #fbbf24;
-  --accent-purple: #a78bfa;
-  --accent-cyan: #22d3ee;
-  --accent-teal: #2dd4bf;
+  --accent-blue: oklch(72% 0.16 256);
+  --accent-green: oklch(74% 0.16 145);
+  --accent-red: oklch(70% 0.20 22);
+  --accent-amber: oklch(80% 0.14 75);
+  --accent-purple: oklch(74% 0.18 295);
+  --accent-cyan: oklch(78% 0.13 215);
+  --accent-teal: oklch(76% 0.11 195);
 
-  --glow-blue: rgba(96, 165, 250, 0.14);
-  --glow-green: rgba(74, 222, 128, 0.14);
-  --glow-red: rgba(248, 113, 113, 0.14);
-  --glow-amber: rgba(251, 191, 36, 0.14);
+  --status-success-bg: oklch(28% 0.06 145);
+  --status-warning-bg: oklch(28% 0.07 70);
+  --status-danger-bg: oklch(28% 0.07 27);
+  --status-info-bg: oklch(28% 0.07 256);
+
+  --shadow-xs: 0 1px 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35), 0 1px 1px 0 rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.45), 0 2px 4px -2px rgba(0, 0, 0, 0.30);
+  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.55), 0 4px 12px -4px rgba(0, 0, 0, 0.35);
 }
 
-/* Density variants — switch global spacing & type scale */
+/* Density variants */
 .density-compact {
   --density-padding: 0.75rem;
   --density-gap: 0.75rem;
@@ -117,12 +137,15 @@
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-accent: var(--accent);
@@ -142,109 +165,181 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 }
 
 /* ============================================================
-   Base styles
+   Base
    ============================================================ */
 html, body {
   background: var(--background);
   color: var(--foreground);
 }
+
 body {
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: var(--density-font-base);
-  font-feature-settings: "ss01", "cv01", "tnum";
+  font-feature-settings: "ss01", "cv01", "cv02", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Use tabular numbers everywhere numeric KPIs render */
-.numeric { font-variant-numeric: tabular-nums; }
+/* Tabular numerics for everything dollar/percent/days */
+.numeric,
+.tabular {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Display style — used on hero metrics and large numbers */
+.display {
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.02em;
+  font-feature-settings: "ss01", "cv01", "cv02", "cv11";
+}
 
 /* Scrollbars */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
-/* Recharts tooltips */
+/* ============================================================
+   Recharts hardening — make charts theme-aware in light + dark
+   ============================================================ */
 .recharts-default-tooltip {
-  background: var(--card) !important;
+  background: var(--popover) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
-  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.18) !important;
+  box-shadow: var(--shadow-md) !important;
   color: var(--foreground) !important;
+  padding: 8px 10px !important;
+  font-size: 12px !important;
 }
 .recharts-tooltip-label { color: var(--muted) !important; }
 .recharts-tooltip-item { color: var(--foreground) !important; }
 .recharts-cartesian-grid line { stroke: var(--border) !important; }
 .recharts-cartesian-axis-tick text { fill: var(--muted) !important; }
+.recharts-text { fill: var(--muted) !important; }
 
 /* ============================================================
-   Component-level tokens (kept for backwards compat)
+   Surfaces & primitives
    ============================================================ */
 .surface-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  border-radius: calc(var(--radius) + 2px);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
-.surface-card:hover { border-color: color-mix(in srgb, var(--accent-blue) 40%, var(--border)); }
+.surface-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
 
-/* Legacy glass-card alias — keep existing usages working */
+/* Legacy alias so existing .glass-card usages adopt the new style */
 .glass-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  border-radius: calc(var(--radius) + 2px);
+  box-shadow: var(--shadow-xs);
+  transition: border-color 160ms ease, box-shadow 200ms ease;
 }
-.dark .glass-card { box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.glass-card:hover { box-shadow: var(--shadow-md); }
 
-.glow-blue { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-blue) 24%, transparent); }
-.glow-green { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-green) 28%, transparent); }
-.glow-red { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-red) 28%, transparent); }
-.glow-amber { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-amber) 28%, transparent); }
+/* ============================================================
+   Status accents — used on KPI tiles as a top stripe
+   ============================================================ */
+.status-stripe-success { box-shadow: inset 0 2px 0 var(--accent-green); }
+.status-stripe-warning { box-shadow: inset 0 2px 0 var(--accent-amber); }
+.status-stripe-danger  { box-shadow: inset 0 2px 0 var(--accent-red); }
+.status-stripe-info    { box-shadow: inset 0 2px 0 var(--accent-blue); }
+.status-stripe-neutral { box-shadow: inset 0 2px 0 var(--border-strong); }
 
+.glow-blue { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-blue) 28%, transparent); }
+.glow-green { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-green) 32%, transparent); }
+.glow-red { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-red) 32%, transparent); }
+.glow-amber { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent-amber) 32%, transparent); }
+
+/* ============================================================
+   Animations
+   ============================================================ */
 @keyframes pulse-glow {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  50% { opacity: 0.55; }
 }
 .pulse-alert { animation: pulse-glow 2s ease-in-out infinite; }
 
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--card-hover) 80%, transparent), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes severity-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-red) 20%, transparent); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+.severity-critical { animation: severity-pulse 2s ease-in-out infinite; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fade-in 180ms ease-out both; }
+
+/* Gradient ink used on the hero title */
 .gradient-text {
-  background: linear-gradient(135deg, var(--foreground), color-mix(in srgb, var(--accent-blue) 70%, var(--foreground)));
+  background: linear-gradient(135deg, var(--foreground), color-mix(in oklab, var(--primary) 75%, var(--foreground)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Subtle dotted/grid background for hero band */
+.bg-dot-grid {
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--border-strong) 50%, transparent) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+/* Safe areas */
 .safe-area-pb { padding-bottom: max(0.75rem, env(safe-area-inset-bottom)); }
-
-@media (hover: none) {
-  .surface-card:hover { transform: none; }
-}
-
-.sidebar-transition {
-  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes severity-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-red) 20%, transparent); }
-  50% { box-shadow: 0 0 0 6px transparent; }
-}
-.severity-critical { animation: severity-pulse 2s ease-in-out infinite; }
-
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .mobile-nav-safe { padding-bottom: calc(0.375rem + env(safe-area-inset-bottom)); }
 }
 
-.admin-table tbody tr:nth-child(even) {
-  background-color: color-mix(in srgb, var(--card-hover) 50%, transparent);
+/* Sidebar transition */
+.sidebar-transition {
+  transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================================
-   Section spacing — replace forced top-border with breathing room
-   ============================================================ */
-section + section { margin-top: 1.5rem; }
+/* Disable hover lift on touch */
+@media (hover: none) {
+  .surface-card:hover { transform: none; }
+  .glass-card:hover { transform: none; }
+}
+
+/* Admin table zebra */
+.admin-table tbody tr:nth-child(even) {
+  background-color: color-mix(in oklab, var(--card-hover) 55%, transparent);
+}
+
+/* Section rhythm */
+section + section { margin-top: 1.25rem; }
+
+/* Focus rings */
+.focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ring);
+}

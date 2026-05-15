@@ -13,10 +13,9 @@ import { AdvancedDashboard } from "@/components/sections/advanced-dashboard";
 import { AIInsightsDashboard } from "@/components/sections/ai-insights-dashboard";
 import { AdminPanel } from "@/components/sections/admin-panel";
 import { Chatbot } from "@/components/chatbot";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { BarChart3, Layers, Brain, Settings2 } from "lucide-react";
+import { BarChart3, Layers, Brain, Settings2, ChevronRight } from "lucide-react";
 
 const SECTION_CONFIG = {
   basic: { title: "Overview", subtitle: "Core receivables KPIs", icon: BarChart3 },
@@ -70,22 +69,22 @@ export default function Dashboard() {
         )}
       >
         {/* Header */}
-        <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/85 border-b border-border">
-          <div className="mx-auto max-w-[1600px] px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <SectionIcon className="h-4 w-4 text-muted-foreground shrink-0" />
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-sm font-semibold tracking-tight text-foreground truncate">
+        <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/80 border-b border-border">
+          <div className="mx-auto max-w-[1600px] px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="hidden md:inline-flex items-center text-[11px] text-muted-foreground">
+                <span>DSO Visibility</span>
+                <ChevronRight className="h-3 w-3 mx-1 text-muted-foreground/60" />
+              </span>
+              <SectionIcon className="h-4 w-4 text-primary shrink-0" />
+              <div className="flex items-baseline gap-2 min-w-0">
+                <span className="text-[15px] font-semibold tracking-tight text-foreground truncate">
                   {config.title}
                 </span>
-                <Separator orientation="vertical" className="h-4 hidden sm:block" />
-                <span className="text-xs text-muted-foreground hidden sm:inline">
+                <span className="hidden sm:inline text-[11px] text-muted-foreground truncate">
                   {config.subtitle}
                 </span>
               </div>
-              <Badge variant="neutral" className="hidden md:inline-flex">
-                DSO Visibility
-              </Badge>
             </div>
 
             <div className="flex items-center gap-2">
@@ -97,17 +96,18 @@ export default function Dashboard() {
         </header>
 
         {/* Content */}
-        <main className="mx-auto max-w-[1600px] px-4 sm:px-6 py-5 pb-24 md:pb-6 space-y-5">
+        <main className="mx-auto max-w-[1600px] px-4 sm:px-6 py-6 pb-24 md:pb-10 space-y-6 fade-in">
           {showHero && <HeroKPIBand section={activeSection} />}
           <DashboardContent />
 
-          <footer className="pt-6 mt-6 border-t border-border">
-            <p className="text-[11px] text-muted-foreground text-center">
-              All metrics computed from the local SQLite database · No external AI APIs ·
-              <span className="ml-1 text-muted-foreground/70">
-                Click any KPI title <span className="inline-block px-1 rounded border border-border">i</span> for business purpose, formula & insight
+          <footer className="pt-8 mt-6 border-t border-border">
+            <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
+              <span>Local SQLite · No external AI APIs</span>
+              <span className="text-border">·</span>
+              <span>
+                Click any KPI tile for context, formula & insight
               </span>
-            </p>
+            </div>
           </footer>
         </main>
       </div>
