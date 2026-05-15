@@ -4,6 +4,8 @@ import { useDashboard } from "@/context/dashboard-context";
 import { getEnabledKPIs } from "@/lib/kpi-registry";
 import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
 import { SectionHeader } from "@/components/ui/section-header";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import {
   Brain,
@@ -305,9 +307,10 @@ export function AIInsightsDashboard() {
   });
 
   const totalUnlock = ai.opportunityWaterfall.reduce((s, o) => s + o.value, 0);
+  const defaultTab = visibleCards[0]?.id ?? "exec-summary";
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5">
       <SectionHeader
         icon={Brain}
         title="AI Insights"
@@ -315,31 +318,38 @@ export function AIInsightsDashboard() {
         iconColor="text-accent-cyan"
       />
 
+      {/* Always-on summary row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="glass-card p-5 flex flex-col items-center justify-center">
-          <h4 className="text-sm font-medium text-muted mb-3">AR Health Score</h4>
+        <Card className="p-5 flex flex-col items-center justify-center">
+          <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
+            AR Health Score
+          </h4>
           <HealthGauge score={ai.healthGauge.score} grade={ai.healthGauge.grade} />
-        </div>
-        <div className="glass-card p-5">
-          <h4 className="text-sm font-medium text-muted mb-3">Health Dimensions</h4>
+        </Card>
+        <Card className="p-5">
+          <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
+            Health Dimensions
+          </h4>
           <HealthRadarChart data={ai.healthRadar} />
           <div className="grid grid-cols-3 gap-1.5 mt-2">
             {ai.healthRadar.map((d) => {
               const color = d.value >= 70 ? "text-accent-green" : d.value >= 50 ? "text-accent-amber" : "text-accent-red";
               return (
                 <div key={d.dim} className="text-center">
-                  <span className="text-[9px] text-muted block">{d.dim}</span>
-                  <span className={cn("text-xs font-bold", color)}>{d.value}</span>
+                  <span className="text-[10px] text-muted-foreground block">{d.dim}</span>
+                  <span className={cn("text-xs font-semibold numeric", color)}>{d.value}</span>
                 </div>
               );
             })}
           </div>
-        </div>
-        <div className="glass-card p-5">
-          <h4 className="text-sm font-medium text-muted mb-3">Segment Efficiency</h4>
+        </Card>
+        <Card className="p-5">
+          <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-3">
+            Segment Efficiency
+          </h4>
           <SegmentComparison data={ai.segmentEfficiencyChart} />
           {ai.segmentEfficiencyChart.length >= 2 ? (
-            <p className="text-[10px] text-muted text-center mt-1">
+            <p className="text-[10px] text-muted-foreground text-center mt-1">
               {(() => {
                 const sorted = [...ai.segmentEfficiencyChart].sort((a, b) => b.score - a.score);
                 const best = sorted[0];
@@ -349,25 +359,40 @@ export function AIInsightsDashboard() {
               })()}
             </p>
           ) : null}
-        </div>
+        </Card>
       </div>
 
-      <div className="glass-card p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-accent-teal" />
+      <Card className="p-5">
+        <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h4 className="text-xs font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <DollarSign className="w-3.5 h-3.5 text-accent-teal" />
             Working Capital Release Roadmap
           </h4>
-          <span className="text-lg font-bold text-accent-teal">{fmtCrore(totalUnlock)} releasable</span>
+          <span className="text-sm font-semibold text-accent-teal numeric">
+            {fmtCrore(totalUnlock)} releasable
+          </span>
         </div>
         <OpportunityWaterfall data={ai.opportunityWaterfall} />
-      </div>
+      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {visibleCards.map((card) => (
-          <InsightCardComponent key={card.id} card={card} />
-        ))}
-      </div>
+      {/* Tabbed deep dive — one insight at a time replaces 8 stacked cards */}
+      {visibleCards.length > 0 && (
+        <Tabs defaultValue={defaultTab} className="space-y-3">
+          <TabsList className="w-full justify-start flex-wrap h-auto">
+            {visibleCards.map((c) => (
+              <TabsTrigger key={c.id} value={c.id} className="gap-1.5">
+                {renderCardIcon(c.iconKey, "h-3.5 w-3.5")}
+                <span>{c.title}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {visibleCards.map((c) => (
+            <TabsContent key={c.id} value={c.id}>
+              <InsightCardComponent card={c} />
+            </TabsContent>
+          ))}
+        </Tabs>
+      )}
     </section>
   );
 }
