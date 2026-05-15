@@ -174,9 +174,28 @@ export function KPICard({
   const TrendIcon = trend.icon;
   const dynamic = useKpiInsight(kpiId ?? "");
 
+  const open = () => setShowDetail(true);
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
+  };
+
   return (
-    <Card className={cn("p-4 relative group", glowClass, className)}>
-      {/* Header: title · info tooltip · trend chip */}
+    <Card
+      className={cn(
+        "p-4 relative group cursor-pointer transition-colors hover:border-accent-blue/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        glowClass,
+        className
+      )}
+      role="button"
+      tabIndex={0}
+      aria-label={`${title} — open insight`}
+      onClick={open}
+      onKeyDown={onKeyDown}
+    >
+      {/* Header: title · info hint · trend chip */}
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">
@@ -184,18 +203,17 @@ export function KPICard({
           </h3>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={() => setShowDetail(true)}
-                className="inline-flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground hover:bg-card-hover hover:text-foreground transition-colors"
-                aria-label="Details"
+              <span
+                aria-hidden
+                className="inline-flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground/70 group-hover:text-accent-blue transition-colors"
               >
                 <Info className="h-3 w-3" />
-              </button>
+              </span>
             </TooltipTrigger>
             <TooltipContent side="top" className="max-w-[260px]">
               <span className="font-medium block mb-1">{title}</span>
               <span className="text-muted-foreground leading-snug">{insight.businessPurpose}</span>
+              <span className="block text-muted-foreground/70 mt-1 italic">Click for insight</span>
             </TooltipContent>
           </Tooltip>
         </div>

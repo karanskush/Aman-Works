@@ -440,8 +440,23 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
   const trend = trendConfig[kpi.trend];
   const TrendIcon = trend.icon;
 
+  const open = () => setShowModal(true);
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
+  };
+
   return (
-    <div className="glass-card p-4 relative group">
+    <div
+      className="glass-card p-4 relative group cursor-pointer transition-colors hover:border-accent-purple/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      role="button"
+      tabIndex={0}
+      aria-label={`${kpi.shortName} — open insight`}
+      onClick={open}
+      onKeyDown={onKeyDown}
+    >
       {/* Category badge */}
       <div className="flex items-center justify-between mb-2">
         <span
@@ -478,16 +493,12 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
       {/* Visualization */}
       <KPIVisualization kpi={kpi} />
 
-      {/* AI Insight Strip */}
-      <button
-        onClick={() => setShowModal(true)}
+      {/* AI Insight teaser — non-interactive; the whole tile is the click target */}
+      <div
         className={cn(
-          "mt-3 w-full rounded-lg border transition-all text-left cursor-pointer",
+          "mt-3 w-full rounded-lg border transition-all",
           "bg-gradient-to-r from-accent-purple/10 to-accent-blue/5",
-          "border-accent-purple/25 hover:border-accent-purple/40",
-          "hover:from-accent-purple/15 hover:to-accent-blue/10",
-          "hover:shadow-md hover:shadow-accent-purple/5",
-          "active:scale-[0.99]"
+          "border-accent-purple/25 group-hover:border-accent-purple/45"
         )}
       >
         <div className="flex items-center justify-between px-3 pt-2 pb-1">
@@ -496,14 +507,14 @@ function AdvancedKPITile({ kpi: staticKpi }: { kpi: KPIDefinition }) {
             <span className="text-[10px] font-bold text-accent-purple uppercase tracking-wider">AI Insight</span>
           </div>
           <div className="flex items-center gap-0.5 text-accent-purple/70">
-            <span className="text-[9px] font-medium">Details</span>
+            <span className="text-[9px] font-medium">Click for details</span>
             <ChevronRight className="w-3 h-3" />
           </div>
         </div>
         <p className="px-3 pb-2.5 text-[11px] leading-relaxed text-foreground/60 line-clamp-2">
           {kpi.insight}
         </p>
-      </button>
+      </div>
 
       {showModal && <AdvancedKPIModal kpi={kpi} onClose={() => setShowModal(false)} />}
     </div>
