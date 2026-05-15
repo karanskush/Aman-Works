@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import type { KPIInsight } from "@/lib/data";
+import { useKpiInsight } from "@/lib/use-kpi-data";
 import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -15,10 +16,15 @@ import {
   Sparkles,
   Info,
   Calculator,
+  Eye,
+  Lightbulb,
+  ArrowRight,
 } from "lucide-react";
 
 interface KPICardProps {
   title: string;
+  /** Optional KPI registry id. When provided, the detail modal renders the data-driven observation / recommendation / next action for this slice. */
+  kpiId?: string;
   value: string | number;
   suffix?: string;
   prefix?: string;
@@ -40,10 +46,12 @@ const trendConfig = {
 function DetailModal({
   title,
   insight,
+  dynamic,
   onClose,
 }: {
   title: string;
   insight: KPIInsight;
+  dynamic?: { observation: string; recommendation: string; nextAction: string };
   onClose: () => void;
 }) {
   const modalRef = useRef<HTMLDivElement>(null);
@@ -107,13 +115,41 @@ function DetailModal({
           </p>
         </section>
 
-        <section>
-          <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-            <Sparkles className="w-3 h-3" />
-            AI Insight
-          </div>
-          <p className="text-sm text-foreground/85 leading-relaxed">{insight.aiInsight}</p>
-        </section>
+        {dynamic ? (
+          <>
+            <section className="rounded-md border border-accent-blue/25 bg-accent-blue/5 p-3">
+              <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-accent-blue">
+                <Eye className="w-3 h-3" />
+                Key Observation
+              </div>
+              <p className="text-sm text-foreground/85 leading-relaxed">{dynamic.observation}</p>
+            </section>
+
+            <section className="rounded-md border border-accent-amber/25 bg-accent-amber/5 p-3">
+              <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-accent-amber">
+                <Lightbulb className="w-3 h-3" />
+                Recommendation
+              </div>
+              <p className="text-sm text-foreground/85 leading-relaxed">{dynamic.recommendation}</p>
+            </section>
+
+            <section className="rounded-md border border-accent-green/25 bg-accent-green/5 p-3">
+              <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-accent-green">
+                <ArrowRight className="w-3 h-3" />
+                Next Action
+              </div>
+              <p className="text-sm text-foreground/85 leading-relaxed">{dynamic.nextAction}</p>
+            </section>
+          </>
+        ) : (
+          <section>
+            <div className="flex items-center gap-1.5 mb-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+              <Sparkles className="w-3 h-3" />
+              AI Insight
+            </div>
+            <p className="text-sm text-foreground/85 leading-relaxed">{insight.aiInsight}</p>
+          </section>
+        )}
       </div>
     </div>,
     document.body
@@ -122,6 +158,7 @@ function DetailModal({
 
 export function KPICard({
   title,
+  kpiId,
   value,
   suffix,
   prefix,
@@ -135,6 +172,7 @@ export function KPICard({
   const [showDetail, setShowDetail] = useState(false);
   const trend = trendConfig[insight.trend];
   const TrendIcon = trend.icon;
+  const dynamic = useKpiInsight(kpiId ?? "");
 
   return (
     <Card className={cn("p-4 relative group", glowClass, className)}>
@@ -185,7 +223,7 @@ export function KPICard({
       {children}
 
       {showDetail && (
-        <DetailModal title={title} insight={insight} onClose={() => setShowDetail(false)} />
+        <DetailModal title={title} insight={insight} dynamic={dynamic} onClose={() => setShowDetail(false)} />
       )}
     </Card>
   );

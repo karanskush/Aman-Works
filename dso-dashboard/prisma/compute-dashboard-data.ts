@@ -59,8 +59,11 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   const totalSalesAll = allInvoices.reduce((s, i) => s + i.amount, 0);
 
   // ---- DSO ----
+  // Period length still used for traditional days-based metrics derived
+  // internally (leakage, dispute-adjusted DSO, segment DSO weights).
   const periodDays = quarter === "All" ? 365 : 90;
-  const dso = totalSalesAll > 0 ? (totalOpenAR / totalSalesAll) * periodDays : 0;
+  // Traditional days-based DSO kept for downstream rupee/days math.
+  const dsoDays = totalSalesAll > 0 ? (totalOpenAR / totalSalesAll) * periodDays : 0;
 
   const rawSnapshots = await prisma.monthlySnapshot.findMany({
     where: { fiscalPeriodId: { in: fpIds } },
@@ -106,11 +109,19 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   }
   const monthlySnapshots = [...snapshotByPeriod.values()].sort((a, b) => a.order - b.order);
 
+  // New DSO formula per spec: DSO = (Average AR / Total Credit Sales) × 100
+  // Treated as an AR-intensity ratio. Per-month uses that month's snapshot.
   const dsoMonthly = monthlySnapshots.map(ms => ({
     month: ms.label,
-    value: parseFloat((ms.totalCreditSales > 0 ? (ms.totalAR / ms.totalCreditSales) * 30 : 0).toFixed(1)),
+    value: parseFloat((ms.totalCreditSales > 0 ? (ms.totalAR / ms.totalCreditSales) * 100 : 0).toFixed(1)),
   }));
-  const dsoOverall = parseFloat(dso.toFixed(1));
+  const avgARacross = monthlySnapshots.length > 0
+    ? monthlySnapshots.reduce((s, ms) => s + ms.totalAR, 0) / monthlySnapshots.length
+    : totalOpenAR;
+  const totalCreditSalesAcross = monthlySnapshots.reduce((s, ms) => s + ms.totalCreditSales, 0) || totalSalesAll;
+  const dsoOverall = totalCreditSalesAcross > 0
+    ? parseFloat(((avgARacross / totalCreditSalesAcross) * 100).toFixed(1))
+    : 0;
 
   const overdueRatio = totalOpenAR > 0 ? (overdueAR / totalOpenAR) * 100 : 0;
   const overdueRatioMonthly = monthlySnapshots.map(ms => ({
@@ -149,47 +160,60 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
 
   const weeklyCashflows = await prisma.weeklyCashflow.findMany({
     where: { fiscalPeriodId: { in: fpIds } },
+    include: { fiscalPeriod: true },
     orderBy: { weekStartDate: "asc" },
   });
-  type WeekAgg = { label: string; onTime: number[]; eff: number[]; overdueBalance: number; collectionRate: number; dueAmt: number; collAmt: number; weekStart: Date; };
-  const weekMap = new Map<number, WeekAgg>();
+  // Aggregate weekly cashflows up to fiscal-period (month) granularity. Monthly
+  // aggregation gives a cleaner trend signal than week-by-week noise.
+  type MonthAgg = {
+    label: string;
+    order: number;
+    onTimeNum: number;
+    onTimeDen: number;
+    dueAmt: number;
+    collAmt: number;
+    overdueBalance: number;
+    sales: number;
+  };
+  const monthAggMap = new Map<string, MonthAgg>();
   for (const wc of weeklyCashflows) {
-    const existing = weekMap.get(wc.weekNumber);
+    const key = wc.fiscalPeriodId;
+    const existing = monthAggMap.get(key);
+    // OTPR uses on-time *invoice count* numerator and total *due count* denominator.
+    // Recover counts: onTimeRate% × dueCount = onTimeCount.
+    const dueCount = wc.invoicesDueCount;
+    const collectedCount = wc.invoicesCollectedCount;
+    const onTimeCount = Math.min(dueCount, collectedCount); // collected within the week counts as on-time
     if (!existing) {
-      weekMap.set(wc.weekNumber, {
-        label: wc.weekLabel,
-        onTime: wc.onTimePaymentRate != null ? [wc.onTimePaymentRate] : [],
-        eff: wc.collectionEffectiveness != null ? [wc.collectionEffectiveness] : [],
-        overdueBalance: wc.overdueBalance,
-        collectionRate: wc.collectionRate || 0,
+      monthAggMap.set(key, {
+        label: wc.fiscalPeriod.periodLabel,
+        order: wc.fiscalPeriod.fiscalPeriod,
+        onTimeNum: onTimeCount,
+        onTimeDen: dueCount,
         dueAmt: wc.invoicesDueAmount,
         collAmt: wc.invoicesCollectedAmount,
-        weekStart: wc.weekStartDate,
+        overdueBalance: wc.overdueBalance,
+        sales: wc.salesAmount,
       });
     } else {
-      if (wc.onTimePaymentRate != null) existing.onTime.push(wc.onTimePaymentRate);
-      if (wc.collectionEffectiveness != null) existing.eff.push(wc.collectionEffectiveness);
-      existing.overdueBalance += wc.overdueBalance;
-      existing.collectionRate += wc.collectionRate || 0;
+      existing.onTimeNum += onTimeCount;
+      existing.onTimeDen += dueCount;
       existing.dueAmt += wc.invoicesDueAmount;
       existing.collAmt += wc.invoicesCollectedAmount;
+      existing.overdueBalance += wc.overdueBalance;
+      existing.sales += wc.salesAmount;
     }
   }
-  const weekKeys = [...weekMap.keys()].sort((a, b) => {
-    const wa = weekMap.get(a)!.weekStart.getTime();
-    const wb = weekMap.get(b)!.weekStart.getTime();
-    return wa - wb;
-  });
-  const onTimeWeekly = weekKeys.map(w => {
-    const d = weekMap.get(w)!;
-    const avg = d.onTime.length > 0 ? d.onTime.reduce((a, b) => a + b, 0) / d.onTime.length : 0;
-    return { week: d.label, value: Math.round(avg) };
-  });
-  const collEffWeekly = weekKeys.map(w => {
-    const d = weekMap.get(w)!;
-    const avg = d.eff.length > 0 ? d.eff.reduce((a, b) => a + b, 0) / d.eff.length : 0;
-    return { week: d.label, value: Math.round(avg) };
-  });
+  const monthAgg = [...monthAggMap.values()].sort((a, b) => a.order - b.order);
+
+  const onTimeMonthly = monthAgg.map(m => ({
+    month: m.label,
+    value: m.onTimeDen > 0 ? Math.round((m.onTimeNum / m.onTimeDen) * 100) : 0,
+  }));
+  const collEffMonthly = monthAgg.map(m => ({
+    month: m.label,
+    value: m.dueAmt > 0 ? Math.round((m.collAmt / m.dueAmt) * 100) : 0,
+  }));
 
   const creditPeriodDaysList = [7, 15, 30, 45, 60];
   const cpEffectiveness = creditPeriodDaysList.map(days => {
@@ -267,23 +291,26 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
     return { month: fp.periodLabel, value: parseFloat(avg.toFixed(1)) };
   });
 
-  const backlogWeekly = weekKeys.map(w => {
-    const d = weekMap.get(w)!;
-    const avgDailyCollection = d.collAmt / 7;
-    const backlog = avgDailyCollection > 0 ? d.overdueBalance / avgDailyCollection : 0;
+  // Days to Clear Backlog — monthly. avgDailyCollection assumes 30 days per month.
+  const backlogMonthly = monthAgg.map(m => {
+    const avgDailyCollection = m.collAmt / 30;
+    const backlog = avgDailyCollection > 0 ? m.overdueBalance / avgDailyCollection : 0;
     const val = Math.min(backlog, 999);
-    return { week: d.label, value: parseFloat(val.toFixed(1)) };
+    return { month: m.label, value: parseFloat(val.toFixed(1)) };
   });
 
   // ---- Advanced: DSO Bridge ----
-  const blendedDSO = dso;
+  // DSO Bridge uses the new ratio-based formula consistently across segments,
+  // so the per-segment numbers add up to the headline DSO with sales-weighted
+  // contributions.
+  const blendedDSO = dsoOverall;
   const segments = ["STRATEGIC", "KEY", "STANDARD", "SMB"] as const;
   const dsoBridgeSegments = segments.map(seg => {
     const segInvs = allInvoices.filter(i => i.customer.segment === seg);
     const segOpen = segInvs.filter(i => i.status === "OPEN" || i.status === "PARTIAL");
     const segOpenAR = segOpen.reduce((s, i) => s + i.amount, 0);
     const segSales = segInvs.reduce((s, i) => s + i.amount, 0);
-    const segDSO = segSales > 0 ? (segOpenAR / segSales) * periodDays : 0;
+    const segDSO = segSales > 0 ? (segOpenAR / segSales) * 100 : 0;
     const weight = totalSalesAll > 0 ? segSales / totalSalesAll : 0;
     const contribution = (segDSO - blendedDSO) * weight;
     return {
@@ -299,7 +326,8 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   };
 
   // ---- AR Health Score ----
-  const dsoHealthScore = Math.max(0, Math.min(100, 100 - (blendedDSO - 20) / (60 - 20) * 100));
+  // Score from the new ratio-based DSO. Healthy < 15%, stressed > 35%.
+  const dsoHealthScore = Math.max(0, Math.min(100, 100 - (blendedDSO - 15) / (35 - 15) * 100));
   const ceiHealthScore = Math.min(100, Math.max(0, ceiOverall));
   const overdueHealthScore = Math.max(0, 100 - overdueRatio);
   const notDueAR = openInvoices.filter(i => !i.isOverdue).reduce((s, i) => s + i.amount, 0);
@@ -372,13 +400,14 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   };
 
   // ---- Cash Flow Leakage ----
+  // Days-based math kept here because we multiply by daily sales to get ₹.
   const bestPossibleDSO = weightedAvgTerms;
   const dailySales = totalSalesAll > 0 ? totalSalesAll / periodDays : 0;
-  const leakageDays = blendedDSO - bestPossibleDSO;
+  const leakageDays = dsoDays - bestPossibleDSO;
   const leakageINR = leakageDays * dailySales;
   const cashFlowLeakage = {
     bestPossibleDSO: parseFloat(bestPossibleDSO.toFixed(1)),
-    actualDSO: parseFloat(blendedDSO.toFixed(1)),
+    actualDSO: parseFloat(dsoDays.toFixed(1)),
     leakageDays: parseFloat(leakageDays.toFixed(1)),
     leakageINR: Math.round(leakageINR),
   };
@@ -571,13 +600,14 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   };
 
   // ---- Dispute-Adjusted DSO ----
+  // Reported in days using traditional formula so the impact is intuitive.
   const blockedInvoiceIds = new Set(dunningRecords.filter(d => d.dunningBlock != null).map(d => d.invoiceId));
   const cleanOpenAR = openInvoices.filter(i => !blockedInvoiceIds.has(i.id)).reduce((s, i) => s + i.amount, 0);
   const cleanDSO = totalSalesAll > 0 ? (cleanOpenAR / totalSalesAll) * periodDays : 0;
   const disputeAdjusted = {
-    actualDSO: parseFloat(blendedDSO.toFixed(1)),
+    actualDSO: parseFloat(dsoDays.toFixed(1)),
     cleanDSO: parseFloat(cleanDSO.toFixed(1)),
-    disputeImpactDays: parseFloat((blendedDSO - cleanDSO).toFixed(1)),
+    disputeImpactDays: parseFloat((dsoDays - cleanDSO).toFixed(1)),
     disputedAR: Math.round(totalOpenAR - cleanOpenAR),
   };
 
@@ -658,8 +688,8 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
     },
     collection: {
       cei: { overall: ceiOverall, monthly: ceiMonthly },
-      onTimePayment: { weekly: onTimeWeekly },
-      collectionEffectiveness: { weekly: collEffWeekly },
+      onTimePayment: { monthly: onTimeMonthly },
+      collectionEffectiveness: { monthly: collEffMonthly },
       creditPeriodEffectiveness: { data: cpEffectiveness },
     },
     aging: {
@@ -670,7 +700,7 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
     operational: {
       invoiceToCash: { p50, p90 },
       creditPeriodUtilization: { overall: parseFloat(avgCPU.toFixed(1)), monthly: cpuMonthly },
-      daysToClearBacklog: { weekly: backlogWeekly },
+      daysToClearBacklog: { monthly: backlogMonthly },
     },
     advanced: {
       dsoBridge,
@@ -716,6 +746,469 @@ function fmtMillions(value: number): string {
   if (abs >= 10_000_000) return `₹${(value / 10_000_000).toFixed(1)}Cr`;
   if (abs >= 100_000) return `₹${(value / 100_000).toFixed(1)}L`;
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
+}
+
+// ============================================================
+// Per-KPI insights — data-driven observation + recommendation + action
+// Computed per (FY, quarter) slice; consumed by every KPI tile so the
+// modal narrative changes when the filter changes.
+// ============================================================
+
+export interface KpiInsight {
+  observation: string;
+  recommendation: string;
+  nextAction: string;
+}
+
+function avg<T>(arr: T[], pick: (x: T) => number): number {
+  if (arr.length === 0) return 0;
+  return arr.reduce((s, x) => s + pick(x), 0) / arr.length;
+}
+
+function computePerKpiInsights(slice: Slice, fy: FY, quarter: Quarter, prevSlice?: Slice): Record<string, KpiInsight> {
+  const e = slice.executive;
+  const c = slice.collection;
+  const a = slice.aging;
+  const o = slice.operational;
+  const adv = slice.advanced;
+  const sum = slice.summary;
+  const periodLbl = quarter === "All" ? `FY ${fy - 1}-${String(fy).slice(2)}` : `${quarter} FY ${fy - 1}-${String(fy).slice(2)}`;
+
+  const trendDelta = (curr: number, prev?: number, suffix = "") => {
+    if (prev === undefined || prev === 0) return "no prior period to compare";
+    const d = curr - prev;
+    if (Math.abs(d) < 0.05) return "flat vs prev period";
+    return `${d >= 0 ? "+" : ""}${d.toFixed(1)}${suffix} vs prev period`;
+  };
+
+  const dsoCurr = e.dso.overall;
+  const dsoPrev = prevSlice?.executive.dso.overall;
+  const dsoBand = dsoCurr < 15 ? "healthy" : dsoCurr < 25 ? "manageable" : dsoCurr < 35 ? "elevated" : "critical";
+
+  const overdueCurr = e.overdueRatio.overall;
+  const overduePrev = prevSlice?.executive.overdueRatio.overall;
+
+  const ceiCurr = c.cei.overall;
+  const ceiPrev = prevSlice?.collection.cei.overall;
+
+  const sixtyPlus = a.buckets.find(b => b.key === "60_PLUS");
+  const notDue = a.buckets.find(b => b.key === "NOT_DUE");
+  const peak = a.peakExposure;
+
+  const otpAvg = avg(c.onTimePayment.monthly, m => m.value);
+  const effAvg = avg(c.collectionEffectiveness.monthly, m => m.value);
+  const backlogAvg = avg(o.daysToClearBacklog.monthly, m => m.value);
+
+  const cpuOverall = o.creditPeriodUtilization.overall;
+  const p50 = o.invoiceToCash.p50;
+  const p90 = o.invoiceToCash.p90;
+
+  const cardLeak = adv.cashFlowLeakage;
+  const carry = adv.carryingCost;
+  const drag = adv.termsMixDrag;
+  const dunGap = adv.dunningGap;
+  const blockRate = adv.dunningBlockRate;
+  const health = adv.arHealthScore;
+  const pbdi = adv.pbdi;
+  const breach = adv.creditLimitUtil.breachCount;
+  const mape = adv.forecastMape;
+  const cashConv = adv.cashConversion;
+  const dispute = adv.disputeAdjusted;
+  const consistency = adv.paymentConsistency;
+  const discount = adv.discountCapture;
+  const posting = adv.postingLag;
+  const escal = adv.escalationVelocity;
+  const dsoBridge = adv.dsoBridge;
+  const segEff = adv.segmentEfficiency;
+  const ccPerf = adv.companyCodePerformance;
+  const velocity = adv.dsoVelocity;
+  const touches = adv.touchesPerCrore;
+
+  const out: Record<string, KpiInsight> = {};
+
+  // ---------- Basic KPIs ----------
+  out["basic-dso"] = {
+    observation: `For ${periodLbl}, DSO is ${dsoCurr.toFixed(1)} (${dsoBand}). Average AR ₹${(adv.carryingCost.annualCost / Math.max(0.01, adv.carryingCost.avgDaysOutstanding) * 365 / 100).toFixed(0)} sits against ${fmtMillions(sum.totalSales)} of credit sales; ${trendDelta(dsoCurr, dsoPrev)}.`,
+    recommendation: dsoCurr < 15
+      ? "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers."
+      : dsoCurr < 25
+      ? "Tighten dunning cadence on the slowest-paying segment to push DSO toward < 15."
+      : dsoCurr < 35
+      ? "Stand up a focused collections taskforce — every 1-point reduction frees ~₹"
+        + (sum.totalSales / 100).toFixed(0)
+        + " of working capital."
+      : "Initiate an emergency cash recovery program; the AR-to-sales ratio signals systemic collection failure.",
+    nextAction: dsoCurr < 25
+      ? `Maintain weekly collector cadence and review top ${Math.min(5, pbdi.alertCount || 5)} accounts for early signs of slip.`
+      : `Within 14 days, complete a top-20 customer call sweep targeting accounts contributing > ${(dsoBridge.segments[0]?.contribution ?? 0).toFixed(1)} pts to blended DSO.`,
+  };
+
+  out["basic-overdue-ratio"] = {
+    observation: `${overdueCurr.toFixed(1)}% of open AR (${fmtMillions(sum.overdueAR)}) is past due across ${sum.overdueInvoices.toLocaleString("en-IN")} invoices; ${trendDelta(overdueCurr, overduePrev, "pp")}.`,
+    recommendation: overdueCurr < 20
+      ? "Overdue ratio is within target band. Keep monitoring weekly aging migration into 60+."
+      : overdueCurr < 35
+      ? "Run a focused blitz on invoices > 30 days overdue before they migrate to 60+ where recovery drops sharply."
+      : "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+    nextAction: `Triage the ${(sixtyPlus?.count ?? 0).toLocaleString("en-IN")} invoices in the 60+ bucket (${fmtMillions(sixtyPlus?.amount ?? 0)}). Decide write-off vs legal action for each by week's end.`,
+  };
+
+  out["basic-revenue-at-risk"] = {
+    observation: `Revenue at risk: ${e.revenueAtRisk.value.toFixed(1)}% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.`,
+    recommendation: e.revenueAtRisk.value < 15
+      ? "Risk concentration is manageable. Continue to mine the longer-term cohort for early signs of distress."
+      : "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+    nextAction: "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week.",
+  };
+
+  out["basic-receivables-turnover"] = {
+    observation: `Receivables turnover ratio: ${e.receivablesTurnover.overall.toFixed(1)}× for ${periodLbl}. Lower than 4× indicates AR is growing faster than sales.`,
+    recommendation: e.receivablesTurnover.overall >= 5
+      ? "Healthy turnover — sales pace is supported by collection cadence."
+      : e.receivablesTurnover.overall >= 4
+      ? "Acceptable but watch for downward drift; pair sales acceleration with proportionate collection investment."
+      : "Turnover below 4× signals overwhelmed collections. Increase capacity or automate L1 reminders.",
+    nextAction: "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning.",
+  };
+
+  out["basic-net-ar-movement"] = {
+    observation: `Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across ${periodLbl}.`,
+    recommendation: "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+    nextAction: "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR.",
+  };
+
+  out["basic-cei"] = {
+    observation: `Collection Effectiveness Index is ${ceiCurr.toFixed(0)}% for ${periodLbl}; ${trendDelta(ceiCurr, ceiPrev, "pp")}.`,
+    recommendation: ceiCurr >= 90
+      ? "World-class. Preserve the playbook and onboard new collectors via shadow sessions."
+      : ceiCurr >= 80
+      ? "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there."
+      : ceiCurr >= 70
+      ? "Acceptable; lift to > 80% by tightening dunning gap and call cadence."
+      : "Below threshold — collections team is reactive. Implement a daily standup with target deltas.",
+    nextAction: ceiCurr < 80
+      ? "Set a 90-day project to reach 80% CEI; weekly standups with named owners per top customer."
+      : "Maintain the cadence and ratchet the floor target up by 2 pts each quarter.",
+  };
+
+  out["basic-on-time-payment"] = {
+    observation: `Monthly on-time payment rate averages ${otpAvg.toFixed(0)}% across ${c.onTimePayment.monthly.length} months in ${periodLbl}.`,
+    recommendation: otpAvg >= 85
+      ? "Customer payment behaviour is strong. Use this leverage to renegotiate terms with chronic late payers."
+      : otpAvg >= 70
+      ? "Mid-pack — friction sits at the dunning gap. Move first reminder closer to due date."
+      : "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+    nextAction: otpAvg >= 85
+      ? "Maintain monitoring; investigate any month falling > 5pp below the average."
+      : "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter.",
+  };
+
+  out["basic-collection-effectiveness-weekly"] = {
+    observation: `Average monthly collection effectiveness: ${effAvg.toFixed(0)}%. ${c.collectionEffectiveness.monthly.filter(m => m.value >= 70).length} of ${c.collectionEffectiveness.monthly.length} months hit the 70% target.`,
+    recommendation: effAvg >= 70
+      ? "Above target — focus on the months that missed and identify the customer drivers."
+      : "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+    nextAction: "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer.",
+  };
+
+  out["basic-credit-period-effectiveness"] = {
+    observation: `Effectiveness varies sharply by credit term: ${c.creditPeriodEffectiveness.data.map(d => `${d.creditPeriod} ${d.value.toFixed(0)}%`).join(" · ")}.`,
+    recommendation: "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+    nextAction: "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception.",
+  };
+
+  out["basic-aging-buckets"] = {
+    observation: `60+ day bucket: ${(sixtyPlus?.percentage ?? 0).toFixed(0)}% of AR (${fmtMillions(sixtyPlus?.amount ?? 0)}). Not-Due: ${(notDue?.percentage ?? 0).toFixed(0)}%.`,
+    recommendation: (sixtyPlus?.percentage ?? 0) > 25
+      ? "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+."
+      : "Aging distribution is acceptable. Watch for migration of 16–30 → 31–45 month over month.",
+    nextAction: "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+.",
+  };
+
+  out["basic-aging-donut"] = {
+    observation: `Composition split shows ${(notDue?.percentage ?? 0).toFixed(0)}% not-due and ${(sixtyPlus?.percentage ?? 0).toFixed(0)}% in 60+. The donut visualises the bucket proportions of the bar chart.`,
+    recommendation: "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+    nextAction: "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift.",
+  };
+
+  out["basic-overdue-density"] = {
+    observation: `Count density ${a.overdueDensity.count.toFixed(0)}% vs value density ${a.overdueDensity.value.toFixed(0)}%. A gap means the problem is concentrated in either many small invoices or a few large ones.`,
+    recommendation: a.overdueDensity.value > a.overdueDensity.count
+      ? "Few large invoices drive most overdue value — concentrate senior collectors on those."
+      : "Many small invoices — automate L1 dunning to clear them at low cost.",
+    nextAction: "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence.",
+  };
+
+  out["basic-peak-exposure"] = {
+    observation: peak.invoiceNo === "—"
+      ? "No overdue invoices in this period."
+      : `Single largest overdue invoice: ${fmtMillions(peak.amount)} (${peak.invoiceNo}, company ${peak.companyCode}, ${peak.daysOverdue} days overdue).`,
+    recommendation: peak.invoiceNo === "—"
+      ? "Maintain the discipline that's preventing high-exposure events."
+      : peak.daysOverdue > 60
+      ? "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue)."
+      : "Personal collector ownership; daily progress update until cleared.",
+    nextAction: peak.invoiceNo === "—"
+      ? "Monitor weekly — flag any single invoice exceeding 2% of total open AR."
+      : "Open an action ticket on this invoice; senior collector + CFO update by end of week.",
+  };
+
+  out["basic-invoice-to-cash"] = {
+    observation: `Median time to cash: P50 ${p50} days · P90 ${p90} days. Wide P50–P90 gap (${p90 - p50}d) indicates a bimodal distribution — fast payers and stuck invoices.`,
+    recommendation: p90 - p50 > 30
+      ? "Stuck-invoice tail is too long. Identify the P90 invoices and apply hands-on collection."
+      : "Distribution is tight. Continue to monitor the long tail for new outliers.",
+    nextAction: "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause.",
+  };
+
+  out["basic-credit-period-utilization"] = {
+    observation: `Customers use ${cpuOverall.toFixed(0)}% of the allowed credit period on average. Above 100% means systematic late payment.`,
+    recommendation: cpuOverall > 100
+      ? "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence."
+      : cpuOverall < 80
+      ? "Customers pay early — consider offering longer terms in exchange for volume commitments."
+      : "Within band. Sustain the discipline.",
+    nextAction: cpuOverall > 100
+      ? "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+      : "Use the headroom for a strategic terms negotiation on the next renewal.",
+  };
+
+  out["basic-days-to-clear-backlog"] = {
+    observation: `Monthly average backlog clear time: ${backlogAvg.toFixed(1)} days. Above 5 days indicates collections can't keep up with new overdue accumulation.`,
+    recommendation: backlogAvg <= 3
+      ? "Capacity matches inflow — sustain."
+      : backlogAvg <= 5
+      ? "Approaching capacity ceiling — pre-empt with automation before backlog exceeds 7 days."
+      : "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+    nextAction: backlogAvg > 5
+      ? "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+      : "Quarterly review; flag if average exceeds 5 in any single month.",
+  };
+
+  // ---------- Advanced KPIs ----------
+  const worstDriver = [...dsoBridge.segments].sort((a, b) => b.contribution - a.contribution)[0];
+  out["dso-bridge"] = {
+    observation: `Blended DSO ${dsoBridge.blendedDSO.toFixed(1)}. Largest drag: ${worstDriver?.segment ?? "—"} contributing ${(worstDriver?.contribution ?? 0).toFixed(1)} pts at ${(worstDriver?.weight ?? 0).toFixed(0)}% of sales.`,
+    recommendation: `Target the ${worstDriver?.segment ?? "weakest"} segment first — fixing the heaviest contributor yields the largest DSO impact.`,
+    nextAction: `Set a 60-day target to reduce ${worstDriver?.segment ?? "the worst segment"} DSO by 3 points via dedicated collector pod.`,
+  };
+
+  out["dso-velocity"] = {
+    observation: `Average month-on-month DSO change: ${velocity.avgChange >= 0 ? "+" : ""}${velocity.avgChange.toFixed(1)}%. ${velocity.avgChange > 5 ? "Accelerating upward — losing ground." : velocity.avgChange < -5 ? "Steady improvement." : "Stable."}`,
+    recommendation: velocity.avgChange > 5
+      ? "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers."
+      : "Maintain the cadence; watch for inflection.",
+    nextAction: "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity.",
+  };
+
+  out["terms-mix-drag"] = {
+    observation: `Weighted avg terms ${drag.weightedAvgTerms.toFixed(0)}d vs actual pay days ${drag.avgActualPayDays.toFixed(0)}d — behavioural drag ${drag.drag >= 0 ? "+" : ""}${drag.drag.toFixed(0)}d.`,
+    recommendation: drag.drag > 5
+      ? "Customers systematically exceed terms. Either tighten enforcement or reprice for the longer effective terms."
+      : "Drag is contained. Maintain monitoring.",
+    nextAction: drag.drag > 5
+      ? "Quarterly terms-vs-actuals reconciliation per customer; renegotiate when drag > 7 days."
+      : "Track monthly and flag if drag exceeds 5 days for any segment.",
+  };
+
+  out["ar-health-score"] = {
+    observation: `AR Health: ${health.score}/100 (Grade ${health.grade}). Strongest dim: ${Object.entries(health.components).sort((a, b) => b[1] - a[1])[0]?.[0]}. Weakest: ${Object.entries(health.components).sort((a, b) => a[1] - b[1])[0]?.[0]}.`,
+    recommendation: `Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.`,
+    nextAction: `Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO.`,
+  };
+
+  out["pbdi"] = {
+    observation: `${pbdi.alertCount} customers show > 25% deterioration in payment behaviour. Worst: ${pbdi.topDeteriorating[0]?.name ?? "—"} (${pbdi.topDeteriorating[0]?.pctChange ?? 0}%).`,
+    recommendation: pbdi.alertCount > 0
+      ? "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention."
+      : "No material deterioration this period.",
+    nextAction: pbdi.alertCount > 0
+      ? `Open a watchlist of ${pbdi.alertCount} accounts; assign to senior collectors with weekly check-ins.`
+      : "Continue quarterly PBDI scans.",
+  };
+
+  out["credit-limit-util"] = {
+    observation: `${breach} customers exceed credit limit. Average utilisation across sample: ${adv.creditLimitUtil.avgUtilPct.toFixed(0)}%.`,
+    recommendation: breach > 50
+      ? "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both."
+      : "Manageable; spot-check top breachers.",
+    nextAction: `Refresh credit ratings for the ${breach} breaching customers within 30 days; consider order holds for repeat offenders.`,
+  };
+
+  out["touches-per-dollar"] = {
+    observation: `Collection effort: ${touches.rate.toFixed(2)} touches per ₹Crore of open AR (${touches.touches.toLocaleString("en-IN")} touches on ${touches.crores.toFixed(1)}Cr).`,
+    recommendation: touches.rate < 2
+      ? "Highly efficient — keep the playbook."
+      : touches.rate < 4
+      ? "Moderate efficiency. Automating L1 reminders should reduce this by half."
+      : "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+    nextAction: touches.rate >= 4
+      ? "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+      : "Monitor monthly; flag if rate exceeds 4.",
+  };
+
+  out["escalation-velocity"] = {
+    observation: `Average ${escal.avgDaysBetweenLevels.toFixed(0)} days between dunning escalations (target ${escal.targetDays}). Sample size: ${escal.sampleSize}.`,
+    recommendation: escal.avgDaysBetweenLevels > 15
+      ? "Escalation too slow — invoices age before reaching authority. Compress to the ~10-day target."
+      : escal.avgDaysBetweenLevels < 5
+      ? "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier."
+      : "Cadence is on target.",
+    nextAction: escal.avgDaysBetweenLevels > 15
+      ? "Add automation triggers to fire L2/L3 letters at scheduled days from L1, not collector discretion."
+      : "Sustain the cadence.",
+  };
+
+  out["payment-consistency"] = {
+    observation: `Portfolio payment-consistency score: ${consistency.score}/100 (lower CV = more predictable). Sample: ${consistency.sampleSize} customers.`,
+    recommendation: consistency.score >= 70
+      ? "Highly predictable portfolio — strong base for cash forecasting."
+      : consistency.score >= 50
+      ? "Moderately predictable. Stratify forecasts by segment for better accuracy."
+      : "Low consistency — forecasting cash inflow is unreliable. Consider customer-level forecasts for top accounts.",
+    nextAction: "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast.",
+  };
+
+  out["discount-capture"] = {
+    observation: `Captured ${discount.captureRate.toFixed(1)}% of available early-payment discount (${fmtMillions(discount.capturedSavings)} saved; ${fmtMillions(discount.leftOnTable)} left on the table).`,
+    recommendation: discount.captureRate < 30
+      ? "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers."
+      : "Solid capture. Investigate whether terms could be tightened further.",
+    nextAction: discount.captureRate < 30
+      ? "Email campaign to top 50 customers reminding them of available discount terms."
+      : "Sustain and benchmark; consider expanding discount eligibility.",
+  };
+
+  out["posting-lag"] = {
+    observation: `Average posting lag ${posting.avgDays.toFixed(1)} days (P90 ${posting.p90}). Every lag day delays the DSO clock start.`,
+    recommendation: posting.avgDays > 2
+      ? "Compress to same-day posting via system integration or workflow change."
+      : "Already tight — sustain.",
+    nextAction: posting.avgDays > 2
+      ? "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+      : "Maintain SLA and monitor.",
+  };
+
+  out["dunning-gap"] = {
+    observation: `First dunning lands ${dunGap.avgGapDays.toFixed(0)} days after due (target ${dunGap.targetGapDays}). Drift: ${dunGap.drift.toFixed(0)} days.`,
+    recommendation: dunGap.drift > 5
+      ? "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days."
+      : "Within tolerance.",
+    nextAction: dunGap.drift > 5
+      ? "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+      : "Maintain.",
+  };
+
+  out["dispute-adjusted-dso"] = {
+    observation: `Dispute impact on DSO: ${dispute.disputeImpactDays.toFixed(1)} days (${fmtMillions(dispute.disputedAR)} disputed AR). Clean DSO: ${dispute.cleanDSO.toFixed(1)} days vs total ${dispute.actualDSO.toFixed(1)}.`,
+    recommendation: dispute.disputeImpactDays > 5
+      ? "Disputes inflate DSO meaningfully. Separately track dispute aging and SLA for resolution."
+      : "Dispute drag is contained.",
+    nextAction: dispute.disputeImpactDays > 5
+      ? "Stand up a dispute war-room with 14-day resolution SLA on each blocked invoice."
+      : "Maintain quarterly review of dispute volume.",
+  };
+
+  out["dunning-block-rate"] = {
+    observation: `${blockRate.rate.toFixed(0)}% of dunning records carry a block (${blockRate.blockedCount} of ${blockRate.totalDunning}). Industry band: ${blockRate.benchmarkLow}–${blockRate.benchmarkHigh}%.`,
+    recommendation: blockRate.rate > blockRate.benchmarkHigh
+      ? "High block rate signals dispute backlog or team using blocks to dodge difficult conversations. Audit reason codes."
+      : blockRate.rate < blockRate.benchmarkLow
+      ? "Block rate is unusually low — disputes may be under-recorded."
+      : "Within normal band.",
+    nextAction: blockRate.rate > blockRate.benchmarkHigh
+      ? "Sample 30 blocked records weekly to validate the block reason; reject and reactivate where not justified."
+      : "Sustain.",
+  };
+
+  out["carrying-cost"] = {
+    observation: `Daily carrying cost ${fmtMillions(carry.dailyCost)} at 10% cost of capital. Annualised: ${fmtMillions(carry.annualCost)}.`,
+    recommendation: "Every DSO day saved is ~" + fmtMillions(carry.dailyCost) + " in annualised cost-of-capital. Use this to justify AR automation investments.",
+    nextAction: "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator.",
+  };
+
+  out["cash-flow-leakage"] = {
+    observation: `${cardLeak.leakageDays.toFixed(0)} days between actual DSO (${cardLeak.actualDSO.toFixed(0)}d) and best-possible (${cardLeak.bestPossibleDSO.toFixed(0)}d terms-implied) leak ${fmtMillions(cardLeak.leakageINR)} of cash.`,
+    recommendation: `Closing 50% of the leakage gap unlocks ~${fmtMillions(cardLeak.leakageINR * 0.5)} of working capital — a meaningful balance-sheet improvement.`,
+    nextAction: "Set an FY target to close 30% of the leakage; track quarterly.",
+  };
+
+  out["forecast-mape"] = {
+    observation: `Forecast MAPE: ${mape.mape.toFixed(0)}% (confidence ${mape.confidence}%). Expected ${fmtMillions(mape.expectedInflow)} vs actual ${fmtMillions(mape.actualInflow)}.`,
+    recommendation: mape.mape > 30
+      ? "Forecasts unreliable for treasury decisions. Rebuild the model with recent history."
+      : mape.mape > 15
+      ? "Acceptable accuracy. Tighten by stratifying forecasts per segment."
+      : "Forecast is reliable.",
+    nextAction: mape.mape > 25
+      ? "Recalibrate model with the last 13 weeks of actuals; bench against a simple naïve baseline."
+      : "Monitor monthly.",
+  };
+
+  out["cash-conversion-efficiency"] = {
+    observation: `Cash conversion ratio: ${cashConv.ratio.toFixed(0)}% (collected ${fmtMillions(cashConv.collected)} on ${fmtMillions(cashConv.sales)} sales).`,
+    recommendation: cashConv.ratio < 70
+      ? "AR is building faster than collections. Pair sales growth with proportional collections investment."
+      : "Conversion is healthy.",
+    nextAction: cashConv.ratio < 70
+      ? "Add a 'collections-to-sales' KPI to the monthly leadership review."
+      : "Track quarterly.",
+  };
+
+  out["company-code-index"] = {
+    observation: ccPerf.length >= 2
+      ? `Leaders: ${[...ccPerf].sort((a, b) => a.dso - b.dso)[0].name} at ${[...ccPerf].sort((a, b) => a.dso - b.dso)[0].dso.toFixed(0)}d. Lagging: ${[...ccPerf].sort((a, b) => b.dso - a.dso)[0].name} at ${[...ccPerf].sort((a, b) => b.dso - a.dso)[0].dso.toFixed(0)}d.`
+      : "Only one company code in this slice.",
+    recommendation: "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+    nextAction: "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities.",
+  };
+
+  out["segment-efficiency"] = {
+    observation: segEff.length >= 2
+      ? `${segEff[0].segment} runs at ${segEff[0].efficiencyScore}. ${[...segEff].sort((a, b) => a.efficiencyScore - b.efficiencyScore)[0].segment} at ${[...segEff].sort((a, b) => a.efficiencyScore - b.efficiencyScore)[0].efficiencyScore}.`
+      : "Segment efficiency data limited.",
+    recommendation: "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+    nextAction: "Quarterly segment review with explicit improvement targets per segment.",
+  };
+
+  // ---------- AI-Insights ‘tiles' (mirrored to enable per-tile drill-in) ----------
+  out["executive-summary"] = {
+    observation: `${periodLbl} headline: DSO ${dsoCurr.toFixed(1)} · CEI ${ceiCurr.toFixed(0)}% · ${overdueCurr.toFixed(0)}% overdue · ${fmtMillions(sum.totalOpenAR)} cash trapped.`,
+    recommendation: health.score >= 65
+      ? "Portfolio in healthy band. Use the headroom for strategic terms negotiations and capacity investment."
+      : "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+    nextAction: "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics.",
+  };
+
+  out["risk-heatmap"] = {
+    observation: `${pbdi.alertCount} PBDI alerts + ${breach} credit breaches + ${blockRate.rate.toFixed(0)}% block rate combine into the current risk surface.`,
+    recommendation: pbdi.alertCount + breach > 50
+      ? "Risk concentration is elevated — initiate a portfolio review and tighten credit policy."
+      : "Risk signals manageable; sustain controls.",
+    nextAction: "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions.",
+  };
+
+  out["cash-forecast"] = {
+    observation: `${mape.confidence}% forecast confidence, ${mape.mape.toFixed(0)}% MAPE. Cash conversion ${cashConv.ratio.toFixed(0)}%.`,
+    recommendation: "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+    nextAction: "Build a 13-week rolling cash forecast feeding the weekly treasury committee.",
+  };
+
+  out["working-capital-opportunity"] = {
+    observation: `${fmtMillions(cardLeak.leakageINR)} of working capital sits trapped beyond credit terms.`,
+    recommendation: "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+    nextAction: "Stand up a Working Capital War Room with quarterly release targets per business head.",
+  };
+
+  out["collections-efficiency-trend"] = {
+    observation: `CEI ${ceiCurr.toFixed(0)}%, monthly effectiveness average ${effAvg.toFixed(0)}%, ${c.collectionEffectiveness.monthly.filter(m => m.value >= 70).length}/${c.collectionEffectiveness.monthly.length} months at target.`,
+    recommendation: ceiCurr < 80
+      ? "CEI gap to 90% comes from the 60+ aging bucket — direct intervention required."
+      : "Sustain and lift the floor target by 2pp next quarter.",
+    nextAction: "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%.",
+  };
+
+  return out;
 }
 
 function computeAIInsightsFromData(slice: Slice, fy: FY, quarter: Quarter, prevSlice?: Slice) {
@@ -872,32 +1365,32 @@ function computeAIInsightsFromData(slice: Slice, fy: FY, quarter: Quarter, prevS
   };
 
   // ---- Card 5: Collections Efficiency ----
-  const weeksAboveTarget = coll.collectionEffectiveness.weekly.filter(w => w.value >= 70).length;
+  const monthsAboveTarget = coll.collectionEffectiveness.monthly.filter(w => w.value >= 70).length;
   const card5 = {
     id: "collections-deep-dive",
     title: "Collections Efficiency",
     iconKey: "collections",
     severity: (cei >= 85 ? "positive" : cei >= 70 ? "info" : "warning") as "critical" | "warning" | "info" | "positive",
-    headline: `CEI ${cei.toFixed(0)}% · ${weeksAboveTarget}/${coll.collectionEffectiveness.weekly.length || 1} weeks above 70% effectiveness target`,
-    narrative: `CEI measures how well opened AR converts to cash. ${cei >= 85 ? "Above 85% indicates strong execution." : cei >= 70 ? "Between 70–85% is industry-typical." : "Below 70% signals the team is reactive rather than systematic."} On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.`,
+    headline: `CEI ${cei.toFixed(0)}% · ${monthsAboveTarget}/${coll.collectionEffectiveness.monthly.length || 1} months above 70% effectiveness target`,
+    narrative: `CEI measures how well opened AR converts to cash. ${cei >= 85 ? "Above 85% indicates strong execution." : cei >= 70 ? "Between 70–85% is industry-typical." : "Below 70% signals the team is reactive rather than systematic."} On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.`,
     metrics: [
       { label: "CEI", value: `${cei.toFixed(0)}%`, color: cei >= 85 ? "text-accent-green" : cei >= 70 ? "text-accent-amber" : "text-accent-red" },
-      { label: "On-Time Rate", value: `${avgOf(coll.onTimePayment.weekly).toFixed(0)}%`, color: "text-accent-blue" },
-      { label: "Weeks ≥ Target", value: `${weeksAboveTarget}/${coll.collectionEffectiveness.weekly.length}`, color: weeksAboveTarget >= coll.collectionEffectiveness.weekly.length / 2 ? "text-accent-green" : "text-accent-amber" },
-      { label: "Backlog Days", value: `${avgOf(slice.operational.daysToClearBacklog.weekly).toFixed(0)}d`, color: "text-accent-amber" },
+      { label: "On-Time Rate", value: `${avgOf(coll.onTimePayment.monthly).toFixed(0)}%`, color: "text-accent-blue" },
+      { label: "Months ≥ Target", value: `${monthsAboveTarget}/${coll.collectionEffectiveness.monthly.length}`, color: monthsAboveTarget >= coll.collectionEffectiveness.monthly.length / 2 ? "text-accent-green" : "text-accent-amber" },
+      { label: "Backlog Days", value: `${avgOf(slice.operational.daysToClearBacklog.monthly).toFixed(0)}d`, color: "text-accent-amber" },
     ],
     keyObservations: [
-      `Average weekly on-time payment rate: ${avgOf(coll.onTimePayment.weekly).toFixed(0)}%.`,
-      `Average weekly collection effectiveness: ${avgOf(coll.collectionEffectiveness.weekly).toFixed(0)}%.`,
+      `Average monthly on-time payment rate: ${avgOf(coll.onTimePayment.monthly).toFixed(0)}%.`,
+      `Average monthly collection effectiveness: ${avgOf(coll.collectionEffectiveness.monthly).toFixed(0)}%.`,
       `Credit-period effectiveness varies by term: ${coll.creditPeriodEffectiveness.data.map(d => `${d.creditPeriod} ${d.value.toFixed(0)}%`).join(" · ")}.`,
     ],
     risksAndOpportunities: [
       ...(cei < 70 ? [{ type: "risk" as const, text: `CEI below 70% — team is converting less than three-fourths of what's due.` }] : []),
-      ...(weeksAboveTarget < coll.collectionEffectiveness.weekly.length / 3 ? [{ type: "risk" as const, text: `Sustained underperformance across most weeks — staffing or process review needed.` }] : []),
+      ...(monthsAboveTarget < coll.collectionEffectiveness.monthly.length / 3 ? [{ type: "risk" as const, text: `Sustained underperformance across most months — staffing or process review needed.` }] : []),
       { type: "opportunity" as const, text: `Lifting CEI by 5 points releases ~${fmtMillions(sum.totalOpenAR * 0.05)} of stuck AR.` },
     ],
     actions: [
-      `Set weekly CEI floor at 75% with daily standups when missing.`,
+      `Set monthly CEI floor at 75% with weekly progress reviews when missing.`,
       `Pre-call top 20 AR customers 5 days before due-date (the dunning gap).`,
       `Match collector seniority to invoice value — large invoices need senior handlers.`,
     ],
@@ -1039,7 +1532,10 @@ function avgOf(arr: { value: number }[]): number {
 // ============================================================
 
 async function main() {
-  type Result = Record<number, Record<Quarter, Slice & { aiInsights: ReturnType<typeof computeAIInsightsFromData> }>>;
+  type Result = Record<number, Record<Quarter, Slice & {
+    aiInsights: ReturnType<typeof computeAIInsightsFromData>;
+    insights: Record<string, KpiInsight>;
+  }>>;
   const result: Result = {} as Result;
 
   for (const fy of FYS) {
@@ -1048,15 +1544,16 @@ async function main() {
     for (const q of QUARTERS) {
       console.log(`  Computing ${q}...`);
       const slice = await computeForFYQuarter(fy, q);
-      result[fy][q] = { ...slice, aiInsights: undefined as any };
+      result[fy][q] = { ...slice, aiInsights: undefined as any, insights: {} };
     }
-    // Second pass to attach AI insights with prev-quarter context.
+    // Second pass to attach AI insights + per-KPI insights with prev-quarter context.
     const orderedQs: Quarter[] = ["Q1", "Q2", "Q3", "Q4", "All"];
     for (let i = 0; i < orderedQs.length; i++) {
       const q = orderedQs[i];
       const prevQ = i > 0 && q !== "All" ? orderedQs[i - 1] : undefined;
       const prevSlice = prevQ ? result[fy][prevQ] : undefined;
       result[fy][q].aiInsights = computeAIInsightsFromData(result[fy][q], fy, q, prevSlice);
+      result[fy][q].insights = computePerKpiInsights(result[fy][q], fy, q, prevSlice);
     }
   }
 
@@ -1127,6 +1624,12 @@ export interface AIInsightsData {
   cards: AIInsightCard[];
 }
 
+export interface KpiInsight {
+  observation: string;
+  recommendation: string;
+  nextAction: string;
+}
+
 export interface QuarterData {
   summary: {
     totalInvoices: number; openInvoices: number; clearedInvoices: number; overdueInvoices: number;
@@ -1141,8 +1644,8 @@ export interface QuarterData {
   };
   collection: {
     cei: { overall: number; monthly: MonthlyPoint[] };
-    onTimePayment: { weekly: WeeklyPoint[] };
-    collectionEffectiveness: { weekly: WeeklyPoint[] };
+    onTimePayment: { monthly: MonthlyPoint[] };
+    collectionEffectiveness: { monthly: MonthlyPoint[] };
     creditPeriodEffectiveness: { data: { creditPeriod: string; value: number }[] };
   };
   aging: {
@@ -1153,10 +1656,11 @@ export interface QuarterData {
   operational: {
     invoiceToCash: { p50: number; p90: number };
     creditPeriodUtilization: { overall: number; monthly: MonthlyPoint[] };
-    daysToClearBacklog: { weekly: WeeklyPoint[] };
+    daysToClearBacklog: { monthly: MonthlyPoint[] };
   };
   advanced: AdvancedKPIs;
   aiInsights: AIInsightsData;
+  insights: Record<string, KpiInsight>;
 }
 
 export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> = ${JSON.stringify(result, null, 2)} as any;

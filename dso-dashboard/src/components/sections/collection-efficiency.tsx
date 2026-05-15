@@ -29,26 +29,24 @@ import {
 
 function OnTimePaymentChart() {
   const kpiData = useKPIData();
-  const data = kpiData.collection.onTimePayment.weekly;
+  const data = kpiData.collection.onTimePayment.monthly;
 
   if (data.length === 0) {
-    return <div className="text-xs text-muted text-center py-8">No data for this period</div>;
+    return <div className="text-xs text-muted-foreground text-center py-8">No data for this period</div>;
   }
 
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} domain={[0, 100]} />
         <Tooltip
-          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value}%`, "On-Time Rate"]}
-          labelStyle={{ color: "#6b7280" }}
         />
-        <ReferenceLine y={85} stroke="#16a34a" strokeDasharray="4 4" strokeOpacity={0.5} />
-        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32} fill="#3b82f6" fillOpacity={0.85}>
-          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={10} formatter={(v) => `${v}%`} />
+        <ReferenceLine y={85} stroke="var(--accent-green)" strokeDasharray="4 4" strokeOpacity={0.5} />
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={36} fill="var(--accent-blue)" fillOpacity={0.85}>
+          <LabelList dataKey="value" position="top" fill="var(--muted)" fontSize={10} formatter={(v) => `${v}%`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -57,33 +55,31 @@ function OnTimePaymentChart() {
 
 function CollectionEffectivenessChart() {
   const kpiData = useKPIData();
-  const data = kpiData.collection.collectionEffectiveness.weekly;
+  const data = kpiData.collection.collectionEffectiveness.monthly;
 
   if (data.length === 0) {
-    return <div className="text-xs text-muted text-center py-8">No data for this period</div>;
+    return <div className="text-xs text-muted-foreground text-center py-8">No data for this period</div>;
   }
 
   return (
     <ResponsiveContainer width="100%" height={200}>
       <LineChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} domain={[0, 100]} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} domain={[0, 100]} />
         <Tooltip
-          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value}%`, "Effectiveness"]}
-          labelStyle={{ color: "#6b7280" }}
         />
-        <ReferenceLine y={70} stroke="#d97706" strokeDasharray="4 4" strokeOpacity={0.5} />
+        <ReferenceLine y={70} stroke="var(--accent-amber)" strokeDasharray="4 4" strokeOpacity={0.5} />
         <Line
           type="monotone"
           dataKey="value"
-          stroke="#7c3aed"
+          stroke="var(--accent-purple)"
           strokeWidth={2}
-          dot={{ r: 3, fill: "#7c3aed", stroke: "#ffffff", strokeWidth: 2 }}
+          dot={{ r: 3, fill: "var(--accent-purple)", stroke: "var(--card)", strokeWidth: 2 }}
           activeDot={{ r: 5 }}
         >
-          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={10} formatter={(v) => `${v}%`} />
+          <LabelList dataKey="value" position="top" fill="var(--muted)" fontSize={10} formatter={(v) => `${v}%`} />
         </Line>
       </LineChart>
     </ResponsiveContainer>
@@ -130,6 +126,7 @@ export function CollectionEfficiency() {
     isOn(kpiEnabled, "basic-cei") && (
       <KPICard
         key="cei"
+        kpiId="basic-cei"
         title="Collection Effectiveness Index (CEI)"
         value={kpiData.collection.cei.overall}
         suffix="%"
@@ -143,7 +140,8 @@ export function CollectionEfficiency() {
     isOn(kpiEnabled, "basic-on-time-payment") && (
       <KPICard
         key="on-time"
-        title="On-Time Payment Rate %"
+        kpiId="basic-on-time-payment"
+        title="On-Time Payment Rate (Monthly)"
         value=""
         insight={onTimePaymentInsight}
         compact
@@ -155,7 +153,8 @@ export function CollectionEfficiency() {
     isOn(kpiEnabled, "basic-collection-effectiveness-weekly") && (
       <KPICard
         key="coll-eff"
-        title="Collection Effectiveness (Weekly)"
+        kpiId="basic-collection-effectiveness-weekly"
+        title="Collection Effectiveness (Monthly)"
         value=""
         insight={collectionEffectivenessInsight}
         compact
@@ -166,6 +165,7 @@ export function CollectionEfficiency() {
     isOn(kpiEnabled, "basic-credit-period-effectiveness") && (
       <KPICard
         key="cp-eff"
+        kpiId="basic-credit-period-effectiveness"
         title="Credit Period Effectiveness"
         value=""
         insight={collectionPeriodEffectivenessInsight}

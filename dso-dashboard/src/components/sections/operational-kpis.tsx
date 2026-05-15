@@ -70,32 +70,30 @@ function InvoiceToCashGauge() {
 
 function BacklogChart() {
   const kpiData = useKPIData();
-  const data = kpiData.operational.daysToClearBacklog.weekly;
+  const data = kpiData.operational.daysToClearBacklog.monthly;
 
   if (data.length === 0) {
-    return <div className="text-xs text-muted text-center py-8">No data for this period</div>;
+    return <div className="text-xs text-muted-foreground text-center py-8">No data for this period</div>;
   }
 
   return (
     <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data} margin={{ top: 16, right: 8, bottom: 0, left: -10 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e6ed" vertical={false} />
-        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
-        <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6b7280", fontSize: 11 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 11 }} />
         <Tooltip
-          contentStyle={{ background: "#ffffff", border: "1px solid #e2e6ed", borderRadius: 8, fontSize: 12, color: "#1a1d23" }}
           formatter={(value) => [`${value} days`, "Backlog"]}
-          labelStyle={{ color: "#6b7280" }}
         />
-        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={32}>
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={36}>
           {data.map((d, i) => (
             <Cell
               key={i}
-              fill={d.value > 5 ? "#dc2626" : d.value > 3 ? "#d97706" : "#16a34a"}
+              fill={d.value > 5 ? "var(--accent-red)" : d.value > 3 ? "var(--accent-amber)" : "var(--accent-green)"}
               fillOpacity={0.85}
             />
           ))}
-          <LabelList dataKey="value" position="top" fill="#6b7280" fontSize={9} formatter={(v) => `${v}d`} />
+          <LabelList dataKey="value" position="top" fill="var(--muted)" fontSize={10} formatter={(v) => `${v}d`} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -115,6 +113,7 @@ export function OperationalKPIs() {
     isOn(kpiEnabled, "basic-invoice-to-cash") && (
       <KPICard
         key="invoice-to-cash"
+        kpiId="basic-invoice-to-cash"
         title="Invoice to Cash Cycle Time"
         value=""
         insight={invoiceToCashInsight}
@@ -126,6 +125,7 @@ export function OperationalKPIs() {
     isOn(kpiEnabled, "basic-credit-period-utilization") && (
       <KPICard
         key="cpu"
+        kpiId="basic-credit-period-utilization"
         title="Credit Period Utilization"
         value={kpiData.operational.creditPeriodUtilization.overall}
         suffix="%"
@@ -139,7 +139,8 @@ export function OperationalKPIs() {
     isOn(kpiEnabled, "basic-days-to-clear-backlog") && (
       <KPICard
         key="backlog"
-        title="Days to Clear Backlog"
+        kpiId="basic-days-to-clear-backlog"
+        title="Days to Clear Backlog (Monthly)"
         value=""
         insight={daysToClearBacklogInsight}
         compact

@@ -90,10 +90,11 @@ export function ExecutiveKPIs() {
     isOn(kpiEnabled, "basic-dso") && (
       <KPICard
         key="dso"
-        title="Days Sales Outstanding"
-        value={executive.dso.overall}
-        suffix="days"
-        valueLabel={quarterLabel}
+        kpiId="basic-dso"
+        title="DSO"
+        value={executive.dso.overall.toFixed(1)}
+        suffix="%"
+        valueLabel={`Avg AR / Credit Sales · ${quarterLabel}`}
         insight={dsoInsight}
         glowClass="glow-amber"
       >
@@ -103,6 +104,7 @@ export function ExecutiveKPIs() {
     isOn(kpiEnabled, "basic-overdue-ratio") && (
       <KPICard
         key="overdue-ratio"
+        kpiId="basic-overdue-ratio"
         title="Overdue Ratio"
         value={executive.overdueRatio.overall}
         suffix="%"
@@ -116,6 +118,7 @@ export function ExecutiveKPIs() {
     isOn(kpiEnabled, "basic-revenue-at-risk") && (
       <KPICard
         key="revenue-at-risk"
+        kpiId="basic-revenue-at-risk"
         title="Revenue at Risk"
         value={executive.revenueAtRisk.value}
         suffix="%"
@@ -137,6 +140,7 @@ export function ExecutiveKPIs() {
     isOn(kpiEnabled, "basic-receivables-turnover") && (
       <KPICard
         key="receivables-turnover"
+        kpiId="basic-receivables-turnover"
         title="Receivables Turnover Ratio"
         value={executive.receivablesTurnover.overall}
         suffix="x"
@@ -149,6 +153,7 @@ export function ExecutiveKPIs() {
     isOn(kpiEnabled, "basic-net-ar-movement") && (
       <KPICard
         key="net-ar-movement"
+        kpiId="basic-net-ar-movement"
         title="Net AR Movement (Waterfall)"
         value=""
         insight={netARMovementInsight}

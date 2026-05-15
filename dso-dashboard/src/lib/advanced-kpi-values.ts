@@ -52,16 +52,16 @@ export function getAdvancedKPIValues(kpiId: string, slice: QuarterData): Dynamic
       };
       for (const s of segments) {
         const sign = s.contribution >= 0 ? "+" : "";
-        details[s.segment] = `${fmt(s.dso)}d | ${fmt(s.weight)}% weight | ${sign}${fmt(s.contribution)}d`;
+        details[s.segment] = `${fmt(s.dso)}% | ${fmt(s.weight)}% weight | ${sign}${fmt(s.contribution)} pts`;
       }
       const worst = [...segments].sort((a, b) => b.contribution - a.contribution)[0];
       return {
-        primaryValue: fmt(adv.dsoBridge.blendedDSO),
-        primaryUnit: "days blended",
+        primaryValue: `${fmt(adv.dsoBridge.blendedDSO)}%`,
+        primaryUnit: "blended DSO",
         insight: worst
-          ? `${worst.segment} segment contributes ${worst.contribution >= 0 ? "+" : ""}${fmt(worst.contribution)} days to blended DSO with ${fmt(worst.weight)}% sales weight. Targeting this segment yields the largest DSO impact.`
+          ? `${worst.segment} segment contributes ${worst.contribution >= 0 ? "+" : ""}${fmt(worst.contribution)} pts to blended DSO with ${fmt(worst.weight)}% sales weight. Targeting this segment yields the largest impact.`
           : `Blended DSO decomposed across customer segments.`,
-        trend: adv.dsoBridge.blendedDSO > 75 ? "warning" : "stable",
+        trend: adv.dsoBridge.blendedDSO > 25 ? "warning" : "stable",
         details,
       };
     }
@@ -329,10 +329,10 @@ export function getAdvancedKPIValues(kpiId: string, slice: QuarterData): Dynamic
           actualDSO: `${fmt(l.actualDSO)} days`,
           leakageDays: `${fmt(l.leakageDays)} days`,
           leakageINR: fmtINR(l.leakageINR),
-          STRATEGIC: `${fmt(adv.dsoBridge.segments[0]?.dso ?? 0)}d | ${fmt(adv.dsoBridge.segments[0]?.weight ?? 0)}% weight | ${adv.dsoBridge.segments[0]?.contribution >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[0]?.contribution ?? 0)}d`,
-          KEY: `${fmt(adv.dsoBridge.segments[1]?.dso ?? 0)}d | ${fmt(adv.dsoBridge.segments[1]?.weight ?? 0)}% weight | ${adv.dsoBridge.segments[1]?.contribution >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[1]?.contribution ?? 0)}d`,
-          STANDARD: `${fmt(adv.dsoBridge.segments[2]?.dso ?? 0)}d | ${fmt(adv.dsoBridge.segments[2]?.weight ?? 0)}% weight | ${adv.dsoBridge.segments[2]?.contribution >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[2]?.contribution ?? 0)}d`,
-          SMB: `${fmt(adv.dsoBridge.segments[3]?.dso ?? 0)}d | ${fmt(adv.dsoBridge.segments[3]?.weight ?? 0)}% weight | ${adv.dsoBridge.segments[3]?.contribution >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[3]?.contribution ?? 0)}d`,
+          STRATEGIC: `${fmt(adv.dsoBridge.segments[0]?.dso ?? 0)}% | ${fmt(adv.dsoBridge.segments[0]?.weight ?? 0)}% weight | ${(adv.dsoBridge.segments[0]?.contribution ?? 0) >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[0]?.contribution ?? 0)}pts`,
+          KEY: `${fmt(adv.dsoBridge.segments[1]?.dso ?? 0)}% | ${fmt(adv.dsoBridge.segments[1]?.weight ?? 0)}% weight | ${(adv.dsoBridge.segments[1]?.contribution ?? 0) >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[1]?.contribution ?? 0)}pts`,
+          STANDARD: `${fmt(adv.dsoBridge.segments[2]?.dso ?? 0)}% | ${fmt(adv.dsoBridge.segments[2]?.weight ?? 0)}% weight | ${(adv.dsoBridge.segments[2]?.contribution ?? 0) >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[2]?.contribution ?? 0)}pts`,
+          SMB: `${fmt(adv.dsoBridge.segments[3]?.dso ?? 0)}% | ${fmt(adv.dsoBridge.segments[3]?.weight ?? 0)}% weight | ${(adv.dsoBridge.segments[3]?.contribution ?? 0) >= 0 ? "+" : ""}${fmt(adv.dsoBridge.segments[3]?.contribution ?? 0)}pts`,
         },
       };
     }
@@ -487,18 +487,18 @@ export function getAdvancedKPIValues(kpiId: string, slice: QuarterData): Dynamic
     }
 
     case "collections-efficiency-trend": {
-      const weekly = slice.collection.collectionEffectiveness.weekly;
-      const above = weekly.filter(w => w.value >= 70).length;
-      const avg = weekly.length > 0 ? weekly.reduce((s, w) => s + w.value, 0) / weekly.length : 0;
+      const monthly = slice.collection.collectionEffectiveness.monthly;
+      const above = monthly.filter(w => w.value >= 70).length;
+      const avg = monthly.length > 0 ? monthly.reduce((s, w) => s + w.value, 0) / monthly.length : 0;
       return {
         primaryValue: `${fmt(avg)}%`,
         primaryUnit: "avg effectiveness",
-        insight: `Average weekly collection effectiveness ${fmt(avg)}%, with ${above}/${weekly.length} weeks hitting the 70% target.`,
+        insight: `Average monthly collection effectiveness ${fmt(avg)}%, with ${above}/${monthly.length} months hitting the 70% target.`,
         trend: avg < 70 ? "warning" : "stable",
         details: {
           avgEffectiveness: `${fmt(avg)}%`,
           target: "70%",
-          weeksAboveTarget: `${above} of ${weekly.length}`,
+          monthsAboveTarget: `${above} of ${monthly.length}`,
         },
       };
     }

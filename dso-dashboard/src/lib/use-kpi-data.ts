@@ -8,7 +8,18 @@ import {
   type QuarterKey,
   type QuarterData,
   type FYKey,
+  type KpiInsight as DynamicKpiInsight,
 } from "./computed-kpis";
+
+/**
+ * Returns the data-driven {observation, recommendation, nextAction} for a
+ * specific KPI id within the current (FY, quarter) slice. Updates whenever
+ * the user changes the filter.
+ */
+export function useKpiInsight(id: string): DynamicKpiInsight | undefined {
+  const slice = useKPIData();
+  return slice.insights?.[id];
+}
 
 /**
  * Returns the pre-computed KPI slice matching the current (fiscalYear, quarter) filter.

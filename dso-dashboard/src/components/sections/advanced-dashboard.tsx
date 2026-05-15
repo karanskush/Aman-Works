@@ -10,7 +10,7 @@ import {
   type KPICategory,
 } from "@/lib/kpi-registry";
 import { getAdvancedKPIValues } from "@/lib/advanced-kpi-values";
-import { useKPIData, useQuarterLabel } from "@/lib/use-kpi-data";
+import { useKPIData, useQuarterLabel, useKpiInsight } from "@/lib/use-kpi-data";
 import { SectionHeader } from "@/components/ui/section-header";
 import { cn } from "@/lib/utils";
 import {
@@ -61,6 +61,7 @@ function AdvancedKPIModal({
   onClose: () => void;
 }) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const dynamic = useKpiInsight(kpi.id);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -119,6 +120,23 @@ function AdvancedKPIModal({
             </div>
             <p className="text-xs text-foreground/80 leading-relaxed">{kpi.insight}</p>
           </div>
+
+          {dynamic && (
+            <>
+              <div className="p-2.5 rounded-lg bg-accent-blue/10 border border-accent-blue/20">
+                <div className="text-[10px] font-bold text-accent-blue uppercase tracking-wider mb-1">Key Observation</div>
+                <p className="text-xs text-foreground/85 leading-relaxed">{dynamic.observation}</p>
+              </div>
+              <div className="p-2.5 rounded-lg bg-accent-amber/10 border border-accent-amber/20">
+                <div className="text-[10px] font-bold text-accent-amber uppercase tracking-wider mb-1">Recommendation</div>
+                <p className="text-xs text-foreground/85 leading-relaxed">{dynamic.recommendation}</p>
+              </div>
+              <div className="p-2.5 rounded-lg bg-accent-green/10 border border-accent-green/20">
+                <div className="text-[10px] font-bold text-accent-green uppercase tracking-wider mb-1">Next Action</div>
+                <p className="text-xs text-foreground/85 leading-relaxed">{dynamic.nextAction}</p>
+              </div>
+            </>
+          )}
 
           {/* Details breakdown */}
           <div className="p-2.5 rounded-lg bg-card-hover border border-border">

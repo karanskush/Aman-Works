@@ -245,6 +245,7 @@ export function AgingRisk() {
     isOn(kpiEnabled, "basic-aging-buckets") && (
       <KPICard
         key="aging-buckets"
+        kpiId="basic-aging-buckets"
         title="Aging Bucket Distribution"
         value=""
         valueLabel={quarterLabel}
@@ -258,6 +259,7 @@ export function AgingRisk() {
     isOn(kpiEnabled, "basic-aging-donut") && (
       <KPICard
         key="aging-donut"
+        kpiId="basic-aging-donut"
         title="Aging Composition"
         value=""
         insight={{
@@ -272,6 +274,7 @@ export function AgingRisk() {
     isOn(kpiEnabled, "basic-overdue-density") && (
       <KPICard
         key="overdue-density"
+        kpiId="basic-overdue-density"
         title="Overdue Invoice Density vs Value Split"
         value=""
         insight={overdueInvoiceDensityInsight}
@@ -283,6 +286,7 @@ export function AgingRisk() {
     isOn(kpiEnabled, "basic-peak-exposure") && (
       <KPICard
         key="peak-exposure"
+        kpiId="basic-peak-exposure"
         title="Peak Overdue Exposure"
         value=""
         insight={peakOverdueExposureInsight}

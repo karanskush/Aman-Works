@@ -15,11 +15,11 @@ export interface KPIInsight {
 
 export const dsoInsight: KPIInsight = {
   businessPurpose:
-    "Measures the average days to collect payment after a sale. Lower DSO = faster cash conversion. Benchmark: <45 days is healthy.",
+    "AR intensity ratio. The share of credit sales currently parked in receivables. Lower = faster cash conversion. < 15% is best-in-class.",
   formula:
-    "DSO = (Accounts Receivable / Total Credit Sales) x Number of Days in Period",
+    "DSO = (Average AR / Total Credit Sales) × 100",
   aiInsight:
-    "DSO is a leading indicator of cash flow health. Rising DSO signals slowing collections and growing working capital needs. Cross-reference with aging buckets and overdue ratio for root cause analysis.",
+    "Cross-reference with aging buckets and overdue ratio for root cause analysis. Rising DSO signals collection slipping behind sales pace.",
   trend: "warning",
 };
 

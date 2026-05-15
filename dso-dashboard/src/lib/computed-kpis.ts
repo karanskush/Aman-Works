@@ -65,6 +65,12 @@ export interface AIInsightsData {
   cards: AIInsightCard[];
 }
 
+export interface KpiInsight {
+  observation: string;
+  recommendation: string;
+  nextAction: string;
+}
+
 export interface QuarterData {
   summary: {
     totalInvoices: number; openInvoices: number; clearedInvoices: number; overdueInvoices: number;
@@ -79,8 +85,8 @@ export interface QuarterData {
   };
   collection: {
     cei: { overall: number; monthly: MonthlyPoint[] };
-    onTimePayment: { weekly: WeeklyPoint[] };
-    collectionEffectiveness: { weekly: WeeklyPoint[] };
+    onTimePayment: { monthly: MonthlyPoint[] };
+    collectionEffectiveness: { monthly: MonthlyPoint[] };
     creditPeriodEffectiveness: { data: { creditPeriod: string; value: number }[] };
   };
   aging: {
@@ -91,10 +97,11 @@ export interface QuarterData {
   operational: {
     invoiceToCash: { p50: number; p90: number };
     creditPeriodUtilization: { overall: number; monthly: MonthlyPoint[] };
-    daysToClearBacklog: { weekly: WeeklyPoint[] };
+    daysToClearBacklog: { monthly: MonthlyPoint[] };
   };
   advanced: AdvancedKPIs;
   aiInsights: AIInsightsData;
+  insights: Record<string, KpiInsight>;
 }
 
 export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> = {
@@ -112,19 +119,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 13.5,
+          "overall": 5,
           "monthly": [
             {
               "month": "Apr'23",
-              "value": 5.5
+              "value": 18.5
             },
             {
               "month": "May'23",
-              "value": 3.7
+              "value": 12.4
             },
             {
               "month": "Jun'23",
-              "value": 4.4
+              "value": 14.5
             }
           ]
         },
@@ -204,113 +211,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'23",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'23",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'23",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'23",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'23",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'23",
               "value": 0
             }
           ]
@@ -433,89 +360,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 74.2
+              "month": "Apr'23",
+              "value": 334.3
             },
             {
-              "week": "W2",
-              "value": 79
+              "month": "May'23",
+              "value": 285.1
             },
             {
-              "week": "W3",
-              "value": 44.5
-            },
-            {
-              "week": "W4",
-              "value": 148.9
-            },
-            {
-              "week": "W5",
-              "value": 229.6
-            },
-            {
-              "week": "W6",
-              "value": 74.7
-            },
-            {
-              "week": "W7",
-              "value": 42.8
-            },
-            {
-              "week": "W8",
-              "value": 58.4
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 127.2
-            },
-            {
-              "week": "W11",
-              "value": 168.9
-            },
-            {
-              "week": "W12",
-              "value": 73.9
-            },
-            {
-              "week": "W13",
-              "value": 62.3
+              "month": "Jun'23",
+              "value": 429.3
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 13.5,
+          "blendedDSO": 5,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 3.9,
+              "dso": 4.4,
               "weight": 29.3,
-              "contribution": -2.8
+              "contribution": -0.2
             },
             {
               "segment": "KEY",
-              "dso": 14.6,
+              "dso": 16.2,
               "weight": 43.5,
-              "contribution": 0.5
+              "contribution": 4.9
             },
             {
               "segment": "STANDARD",
-              "dso": 19,
+              "dso": 21.2,
               "weight": 17.6,
-              "contribution": 1
+              "contribution": 2.8
             },
             {
               "segment": "SMB",
-              "dso": 27.7,
+              "dso": 30.8,
               "weight": 9.6,
-              "contribution": 1.4
+              "contribution": 2.5
             }
           ]
         },
@@ -528,7 +415,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 69,
-            "Trend": 57
+            "Trend": 58
           }
         },
         "termsMixDrag": {
@@ -612,14 +499,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'23",
-              "change": -32.7
+              "change": -33
             },
             {
               "month": "Jun'23",
-              "change": 18.9
+              "change": 16.9
             }
           ],
-          "avgChange": -6.9
+          "avgChange": -8
         },
         "pbdi": {
           "alertCount": 82,
@@ -856,7 +743,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 57
+            "value": 58
           }
         ],
         "segmentEfficiencyChart": [
@@ -910,7 +797,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 13.5 days against a best-possible benchmark of 35.3 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 5.0 days against a best-possible benchmark of 35.3 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -919,7 +806,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "13.5 days",
+                "value": "5.0 days",
                 "color": "text-accent-green"
               },
               {
@@ -964,12 +851,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "SMB drags blended DSO up by +1.4 days",
-            "narrative": "The blended 13.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 35.3 days — leaving -21.8 days of behavioural leakage worth ₹-6.1B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.9 days",
+            "narrative": "The blended 5.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 35.3 days — leaving -21.8 days of behavioural leakage worth ₹-6.1B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "13.5d",
+                "value": "5.0d",
                 "color": "text-accent-red"
               },
               {
@@ -989,9 +876,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "SMB: DSO 28d, weight 10%, contribution +1.4d.",
-              "STANDARD: DSO 19d, weight 18%, contribution +1.0d.",
-              "KEY: DSO 15d, weight 44%, contribution +0.5d."
+              "KEY: DSO 16d, weight 44%, contribution +4.9d.",
+              "STANDARD: DSO 21d, weight 18%, contribution +2.8d.",
+              "SMB: DSO 31d, weight 10%, contribution +2.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -1004,7 +891,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target SMB segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -1122,8 +1009,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 86% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 86% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -1136,25 +1023,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "91d",
+                "value": "350d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 63% · 15 days 73% · 30 days 75% · 45 days 86% · 60 days 87%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -1162,7 +1049,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -1324,6 +1211,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q1 FY 2023-24, DSO is 5.0 (healthy). Average AR ₹3773352 sits against ₹25.1B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹3.8B) is past due across 1,068 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,068 invoices in the 60+ bucket (₹3.8B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 48.3% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 43.6× for Q1 FY 2023-24. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q1 FY 2023-24.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 86% for Q1 FY 2023-24; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q1 FY 2023-24.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 63% · 15 days 73% · 30 days 75% · 45 days 86% · 60 days 87%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹3.8B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹9.3Cr (20240010501, company 3000, 979 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 36 days · P90 62 days. Wide P50–P90 gap (26d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 124% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 349.6 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 5.0. Largest drag: KEY contributing 4.9 pts at 44% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -8.0%. Steady improvement.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 35d vs actual pay days 36d — behavioural drag +1d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 56/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "82 customers show > 25% deterioration in payment behaviour. Worst: Ultratech Pharma (322.2%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 82 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "145 customers exceed credit limit. Average utilisation across sample: 167%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 145 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 8.49 touches per ₹Crore of open AR (3,204 touches on 377.2Cr).",
+          "recommendation": "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+          "nextAction": "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 2136.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 51/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.8% of available early-payment discount (₹1.0Cr saved; ₹36.9Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 2.8 days (₹78.5Cr disputed AR). Clean DSO: 10.7 days vs total 13.5.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (224 of 3204). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹10.3L at 10% cost of capital. Annualised: ₹1.1B.",
+          "recommendation": "Every DSO day saved is ~₹10.3L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-22 days between actual DSO (14d) and best-possible (35d terms-implied) leak ₹-6.1B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.0B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹33.5Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹33.5Cr on ₹25.1B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 12d. Lagging: HQ Operations India at 14d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q1 FY 2023-24 headline: DSO 5.0 · CEI 86% · 100% overdue · ₹3.8B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "82 PBDI alerts + 145 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-6.1B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 86%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q2": {
@@ -1339,19 +1433,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 12.1,
+          "overall": 4.5,
           "monthly": [
             {
               "month": "Jul'23",
-              "value": 3.5
+              "value": 11.5
             },
             {
               "month": "Aug'23",
-              "value": 4
+              "value": 13.5
             },
             {
               "month": "Sep'23",
-              "value": 4.6
+              "value": 15.2
             }
           ]
         },
@@ -1431,121 +1525,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'23",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'23",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'23",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'23",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'23",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'23",
               "value": 0
             }
           ]
@@ -1668,93 +1674,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
-              "value": 695.7
+              "month": "Jul'23",
+              "value": 376.5
             },
             {
-              "week": "W15",
-              "value": 31.4
+              "month": "Aug'23",
+              "value": 364.4
             },
             {
-              "week": "W16",
-              "value": 99.5
-            },
-            {
-              "week": "W17",
-              "value": 62.4
-            },
-            {
-              "week": "W18",
-              "value": 244.8
-            },
-            {
-              "week": "W19",
-              "value": 222.4
-            },
-            {
-              "week": "W20",
-              "value": 113.4
-            },
-            {
-              "week": "W21",
-              "value": 161.4
-            },
-            {
-              "week": "W22",
-              "value": 31.6
-            },
-            {
-              "week": "W23",
-              "value": 110.8
-            },
-            {
-              "week": "W24",
-              "value": 93.5
-            },
-            {
-              "week": "W25",
-              "value": 19
-            },
-            {
-              "week": "W26",
-              "value": 31.2
-            },
-            {
-              "week": "W27",
-              "value": 12.4
+              "month": "Sep'23",
+              "value": 135
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 12.1,
+          "blendedDSO": 4.5,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6.6,
+              "dso": 7.4,
               "weight": 37.7,
-              "contribution": -2.1
+              "contribution": 1.1
             },
             {
               "segment": "KEY",
-              "dso": 11.3,
+              "dso": 12.5,
               "weight": 37.1,
-              "contribution": -0.3
+              "contribution": 3
             },
             {
               "segment": "STANDARD",
-              "dso": 20.2,
+              "dso": 22.5,
               "weight": 16.1,
-              "contribution": 1.3
+              "contribution": 2.9
             },
             {
               "segment": "SMB",
-              "dso": 23.7,
+              "dso": 26.3,
               "weight": 9,
-              "contribution": 1
+              "contribution": 2
             }
           ]
         },
@@ -1851,14 +1813,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'23",
-              "change": 14.3
+              "change": 17.4
             },
             {
               "month": "Sep'23",
-              "change": 15
+              "change": 12.6
             }
           ],
-          "avgChange": 14.6
+          "avgChange": 15
         },
         "pbdi": {
           "alertCount": 88,
@@ -2149,7 +2111,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 12.1 days against a best-possible benchmark of 37.7 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -1.4 days, overdue ratio by +0.0 pts, and the health score by -4 pts.",
+            "narrative": "For Q2 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.5 days against a best-possible benchmark of 37.7 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.5 days, overdue ratio by +0.0 pts, and the health score by -4 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -2158,7 +2120,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "12.1 days",
+                "value": "4.5 days",
                 "color": "text-accent-green"
               },
               {
@@ -2203,12 +2165,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.3 days",
-            "narrative": "The blended 12.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.7 days — leaving -25.7 days of behavioural leakage worth ₹-8.3B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +3.0 days",
+            "narrative": "The blended 4.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.7 days — leaving -25.7 days of behavioural leakage worth ₹-8.3B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "12.1d",
+                "value": "4.5d",
                 "color": "text-accent-red"
               },
               {
@@ -2228,9 +2190,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 20d, weight 16%, contribution +1.3d.",
-              "SMB: DSO 24d, weight 9%, contribution +1.0d.",
-              "KEY: DSO 11d, weight 37%, contribution -0.3d."
+              "KEY: DSO 13d, weight 37%, contribution +3.0d.",
+              "STANDARD: DSO 23d, weight 16%, contribution +2.9d.",
+              "SMB: DSO 26d, weight 9%, contribution +2.0d."
             ],
             "risksAndOpportunities": [
               {
@@ -2243,7 +2205,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -2361,8 +2323,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 88% · 0/14 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 88% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -2375,25 +2337,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/14",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "138d",
+                "value": "292d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 65% · 15 days 67% · 30 days 74% · 45 days 83% · 60 days 86%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -2401,7 +2363,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -2563,6 +2525,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q2 FY 2023-24, DSO is 4.5 (healthy). Average AR ₹3891869 sits against ₹29.0B of credit sales; -0.5 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹3.9B) is past due across 1,144 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,144 invoices in the 60+ bucket (₹3.9B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 55.8% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 22.6× for Q2 FY 2023-24. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q2 FY 2023-24.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 88% for Q2 FY 2023-24; +1.9pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q2 FY 2023-24.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 65% · 15 days 67% · 30 days 74% · 45 days 83% · 60 days 86%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹3.9B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹13.4Cr (20240000715, company 2000, 948 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 36 days · P90 62 days. Wide P50–P90 gap (26d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 129% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 292.0 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 4.5. Largest drag: KEY contributing 3.0 pts at 37% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +15.0%. Accelerating upward — losing ground.",
+          "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 38d vs actual pay days 36d — behavioural drag -2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 52/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "88 customers show > 25% deterioration in payment behaviour. Worst: Vedanta Infra (226.9%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 88 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "146 customers exceed credit limit. Average utilisation across sample: 160%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 146 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 8.82 touches per ₹Crore of open AR (3,432 touches on 389.3Cr).",
+          "recommendation": "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+          "nextAction": "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 2288.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 51/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.3% of available early-payment discount (₹98.7L saved; ₹43.9Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 1.8 days (₹57.8Cr disputed AR). Clean DSO: 10.3 days vs total 12.1.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (232 of 3432). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹10.7L at 10% cost of capital. Annualised: ₹1.0B.",
+          "recommendation": "Every DSO day saved is ~₹10.7L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-26 days between actual DSO (12d) and best-possible (38d terms-implied) leak ₹-8.3B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-4.1B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹53.4Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 2% (collected ₹53.4Cr on ₹29.0B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 11d. Lagging: HQ Operations India at 14d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q2 FY 2023-24 headline: DSO 4.5 · CEI 88% · 100% overdue · ₹3.9B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "88 PBDI alerts + 146 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 2%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-8.3B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 88%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q3": {
@@ -2578,19 +2747,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 12.7,
+          "overall": 4.7,
           "monthly": [
             {
               "month": "Oct'23",
-              "value": 4.8
+              "value": 16.2
             },
             {
               "month": "Nov'23",
-              "value": 4.4
+              "value": 14.6
             },
             {
               "month": "Dec'23",
-              "value": 3.7
+              "value": 12.3
             }
           ]
         },
@@ -2670,113 +2839,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'23",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'23",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'23",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'23",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'23",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'23",
               "value": 0
             }
           ]
@@ -2899,89 +2988,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
-              "value": 74.4
+              "month": "Oct'23",
+              "value": 342
             },
             {
-              "week": "W29",
-              "value": 168.6
+              "month": "Nov'23",
+              "value": 635.4
             },
             {
-              "week": "W30",
-              "value": 39.4
-            },
-            {
-              "week": "W31",
-              "value": 518.7
-            },
-            {
-              "week": "W32",
-              "value": 199.2
-            },
-            {
-              "week": "W33",
-              "value": 97.8
-            },
-            {
-              "week": "W34",
-              "value": 127.1
-            },
-            {
-              "week": "W35",
-              "value": 351.1
-            },
-            {
-              "week": "W36",
-              "value": 61.3
-            },
-            {
-              "week": "W37",
-              "value": 74.9
-            },
-            {
-              "week": "W38",
-              "value": 120.4
-            },
-            {
-              "week": "W39",
-              "value": 18.4
-            },
-            {
-              "week": "W40",
-              "value": 252.9
+              "month": "Dec'23",
+              "value": 259.3
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 12.7,
+          "blendedDSO": 4.7,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6,
+              "dso": 6.6,
               "weight": 33.9,
-              "contribution": -2.3
+              "contribution": 0.7
             },
             {
               "segment": "KEY",
-              "dso": 12.4,
+              "dso": 13.8,
               "weight": 39.7,
-              "contribution": -0.1
+              "contribution": 3.6
             },
             {
               "segment": "STANDARD",
-              "dso": 19.6,
+              "dso": 21.8,
               "weight": 17.2,
-              "contribution": 1.2
+              "contribution": 2.9
             },
             {
               "segment": "SMB",
-              "dso": 26.1,
+              "dso": 29,
               "weight": 9.2,
-              "contribution": 1.2
+              "contribution": 2.2
             }
           ]
         },
@@ -2994,7 +3043,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 68,
-            "Trend": 62
+            "Trend": 63
           }
         },
         "termsMixDrag": {
@@ -3078,14 +3127,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'23",
-              "change": -8.3
+              "change": -9.9
             },
             {
               "month": "Dec'23",
-              "change": -15.9
+              "change": -15.8
             }
           ],
-          "avgChange": -12.1
+          "avgChange": -12.8
         },
         "pbdi": {
           "alertCount": 63,
@@ -3322,7 +3371,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 62
+            "value": 63
           }
         ],
         "segmentEfficiencyChart": [
@@ -3376,7 +3425,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (57/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 12.7 days against a best-possible benchmark of 37.3 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.6 days, overdue ratio by +0.0 pts, and the health score by +5 pts.",
+            "narrative": "For Q3 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.7 days against a best-possible benchmark of 37.3 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.2 days, overdue ratio by +0.0 pts, and the health score by +5 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -3385,7 +3434,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "12.7 days",
+                "value": "4.7 days",
                 "color": "text-accent-green"
               },
               {
@@ -3430,12 +3479,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.2 days",
-            "narrative": "The blended 12.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.3 days — leaving -24.6 days of behavioural leakage worth ₹-7.8B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +3.6 days",
+            "narrative": "The blended 4.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.3 days — leaving -24.6 days of behavioural leakage worth ₹-7.8B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "12.7d",
+                "value": "4.7d",
                 "color": "text-accent-red"
               },
               {
@@ -3455,9 +3504,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 20d, weight 17%, contribution +1.2d.",
-              "SMB: DSO 26d, weight 9%, contribution +1.2d.",
-              "KEY: DSO 12d, weight 40%, contribution -0.1d."
+              "KEY: DSO 14d, weight 40%, contribution +3.6d.",
+              "STANDARD: DSO 22d, weight 17%, contribution +2.9d.",
+              "SMB: DSO 29d, weight 9%, contribution +2.2d."
             ],
             "risksAndOpportunities": [
               {
@@ -3470,7 +3519,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -3588,8 +3637,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 88% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 88% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -3602,25 +3651,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "162d",
+                "value": "412d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 76% · 15 days 68% · 30 days 75% · 45 days 83% · 60 days 86%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -3628,7 +3677,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -3790,6 +3839,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q3 FY 2023-24, DSO is 4.7 (healthy). Average AR ₹4017639 sits against ₹28.4B of credit sales; +0.2 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹4.0B) is past due across 1,200 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,200 invoices in the 60+ bucket (₹4.0B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 50.9% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 20.9× for Q3 FY 2023-24. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q3 FY 2023-24.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 88% for Q3 FY 2023-24; -0.4pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q3 FY 2023-24.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 76% · 15 days 68% · 30 days 75% · 45 days 83% · 60 days 86%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹4.0B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹10.3Cr (20240015694, company 3000, 821 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 37 days · P90 63 days. Wide P50–P90 gap (26d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 126% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 412.2 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 4.7. Largest drag: KEY contributing 3.6 pts at 40% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -12.8%. Steady improvement.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 37d vs actual pay days 36d — behavioural drag -1d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 57/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "63 customers show > 25% deterioration in payment behaviour. Worst: Bharti Chemicals (620%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 63 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "152 customers exceed credit limit. Average utilisation across sample: 181%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 152 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 8.96 touches per ₹Crore of open AR (3,600 touches on 401.9Cr).",
+          "recommendation": "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+          "nextAction": "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 2400.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 50/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 3.9% of available early-payment discount (₹1.6Cr saved; ₹42.1Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.4 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 2.5 days (₹77.8Cr disputed AR). Clean DSO: 10.3 days vs total 12.7.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (236 of 3600). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹11.0L at 10% cost of capital. Annualised: ₹95.4Cr.",
+          "recommendation": "Every DSO day saved is ~₹11.0L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-25 days between actual DSO (13d) and best-possible (37d terms-implied) leak ₹-7.8B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.9B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹37.2Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹37.2Cr on ₹28.4B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: HQ Operations India at 11d. Lagging: Manufacturing Division at 15d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q3 FY 2023-24 headline: DSO 4.7 · CEI 88% · 100% overdue · ₹4.0B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "63 PBDI alerts + 152 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-7.8B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 88%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q4": {
@@ -3805,19 +4061,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 13.1,
+          "overall": 4.8,
           "monthly": [
             {
               "month": "Jan'24",
-              "value": 4.5
+              "value": 15.1
             },
             {
               "month": "Feb'24",
-              "value": 4.2
+              "value": 14
             },
             {
               "month": "Mar'24",
-              "value": 4.4
+              "value": 14.7
             }
           ]
         },
@@ -3897,105 +4153,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'24",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'24",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'24",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'24",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'24",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'24",
               "value": 0
             }
           ]
@@ -4118,85 +4302,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
-              "value": 99.4
+              "month": "Jan'24",
+              "value": 208.1
             },
             {
-              "week": "W42",
-              "value": 20.8
+              "month": "Feb'24",
+              "value": 293.1
             },
             {
-              "week": "W43",
-              "value": 164.8
-            },
-            {
-              "week": "W44",
-              "value": 35.2
-            },
-            {
-              "week": "W45",
-              "value": 58.1
-            },
-            {
-              "week": "W46",
-              "value": 198.2
-            },
-            {
-              "week": "W47",
-              "value": 30.1
-            },
-            {
-              "week": "W48",
-              "value": 79.3
-            },
-            {
-              "week": "W49",
-              "value": 155.3
-            },
-            {
-              "week": "W50",
-              "value": 205
-            },
-            {
-              "week": "W51",
-              "value": 101.5
-            },
-            {
-              "week": "W52",
-              "value": 84.6
+              "month": "Mar'24",
+              "value": 550
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 13.1,
+          "blendedDSO": 4.8,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6,
+              "dso": 6.6,
               "weight": 33.5,
-              "contribution": -2.4
+              "contribution": 0.6
             },
             {
               "segment": "KEY",
-              "dso": 12.2,
+              "dso": 13.5,
               "weight": 38.5,
-              "contribution": -0.4
+              "contribution": 3.3
             },
             {
               "segment": "STANDARD",
-              "dso": 20.7,
+              "dso": 23,
               "weight": 18,
-              "contribution": 1.4
+              "contribution": 3.3
             },
             {
               "segment": "SMB",
-              "dso": 26.7,
+              "dso": 29.7,
               "weight": 10,
-              "contribution": 1.4
+              "contribution": 2.5
             }
           ]
         },
@@ -4293,14 +4441,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'24",
-              "change": -6.7
+              "change": -7.3
             },
             {
               "month": "Mar'24",
-              "change": 4.8
+              "change": 5
             }
           ],
-          "avgChange": -1
+          "avgChange": -1.1
         },
         "pbdi": {
           "alertCount": 66,
@@ -4591,7 +4739,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
-            "narrative": "For Q4 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 13.1 days against a best-possible benchmark of 34.6 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.4 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
+            "narrative": "For Q4 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.8 days against a best-possible benchmark of 34.6 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.1 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -4600,7 +4748,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "13.1 days",
+                "value": "4.8 days",
                 "color": "text-accent-green"
               },
               {
@@ -4645,12 +4793,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.4 days",
-            "narrative": "The blended 13.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 34.6 days — leaving -21.6 days of behavioural leakage worth ₹-7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +3.3 days",
+            "narrative": "The blended 4.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 34.6 days — leaving -21.6 days of behavioural leakage worth ₹-7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "13.1d",
+                "value": "4.8d",
                 "color": "text-accent-red"
               },
               {
@@ -4670,9 +4818,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 21d, weight 18%, contribution +1.4d.",
-              "SMB: DSO 27d, weight 10%, contribution +1.4d.",
-              "KEY: DSO 12d, weight 39%, contribution -0.4d."
+              "KEY: DSO 14d, weight 39%, contribution +3.3d.",
+              "STANDARD: DSO 23d, weight 18%, contribution +3.3d.",
+              "SMB: DSO 30d, weight 10%, contribution +2.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -4685,7 +4833,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -4803,8 +4951,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 87% · 0/12 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 87% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -4817,25 +4965,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/12",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "103d",
+                "value": "350d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 71% · 15 days 67% · 30 days 72% · 45 days 85% · 60 days 91%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -4843,7 +4991,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -5005,6 +5153,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q4 FY 2023-24, DSO is 4.8 (healthy). Average AR ₹4790633 sits against ₹33.0B of credit sales; +0.1 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹4.8B) is past due across 1,417 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,417 invoices in the 60+ bucket (₹4.8B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 44.4% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 22.0× for Q4 FY 2023-24. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q4 FY 2023-24.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 87% for Q4 FY 2023-24; -0.6pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q4 FY 2023-24.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 71% · 15 days 67% · 30 days 72% · 45 days 85% · 60 days 91%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹4.8B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.4Cr (20240015956, company 1000, 714 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 37 days · P90 62 days. Wide P50–P90 gap (25d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 128% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 350.4 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 4.8. Largest drag: KEY contributing 3.3 pts at 39% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -1.1%. Stable.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 35d vs actual pay days 36d — behavioural drag +2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 56/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "66 customers show > 25% deterioration in payment behaviour. Worst: Sun Pharma (452.4%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 66 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "192 customers exceed credit limit. Average utilisation across sample: 211%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 192 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 8.87 touches per ₹Crore of open AR (4,251 touches on 479.1Cr).",
+          "recommendation": "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+          "nextAction": "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 2834.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 49/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Low consistency — forecasting cash inflow is unreliable. Consider customer-level forecasts for top accounts.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.3% of available early-payment discount (₹1.1Cr saved; ₹49.0Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 2.7 days (₹98.7Cr disputed AR). Clean DSO: 10.4 days vs total 13.1.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (304 of 4251). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹13.1L at 10% cost of capital. Annualised: ₹1.0B.",
+          "recommendation": "Every DSO day saved is ~₹13.1L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-22 days between actual DSO (13d) and best-possible (35d terms-implied) leak ₹-7.9B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.9B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹42.4Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹42.4Cr on ₹33.0B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 13d. Lagging: Services & Solutions at 14d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q4 FY 2023-24 headline: DSO 4.8 · CEI 87% · 100% overdue · ₹4.8B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "66 PBDI alerts + 192 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-7.9B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 87%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "All": {
@@ -5020,55 +5375,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 52,
+          "overall": 1.2,
           "monthly": [
             {
               "month": "Apr'23",
-              "value": 5.5
+              "value": 18.5
             },
             {
               "month": "May'23",
-              "value": 3.7
+              "value": 12.4
             },
             {
               "month": "Jun'23",
-              "value": 4.4
+              "value": 14.5
             },
             {
               "month": "Jul'23",
-              "value": 3.5
+              "value": 11.5
             },
             {
               "month": "Aug'23",
-              "value": 4
+              "value": 13.5
             },
             {
               "month": "Sep'23",
-              "value": 4.6
+              "value": 15.2
             },
             {
               "month": "Oct'23",
-              "value": 4.8
+              "value": 16.2
             },
             {
               "month": "Nov'23",
-              "value": 4.4
+              "value": 14.6
             },
             {
               "month": "Dec'23",
-              "value": 3.7
+              "value": 12.3
             },
             {
               "month": "Jan'24",
-              "value": 4.5
+              "value": 15.1
             },
             {
               "month": "Feb'24",
-              "value": 4.2
+              "value": 14
             },
             {
               "month": "Mar'24",
-              "value": 4.4
+              "value": 14.7
             }
           ]
         },
@@ -5301,425 +5656,105 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'23",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'23",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'23",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'23",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'23",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'23",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'23",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'23",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'23",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'24",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'24",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'24",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'23",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'23",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'23",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'23",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'23",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'23",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'23",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'23",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'23",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'24",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'24",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'24",
               "value": 0
             }
           ]
@@ -5878,253 +5913,93 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 74.2
+              "month": "Apr'23",
+              "value": 334.3
             },
             {
-              "week": "W2",
-              "value": 79
+              "month": "May'23",
+              "value": 285.1
             },
             {
-              "week": "W3",
-              "value": 44.5
+              "month": "Jun'23",
+              "value": 429.3
             },
             {
-              "week": "W4",
-              "value": 148.9
+              "month": "Jul'23",
+              "value": 376.5
             },
             {
-              "week": "W5",
-              "value": 229.6
+              "month": "Aug'23",
+              "value": 364.4
             },
             {
-              "week": "W6",
-              "value": 74.7
+              "month": "Sep'23",
+              "value": 135
             },
             {
-              "week": "W7",
-              "value": 42.8
+              "month": "Oct'23",
+              "value": 342
             },
             {
-              "week": "W8",
-              "value": 58.4
+              "month": "Nov'23",
+              "value": 635.4
             },
             {
-              "week": "W9",
-              "value": 0
+              "month": "Dec'23",
+              "value": 259.3
             },
             {
-              "week": "W10",
-              "value": 127.2
+              "month": "Jan'24",
+              "value": 208.1
             },
             {
-              "week": "W11",
-              "value": 168.9
+              "month": "Feb'24",
+              "value": 293.1
             },
             {
-              "week": "W12",
-              "value": 73.9
-            },
-            {
-              "week": "W13",
-              "value": 62.3
-            },
-            {
-              "week": "W14",
-              "value": 695.7
-            },
-            {
-              "week": "W15",
-              "value": 31.4
-            },
-            {
-              "week": "W16",
-              "value": 99.5
-            },
-            {
-              "week": "W17",
-              "value": 62.4
-            },
-            {
-              "week": "W18",
-              "value": 244.8
-            },
-            {
-              "week": "W19",
-              "value": 222.4
-            },
-            {
-              "week": "W20",
-              "value": 113.4
-            },
-            {
-              "week": "W21",
-              "value": 161.4
-            },
-            {
-              "week": "W22",
-              "value": 31.6
-            },
-            {
-              "week": "W23",
-              "value": 110.8
-            },
-            {
-              "week": "W24",
-              "value": 93.5
-            },
-            {
-              "week": "W25",
-              "value": 19
-            },
-            {
-              "week": "W26",
-              "value": 31.2
-            },
-            {
-              "week": "W27",
-              "value": 12.4
-            },
-            {
-              "week": "W28",
-              "value": 74.4
-            },
-            {
-              "week": "W29",
-              "value": 168.6
-            },
-            {
-              "week": "W30",
-              "value": 39.4
-            },
-            {
-              "week": "W31",
-              "value": 518.7
-            },
-            {
-              "week": "W32",
-              "value": 199.2
-            },
-            {
-              "week": "W33",
-              "value": 97.8
-            },
-            {
-              "week": "W34",
-              "value": 127.1
-            },
-            {
-              "week": "W35",
-              "value": 351.1
-            },
-            {
-              "week": "W36",
-              "value": 61.3
-            },
-            {
-              "week": "W37",
-              "value": 74.9
-            },
-            {
-              "week": "W38",
-              "value": 120.4
-            },
-            {
-              "week": "W39",
-              "value": 18.4
-            },
-            {
-              "week": "W40",
-              "value": 252.9
-            },
-            {
-              "week": "W41",
-              "value": 99.4
-            },
-            {
-              "week": "W42",
-              "value": 20.8
-            },
-            {
-              "week": "W43",
-              "value": 164.8
-            },
-            {
-              "week": "W44",
-              "value": 35.2
-            },
-            {
-              "week": "W45",
-              "value": 58.1
-            },
-            {
-              "week": "W46",
-              "value": 198.2
-            },
-            {
-              "week": "W47",
-              "value": 30.1
-            },
-            {
-              "week": "W48",
-              "value": 79.3
-            },
-            {
-              "week": "W49",
-              "value": 155.3
-            },
-            {
-              "week": "W50",
-              "value": 205
-            },
-            {
-              "week": "W51",
-              "value": 101.5
-            },
-            {
-              "week": "W52",
-              "value": 84.6
+              "month": "Mar'24",
+              "value": 550
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 52,
+          "blendedDSO": 1.2,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 23.4,
+              "dso": 6.4,
               "weight": 33.7,
-              "contribution": -9.7
+              "contribution": 1.8
             },
             {
               "segment": "KEY",
-              "dso": 51.1,
+              "dso": 14,
               "weight": 39.5,
-              "contribution": -0.4
+              "contribution": 5.1
             },
             {
               "segment": "STANDARD",
-              "dso": 80.9,
+              "dso": 22.2,
               "weight": 17.3,
-              "contribution": 5
+              "contribution": 3.6
             },
             {
               "segment": "SMB",
-              "dso": 105.7,
+              "dso": 29,
               "weight": 9.5,
-              "contribution": 5.1
+              "contribution": 2.6
             }
           ]
         },
         "arHealthScore": {
-          "score": 42,
-          "grade": "D",
+          "score": 58,
+          "grade": "C",
           "components": {
-            "DSO": 20,
+            "DSO": 100,
             "CEI": 87,
             "Overdue": 0,
             "Aging": 0,
@@ -6213,47 +6088,47 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'23",
-              "change": -32.7
+              "change": -33
             },
             {
               "month": "Jun'23",
-              "change": 18.9
+              "change": 16.9
             },
             {
               "month": "Jul'23",
-              "change": -20.5
+              "change": -20.7
             },
             {
               "month": "Aug'23",
-              "change": 14.3
+              "change": 17.4
             },
             {
               "month": "Sep'23",
-              "change": 15
+              "change": 12.6
             },
             {
               "month": "Oct'23",
-              "change": 4.3
+              "change": 6.6
             },
             {
               "month": "Nov'23",
-              "change": -8.3
+              "change": -9.9
             },
             {
               "month": "Dec'23",
-              "change": -15.9
+              "change": -15.8
             },
             {
               "month": "Jan'24",
-              "change": 21.6
+              "change": 22.8
             },
             {
               "month": "Feb'24",
-              "change": -6.7
+              "change": -7.3
             },
             {
               "month": "Mar'24",
-              "change": 4.8
+              "change": 5
             }
           ],
           "avgChange": -0.5
@@ -6467,13 +6342,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 42,
-          "grade": "D"
+          "score": 58,
+          "grade": "C"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 20
+            "value": 100
           },
           {
             "dim": "CEI",
@@ -6545,19 +6420,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "warning",
-            "headline": "AR Health Grade D (42/100) — Structural issues require CFO action",
-            "narrative": "For FY 2023-24, the receivables portfolio shows elevated stress. DSO sits at 52.0 days against a best-possible benchmark of 36.2 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. ",
+            "severity": "info",
+            "headline": "AR Health Grade C (58/100) — Mixed signals require attention",
+            "narrative": "For FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 1.2 days against a best-possible benchmark of 36.2 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "42/100",
-                "color": "text-accent-red"
+                "value": "58/100",
+                "color": "text-accent-amber"
               },
               {
                 "label": "DSO",
-                "value": "52.0 days",
-                "color": "text-accent-amber"
+                "value": "1.2 days",
+                "color": "text-accent-green"
               },
               {
                 "label": "CEI",
@@ -6601,12 +6476,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "warning",
-            "headline": "SMB drags blended DSO up by +5.1 days",
-            "narrative": "The blended 52.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 36.2 days — leaving 15.9 days of behavioural leakage worth ₹5.0B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +5.1 days",
+            "narrative": "The blended 1.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 36.2 days — leaving 15.9 days of behavioural leakage worth ₹5.0B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "52.0d",
+                "value": "1.2d",
                 "color": "text-accent-red"
               },
               {
@@ -6626,9 +6501,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "SMB: DSO 106d, weight 10%, contribution +5.1d.",
-              "STANDARD: DSO 81d, weight 17%, contribution +5.0d.",
-              "KEY: DSO 51d, weight 40%, contribution -0.4d."
+              "KEY: DSO 14d, weight 40%, contribution +5.1d.",
+              "STANDARD: DSO 22d, weight 17%, contribution +3.6d.",
+              "SMB: DSO 29d, weight 10%, contribution +2.6d."
             ],
             "risksAndOpportunities": [
               {
@@ -6641,7 +6516,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target SMB segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -6759,8 +6634,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 87% · 0/52 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 87% · 0/12 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -6773,25 +6648,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/52",
+                "label": "Months ≥ Target",
+                "value": "0/12",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "124d",
+                "value": "351d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 69% · 15 days 69% · 30 days 74% · 45 days 84% · 60 days 87%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -6799,7 +6674,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -6961,6 +6836,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For FY 2023-24, DSO is 1.2 (healthy). Average AR ₹16473885 sits against ₹115.5B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹16.5B) is past due across 4,829 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 4,829 invoices in the 60+ bucket (₹16.5B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 49.6% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 137.1× for FY 2023-24. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across FY 2023-24.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 87% for FY 2023-24; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 12 months in FY 2023-24.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 12 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 69% · 15 days 69% · 30 days 74% · 45 days 84% · 60 days 87%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹16.5B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.4Cr (20240015956, company 1000, 714 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 36 days · P90 62 days. Wide P50–P90 gap (26d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 127% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 351.0 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 1.2. Largest drag: KEY contributing 5.1 pts at 40% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -0.5%. Stable.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 36d vs actual pay days 36d — behavioural drag +0d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 58/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "30 customers show > 25% deterioration in payment behaviour. Worst: Asian Infra (124.7%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 30 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "327 customers exceed credit limit. Average utilisation across sample: 670%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 327 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 8.79 touches per ₹Crore of open AR (14,487 touches on 1647.4Cr).",
+          "recommendation": "Heavy effort per crore — likely repeated calls without resolution. Investigate process.",
+          "nextAction": "Audit dunning logs to find chronic ‘touched but not paid' accounts; consider write-off or legal action."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 9658.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 47/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Low consistency — forecasting cash inflow is unreliable. Consider customer-level forecasts for top accounts.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.8% of available early-payment discount (₹4.7Cr saved; ₹1.7B left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 9.9 days (₹3.1B disputed AR). Clean DSO: 42.2 days vs total 52.0.",
+          "recommendation": "Disputes inflate DSO meaningfully. Separately track dispute aging and SLA for resolution.",
+          "nextAction": "Stand up a dispute war-room with 14-day resolution SLA on each blocked invoice."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (996 of 14487). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹45.1L at 10% cost of capital. Annualised: ₹4.1B.",
+          "recommendation": "Every DSO day saved is ~₹45.1L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "16 days between actual DSO (52d) and best-possible (36d terms-implied) leak ₹5.0B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹2.5B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹1.7B.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹1.7B on ₹115.5B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 50d. Lagging: HQ Operations India at 53d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "FY 2023-24 headline: DSO 1.2 · CEI 87% · 100% overdue · ₹16.5B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "30 PBDI alerts + 327 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹5.0B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 87%, monthly effectiveness average 0%, 0/12 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     }
   },
@@ -6978,19 +7060,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 15.6,
+          "overall": 5.8,
           "monthly": [
             {
               "month": "Apr'24",
-              "value": 6.6
+              "value": 22.1
             },
             {
               "month": "May'24",
-              "value": 4.7
+              "value": 15.5
             },
             {
               "month": "Jun'24",
-              "value": 4.4
+              "value": 14.6
             }
           ]
         },
@@ -7070,113 +7152,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'24",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'24",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'24",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'24",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'24",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'24",
               "value": 0
             }
           ]
@@ -7299,89 +7301,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 133.2
+              "month": "Apr'24",
+              "value": 801.2
             },
             {
-              "week": "W2",
-              "value": 189.9
+              "month": "May'24",
+              "value": 426.6
             },
             {
-              "week": "W3",
-              "value": 203
-            },
-            {
-              "week": "W4",
-              "value": 167.6
-            },
-            {
-              "week": "W5",
-              "value": 634
-            },
-            {
-              "week": "W6",
-              "value": 999
-            },
-            {
-              "week": "W7",
-              "value": 128.5
-            },
-            {
-              "week": "W8",
-              "value": 82.4
-            },
-            {
-              "week": "W9",
-              "value": 35.7
-            },
-            {
-              "week": "W10",
-              "value": 121.1
-            },
-            {
-              "week": "W11",
-              "value": 76.5
-            },
-            {
-              "week": "W12",
-              "value": 151.3
-            },
-            {
-              "week": "W13",
-              "value": 532.1
+              "month": "Jun'24",
+              "value": 509.9
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 15.6,
+          "blendedDSO": 5.8,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 12.1,
+              "dso": 13.4,
               "weight": 35.3,
-              "contribution": -1.3
+              "contribution": 2.7
             },
             {
               "segment": "KEY",
-              "dso": 12.7,
+              "dso": 14.1,
               "weight": 37.6,
-              "contribution": -1.1
+              "contribution": 3.1
             },
             {
               "segment": "STANDARD",
-              "dso": 23.6,
+              "dso": 26.2,
               "weight": 18.6,
-              "contribution": 1.5
+              "contribution": 3.8
             },
             {
               "segment": "SMB",
-              "dso": 25.8,
+              "dso": 28.7,
               "weight": 8.5,
-              "contribution": 0.9
+              "contribution": 1.9
             }
           ]
         },
@@ -7478,14 +7440,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'24",
-              "change": -28.8
+              "change": -29.9
             },
             {
               "month": "Jun'24",
-              "change": -6.4
+              "change": -5.8
             }
           ],
-          "avgChange": -17.6
+          "avgChange": -17.8
         },
         "pbdi": {
           "alertCount": 82,
@@ -7776,7 +7738,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 15.6 days against a best-possible benchmark of 39.7 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 5.8 days against a best-possible benchmark of 39.7 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -7785,7 +7747,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "15.6 days",
+                "value": "5.8 days",
                 "color": "text-accent-green"
               },
               {
@@ -7830,12 +7792,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.5 days",
-            "narrative": "The blended 15.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.7 days — leaving -24.1 days of behavioural leakage worth ₹-6.6B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +3.8 days",
+            "narrative": "The blended 5.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.7 days — leaving -24.1 days of behavioural leakage worth ₹-6.6B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "15.6d",
+                "value": "5.8d",
                 "color": "text-accent-red"
               },
               {
@@ -7855,9 +7817,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 24d, weight 19%, contribution +1.5d.",
-              "SMB: DSO 26d, weight 9%, contribution +0.9d.",
-              "KEY: DSO 13d, weight 38%, contribution -1.1d."
+              "STANDARD: DSO 26d, weight 19%, contribution +3.8d.",
+              "KEY: DSO 14d, weight 38%, contribution +3.1d.",
+              "STRATEGIC: DSO 13d, weight 35%, contribution +2.7d."
             ],
             "risksAndOpportunities": [
               {
@@ -7988,8 +7950,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 84% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 84% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -8002,25 +7964,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "266d",
+                "value": "579d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 56% · 15 days 60% · 30 days 64% · 45 days 77% · 60 days 81%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -8028,7 +7990,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -8190,6 +8152,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q1 FY 2024-25, DSO is 5.8 (healthy). Average AR ₹4256568 sits against ₹24.6B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹4.3B) is past due across 1,159 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,159 invoices in the 60+ bucket (₹4.3B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 57.4% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 40.7× for Q1 FY 2024-25. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q1 FY 2024-25.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 84% for Q1 FY 2024-25; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q1 FY 2024-25.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 56% · 15 days 60% · 30 days 64% · 45 days 77% · 60 days 81%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹4.3B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.9Cr (20250003886, company 3000, 663 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 38 days · P90 66 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 134% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 579.2 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 5.8. Largest drag: STANDARD contributing 3.8 pts at 19% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -17.8%. Steady improvement.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 40d vs actual pay days 38d — behavioural drag -2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 55/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "82 customers show > 25% deterioration in payment behaviour. Worst: HDFC Group (405.3%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 82 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "141 customers exceed credit limit. Average utilisation across sample: 145%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 141 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 1.59 touches per ₹Crore of open AR (678 touches on 426.0Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 452.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 52/100 (lower CV = more predictable). Sample: 348 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.0% of available early-payment discount (₹69.5L saved; ₹35.4Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.4 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 12 days after due (target 3). Drift: 9 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.9 days (₹24.4Cr disputed AR). Clean DSO: 14.7 days vs total 15.6.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (48 of 678). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹11.7L at 10% cost of capital. Annualised: ₹80.1Cr.",
+          "recommendation": "Every DSO day saved is ~₹11.7L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-24 days between actual DSO (16d) and best-possible (40d terms-implied) leak ₹-6.6B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.3B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹22.0Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹22.0Cr on ₹24.6B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: HQ Operations India at 15d. Lagging: Services & Solutions at 16d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q1 FY 2024-25 headline: DSO 5.8 · CEI 84% · 100% overdue · ₹4.3B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "82 PBDI alerts + 141 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-6.6B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 84%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q2": {
@@ -8205,19 +8374,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 16.9,
+          "overall": 6.3,
           "monthly": [
             {
               "month": "Jul'24",
-              "value": 5.9
+              "value": 19.7
             },
             {
               "month": "Aug'24",
-              "value": 4.5
+              "value": 15.1
             },
             {
               "month": "Sep'24",
-              "value": 6.3
+              "value": 21.1
             }
           ]
         },
@@ -8297,121 +8466,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'24",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'24",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'24",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'24",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'24",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'24",
               "value": 0
             }
           ]
@@ -8534,93 +8615,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
-              "value": 999
+              "month": "Jul'24",
+              "value": 892.2
             },
             {
-              "week": "W15",
-              "value": 55
+              "month": "Aug'24",
+              "value": 380.3
             },
             {
-              "week": "W16",
-              "value": 133
-            },
-            {
-              "week": "W17",
-              "value": 999
-            },
-            {
-              "week": "W18",
-              "value": 668.6
-            },
-            {
-              "week": "W19",
-              "value": 159.8
-            },
-            {
-              "week": "W20",
-              "value": 72.1
-            },
-            {
-              "week": "W21",
-              "value": 56.3
-            },
-            {
-              "week": "W22",
-              "value": 83.7
-            },
-            {
-              "week": "W23",
-              "value": 114.1
-            },
-            {
-              "week": "W24",
-              "value": 91.4
-            },
-            {
-              "week": "W25",
-              "value": 265.3
-            },
-            {
-              "week": "W26",
-              "value": 58.4
-            },
-            {
-              "week": "W27",
-              "value": 872.3
+              "month": "Sep'24",
+              "value": 534.9
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 16.9,
+          "blendedDSO": 6.3,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 9.6,
+              "dso": 10.7,
               "weight": 33.4,
-              "contribution": -2.4
+              "contribution": 1.5
             },
             {
               "segment": "KEY",
-              "dso": 16.8,
+              "dso": 18.7,
               "weight": 37.9,
-              "contribution": 0
+              "contribution": 4.7
             },
             {
               "segment": "STANDARD",
-              "dso": 24.6,
+              "dso": 27.3,
               "weight": 18.5,
-              "contribution": 1.4
+              "contribution": 3.9
             },
             {
               "segment": "SMB",
-              "dso": 27.4,
+              "dso": 30.4,
               "weight": 10.1,
-              "contribution": 1.1
+              "contribution": 2.4
             }
           ]
         },
@@ -8717,14 +8754,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'24",
-              "change": -23.7
+              "change": -23.4
             },
             {
               "month": "Sep'24",
-              "change": 40
+              "change": 39.7
             }
           ],
-          "avgChange": 8.1
+          "avgChange": 8.2
         },
         "pbdi": {
           "alertCount": 86,
@@ -9015,7 +9052,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 16.9 days against a best-possible benchmark of 38.5 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +1.3 days, overdue ratio by +0.0 pts, and the health score by -3 pts.",
+            "narrative": "For Q2 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 6.3 days against a best-possible benchmark of 38.5 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.5 days, overdue ratio by +0.0 pts, and the health score by -3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -9024,7 +9061,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "16.9 days",
+                "value": "6.3 days",
                 "color": "text-accent-green"
               },
               {
@@ -9069,12 +9106,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.4 days",
-            "narrative": "The blended 16.9-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.5 days — leaving -21.6 days of behavioural leakage worth ₹-6.2B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.7 days",
+            "narrative": "The blended 6.3-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.5 days — leaving -21.6 days of behavioural leakage worth ₹-6.2B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "16.9d",
+                "value": "6.3d",
                 "color": "text-accent-red"
               },
               {
@@ -9094,9 +9131,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 25d, weight 19%, contribution +1.4d.",
-              "SMB: DSO 27d, weight 10%, contribution +1.1d.",
-              "KEY: DSO 17d, weight 38%, contribution +0.0d."
+              "KEY: DSO 19d, weight 38%, contribution +4.7d.",
+              "STANDARD: DSO 27d, weight 19%, contribution +3.9d.",
+              "SMB: DSO 30d, weight 10%, contribution +2.4d."
             ],
             "risksAndOpportunities": [
               {
@@ -9109,7 +9146,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -9227,8 +9264,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 84% · 0/14 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 84% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -9241,25 +9278,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/14",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "331d",
+                "value": "602d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 50% · 15 days 62% · 30 days 71% · 45 days 72% · 60 days 81%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -9267,7 +9304,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -9429,6 +9466,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q2 FY 2024-25, DSO is 6.3 (healthy). Average AR ₹4836820 sits against ₹25.8B of credit sales; +0.5 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹4.8B) is past due across 1,362 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,362 invoices in the 60+ bucket (₹4.8B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 51.9% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 16.5× for Q2 FY 2024-25. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q2 FY 2024-25.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 84% for Q2 FY 2024-25; -0.2pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q2 FY 2024-25.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 50% · 15 days 62% · 30 days 71% · 45 days 72% · 60 days 81%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹4.8B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.5Cr (20250016736, company 2000, 554 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 37 days · P90 64 days. Wide P50–P90 gap (27d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 135% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 602.5 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 6.3. Largest drag: KEY contributing 4.7 pts at 38% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +8.2%. Accelerating upward — losing ground.",
+          "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 39d vs actual pay days 37d — behavioural drag -1d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 52/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "86 customers show > 25% deterioration in payment behaviour. Worst: Grasim Pharma (370.1%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 86 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "181 customers exceed credit limit. Average utilisation across sample: 191%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 181 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 1.82 touches per ₹Crore of open AR (879 touches on 484.1Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 586.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 52/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.4% of available early-payment discount (₹85.7L saved; ₹36.8Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.4 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.7 days (₹19.2Cr disputed AR). Clean DSO: 16.2 days vs total 16.9.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (59 of 879). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹13.3L at 10% cost of capital. Annualised: ₹78.6Cr.",
+          "recommendation": "Every DSO day saved is ~₹13.3L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-22 days between actual DSO (17d) and best-possible (39d terms-implied) leak ₹-6.2B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.1B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹27.2Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹27.2Cr on ₹25.8B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Services & Solutions at 15d. Lagging: HQ Operations India at 19d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q2 FY 2024-25 headline: DSO 6.3 · CEI 84% · 100% overdue · ₹4.8B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "86 PBDI alerts + 181 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-6.2B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 84%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q3": {
@@ -9444,19 +9688,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 16.3,
+          "overall": 6,
           "monthly": [
             {
               "month": "Oct'24",
-              "value": 5.4
+              "value": 17.8
             },
             {
               "month": "Nov'24",
-              "value": 5.7
+              "value": 19.1
             },
             {
               "month": "Dec'24",
-              "value": 5.2
+              "value": 17.3
             }
           ]
         },
@@ -9536,113 +9780,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'24",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'24",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'24",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'24",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'24",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'24",
               "value": 0
             }
           ]
@@ -9765,89 +9929,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
-              "value": 45.2
+              "month": "Oct'24",
+              "value": 371
             },
             {
-              "week": "W29",
-              "value": 143.4
+              "month": "Nov'24",
+              "value": 999
             },
             {
-              "week": "W30",
-              "value": 141.3
-            },
-            {
-              "week": "W31",
-              "value": 109.8
-            },
-            {
-              "week": "W32",
-              "value": 505.4
-            },
-            {
-              "week": "W33",
-              "value": 398
-            },
-            {
-              "week": "W34",
-              "value": 106
-            },
-            {
-              "week": "W35",
-              "value": 889.9
-            },
-            {
-              "week": "W36",
-              "value": 189.7
-            },
-            {
-              "week": "W37",
-              "value": 552.5
-            },
-            {
-              "week": "W38",
-              "value": 228.5
-            },
-            {
-              "week": "W39",
-              "value": 376.2
-            },
-            {
-              "week": "W40",
-              "value": 703.1
+              "month": "Dec'24",
+              "value": 999
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 16.3,
+          "blendedDSO": 6,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 10.3,
+              "dso": 11.4,
               "weight": 33.1,
-              "contribution": -2
+              "contribution": 1.8
             },
             {
               "segment": "KEY",
-              "dso": 15.3,
+              "dso": 17,
               "weight": 39.5,
-              "contribution": -0.4
+              "contribution": 4.3
             },
             {
               "segment": "STANDARD",
-              "dso": 23.6,
+              "dso": 26.2,
               "weight": 17.2,
-              "contribution": 1.3
+              "contribution": 3.5
             },
             {
               "segment": "SMB",
-              "dso": 27.2,
+              "dso": 30.3,
               "weight": 10.1,
-              "contribution": 1.1
+              "contribution": 2.5
             }
           ]
         },
@@ -9860,7 +9984,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 67,
-            "Trend": 52
+            "Trend": 51
           }
         },
         "termsMixDrag": {
@@ -9944,14 +10068,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'24",
-              "change": 5.6
+              "change": 7.3
             },
             {
               "month": "Dec'24",
-              "change": -8.8
+              "change": -9.4
             }
           ],
-          "avgChange": -1.6
+          "avgChange": -1.1
         },
         "pbdi": {
           "alertCount": 78,
@@ -10188,7 +10312,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 52
+            "value": 51
           }
         ],
         "segmentEfficiencyChart": [
@@ -10242,7 +10366,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 16.3 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.6 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
+            "narrative": "For Q3 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 6.0 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.3 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -10251,7 +10375,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "16.3 days",
+                "value": "6.0 days",
                 "color": "text-accent-green"
               },
               {
@@ -10296,12 +10420,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.3 days",
-            "narrative": "The blended 16.3-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving -23.3 days of behavioural leakage worth ₹-7.4B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.3 days",
+            "narrative": "The blended 6.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving -23.3 days of behavioural leakage worth ₹-7.4B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "16.3d",
+                "value": "6.0d",
                 "color": "text-accent-red"
               },
               {
@@ -10321,9 +10445,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 24d, weight 17%, contribution +1.3d.",
-              "SMB: DSO 27d, weight 10%, contribution +1.1d.",
-              "KEY: DSO 15d, weight 40%, contribution -0.4d."
+              "KEY: DSO 17d, weight 40%, contribution +4.3d.",
+              "STANDARD: DSO 26d, weight 17%, contribution +3.5d.",
+              "SMB: DSO 30d, weight 10%, contribution +2.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -10336,7 +10460,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -10454,8 +10578,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 85% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 85% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -10468,25 +10592,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "338d",
+                "value": "790d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 47% · 15 days 62% · 30 days 63% · 45 days 80% · 60 days 76%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -10494,7 +10618,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -10656,6 +10780,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q3 FY 2024-25, DSO is 6.0 (healthy). Average AR ₹5175596 sits against ₹28.6B of credit sales; -0.3 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹5.2B) is past due across 1,368 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,368 invoices in the 60+ bucket (₹5.2B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 58.2% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 15.4× for Q3 FY 2024-25. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q3 FY 2024-25.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 85% for Q3 FY 2024-25; +1.0pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q3 FY 2024-25.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 47% · 15 days 62% · 30 days 63% · 45 days 80% · 60 days 76%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹5.2B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.6Cr (20250000630, company 2000, 431 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 38 days · P90 64 days. Wide P50–P90 gap (26d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 133% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 789.7 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 6.0. Largest drag: KEY contributing 4.3 pts at 40% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -1.1%. Stable.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 40d vs actual pay days 38d — behavioural drag -2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 55/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "78 customers show > 25% deterioration in payment behaviour. Worst: Ultratech Chemicals (350%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 78 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "180 customers exceed credit limit. Average utilisation across sample: 197%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 180 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 1.69 touches per ₹Crore of open AR (876 touches on 517.3Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 584.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 52/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.6% of available early-payment discount (₹97.9L saved; ₹41.2Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.5 days (₹15.9Cr disputed AR). Clean DSO: 15.8 days vs total 16.3.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "8% of dunning records carry a block (71 of 876). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹14.2L at 10% cost of capital. Annualised: ₹71.0Cr.",
+          "recommendation": "Every DSO day saved is ~₹14.2L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-23 days between actual DSO (16d) and best-possible (40d terms-implied) leak ₹-7.4B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-3.7B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹18.4Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹18.4Cr on ₹28.6B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: HQ Operations India at 13d. Lagging: Manufacturing Division at 21d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q3 FY 2024-25 headline: DSO 6.0 · CEI 85% · 100% overdue · ₹5.2B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "78 PBDI alerts + 180 credit breaches + 8% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-7.4B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 85%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q4": {
@@ -10671,19 +11002,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 15.2,
+          "overall": 5.6,
           "monthly": [
             {
               "month": "Jan'25",
-              "value": 4.6
+              "value": 15.4
             },
             {
               "month": "Feb'25",
-              "value": 5.7
+              "value": 19.2
             },
             {
               "month": "Mar'25",
-              "value": 4.9
+              "value": 16.3
             }
           ]
         },
@@ -10763,105 +11094,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'25",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'25",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'25",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'25",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'25",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'25",
               "value": 0
             }
           ]
@@ -10984,85 +11243,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
-              "value": 50.2
+              "month": "Jan'25",
+              "value": 158
             },
             {
-              "week": "W42",
-              "value": 54.6
+              "month": "Feb'25",
+              "value": 488.8
             },
             {
-              "week": "W43",
-              "value": 432
-            },
-            {
-              "week": "W44",
-              "value": 5
-            },
-            {
-              "week": "W45",
-              "value": 110
-            },
-            {
-              "week": "W46",
-              "value": 899.5
-            },
-            {
-              "week": "W47",
-              "value": 125.7
-            },
-            {
-              "week": "W48",
-              "value": 67.1
-            },
-            {
-              "week": "W49",
-              "value": 17.2
-            },
-            {
-              "week": "W50",
-              "value": 166.2
-            },
-            {
-              "week": "W51",
-              "value": 212.5
-            },
-            {
-              "week": "W52",
-              "value": 126.9
+              "month": "Mar'25",
+              "value": 215.2
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 15.2,
+          "blendedDSO": 5.6,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 8.3,
+              "dso": 9.2,
               "weight": 37.8,
-              "contribution": -2.6
+              "contribution": 1.4
             },
             {
               "segment": "KEY",
-              "dso": 15.8,
+              "dso": 17.6,
               "weight": 36.1,
-              "contribution": 0.2
+              "contribution": 4.3
             },
             {
               "segment": "STANDARD",
-              "dso": 22.5,
+              "dso": 25,
               "weight": 17.1,
-              "contribution": 1.3
+              "contribution": 3.3
             },
             {
               "segment": "SMB",
-              "dso": 27.5,
+              "dso": 30.6,
               "weight": 9,
-              "contribution": 1.1
+              "contribution": 2.3
             }
           ]
         },
@@ -11159,14 +11382,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'25",
-              "change": 23.9
+              "change": 24.7
             },
             {
               "month": "Mar'25",
-              "change": -14
+              "change": -15.1
             }
           ],
-          "avgChange": 4.9
+          "avgChange": 4.8
         },
         "pbdi": {
           "alertCount": 70,
@@ -11457,7 +11680,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (54/100) — Mixed signals require attention",
-            "narrative": "For Q4 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 15.2 days against a best-possible benchmark of 40.4 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -1.1 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
+            "narrative": "For Q4 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 5.6 days against a best-possible benchmark of 40.4 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.4 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -11466,7 +11689,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "15.2 days",
+                "value": "5.6 days",
                 "color": "text-accent-green"
               },
               {
@@ -11511,12 +11734,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.3 days",
-            "narrative": "The blended 15.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 40.4 days — leaving -25.2 days of behavioural leakage worth ₹-10.2B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.3 days",
+            "narrative": "The blended 5.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 40.4 days — leaving -25.2 days of behavioural leakage worth ₹-10.2B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "15.2d",
+                "value": "5.6d",
                 "color": "text-accent-red"
               },
               {
@@ -11536,9 +11759,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 23d, weight 17%, contribution +1.3d.",
-              "SMB: DSO 28d, weight 9%, contribution +1.1d.",
-              "KEY: DSO 16d, weight 36%, contribution +0.2d."
+              "KEY: DSO 18d, weight 36%, contribution +4.3d.",
+              "STANDARD: DSO 25d, weight 17%, contribution +3.3d.",
+              "SMB: DSO 31d, weight 9%, contribution +2.3d."
             ],
             "risksAndOpportunities": [
               {
@@ -11551,7 +11774,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 12d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -11669,8 +11892,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "positive",
-            "headline": "CEI 86% · 0/12 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 86% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Above 85% indicates strong execution. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -11683,25 +11906,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/12",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "189d",
+                "value": "287d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 75% · 15 days 62% · 30 days 69% · 45 days 78% · 60 days 83%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -11709,7 +11932,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -11871,6 +12094,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q4 FY 2024-25, DSO is 5.6 (healthy). Average AR ₹6147281 sits against ₹36.4B of credit sales; -0.4 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹6.1B) is past due across 1,615 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,615 invoices in the 60+ bucket (₹6.1B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 60.8% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 19.0× for Q4 FY 2024-25. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q4 FY 2024-25.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 86% for Q4 FY 2024-25; +0.6pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q4 FY 2024-25.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 75% · 15 days 62% · 30 days 69% · 45 days 78% · 60 days 83%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹6.1B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.4Cr (20250012659, company 2000, 395 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 38 days · P90 66 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 135% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 287.3 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 5.6. Largest drag: KEY contributing 4.3 pts at 36% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +4.8%. Stable.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 40d vs actual pay days 38d — behavioural drag -2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 54/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "70 customers show > 25% deterioration in payment behaviour. Worst: Mahindra Ltd (222.4%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 70 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "200 customers exceed credit limit. Average utilisation across sample: 223%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 200 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 1.76 touches per ₹Crore of open AR (1,080 touches on 614.2Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 720.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 51/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 3.5% of available early-payment discount (₹1.8Cr saved; ₹52.0Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 12 days after due (target 3). Drift: 9 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.8 days (₹34.0Cr disputed AR). Clean DSO: 14.3 days vs total 15.2.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "6% of dunning records carry a block (65 of 1080). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹16.8L at 10% cost of capital. Annualised: ₹69.1Cr.",
+          "recommendation": "Every DSO day saved is ~₹16.8L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-25 days between actual DSO (15d) and best-possible (40d terms-implied) leak ₹-10.2B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-5.1B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹69.2Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 2% (collected ₹69.2Cr on ₹36.4B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Services & Solutions at 13d. Lagging: Manufacturing Division at 16d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q4 FY 2024-25 headline: DSO 5.6 · CEI 86% · 100% overdue · ₹6.1B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "70 PBDI alerts + 200 credit breaches + 6% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 2%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-10.2B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 86%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "All": {
@@ -11886,55 +12316,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 64.6,
+          "overall": 1.5,
           "monthly": [
             {
               "month": "Apr'24",
-              "value": 6.6
+              "value": 22.1
             },
             {
               "month": "May'24",
-              "value": 4.7
+              "value": 15.5
             },
             {
               "month": "Jun'24",
-              "value": 4.4
+              "value": 14.6
             },
             {
               "month": "Jul'24",
-              "value": 5.9
+              "value": 19.7
             },
             {
               "month": "Aug'24",
-              "value": 4.5
+              "value": 15.1
             },
             {
               "month": "Sep'24",
-              "value": 6.3
+              "value": 21.1
             },
             {
               "month": "Oct'24",
-              "value": 5.4
+              "value": 17.8
             },
             {
               "month": "Nov'24",
-              "value": 5.7
+              "value": 19.1
             },
             {
               "month": "Dec'24",
-              "value": 5.2
+              "value": 17.3
             },
             {
               "month": "Jan'25",
-              "value": 4.6
+              "value": 15.4
             },
             {
               "month": "Feb'25",
-              "value": 5.7
+              "value": 19.2
             },
             {
               "month": "Mar'25",
-              "value": 4.9
+              "value": 16.3
             }
           ]
         },
@@ -12167,425 +12597,105 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'24",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'24",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'24",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'24",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'24",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'24",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'24",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'24",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'24",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'25",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'25",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'25",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'24",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'24",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'24",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'24",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'24",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'24",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'24",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'24",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'24",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'25",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'25",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'25",
               "value": 0
             }
           ]
@@ -12744,253 +12854,93 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 133.2
+              "month": "Apr'24",
+              "value": 801.2
             },
             {
-              "week": "W2",
-              "value": 189.9
+              "month": "May'24",
+              "value": 426.6
             },
             {
-              "week": "W3",
-              "value": 203
+              "month": "Jun'24",
+              "value": 509.9
             },
             {
-              "week": "W4",
-              "value": 167.6
+              "month": "Jul'24",
+              "value": 892.2
             },
             {
-              "week": "W5",
-              "value": 634
+              "month": "Aug'24",
+              "value": 380.3
             },
             {
-              "week": "W6",
+              "month": "Sep'24",
+              "value": 534.9
+            },
+            {
+              "month": "Oct'24",
+              "value": 371
+            },
+            {
+              "month": "Nov'24",
               "value": 999
             },
             {
-              "week": "W7",
-              "value": 128.5
-            },
-            {
-              "week": "W8",
-              "value": 82.4
-            },
-            {
-              "week": "W9",
-              "value": 35.7
-            },
-            {
-              "week": "W10",
-              "value": 121.1
-            },
-            {
-              "week": "W11",
-              "value": 76.5
-            },
-            {
-              "week": "W12",
-              "value": 151.3
-            },
-            {
-              "week": "W13",
-              "value": 532.1
-            },
-            {
-              "week": "W14",
+              "month": "Dec'24",
               "value": 999
             },
             {
-              "week": "W15",
-              "value": 55
+              "month": "Jan'25",
+              "value": 158
             },
             {
-              "week": "W16",
-              "value": 133
+              "month": "Feb'25",
+              "value": 488.8
             },
             {
-              "week": "W17",
-              "value": 999
-            },
-            {
-              "week": "W18",
-              "value": 668.6
-            },
-            {
-              "week": "W19",
-              "value": 159.8
-            },
-            {
-              "week": "W20",
-              "value": 72.1
-            },
-            {
-              "week": "W21",
-              "value": 56.3
-            },
-            {
-              "week": "W22",
-              "value": 83.7
-            },
-            {
-              "week": "W23",
-              "value": 114.1
-            },
-            {
-              "week": "W24",
-              "value": 91.4
-            },
-            {
-              "week": "W25",
-              "value": 265.3
-            },
-            {
-              "week": "W26",
-              "value": 58.4
-            },
-            {
-              "week": "W27",
-              "value": 872.3
-            },
-            {
-              "week": "W28",
-              "value": 45.2
-            },
-            {
-              "week": "W29",
-              "value": 143.4
-            },
-            {
-              "week": "W30",
-              "value": 141.3
-            },
-            {
-              "week": "W31",
-              "value": 109.8
-            },
-            {
-              "week": "W32",
-              "value": 505.4
-            },
-            {
-              "week": "W33",
-              "value": 398
-            },
-            {
-              "week": "W34",
-              "value": 106
-            },
-            {
-              "week": "W35",
-              "value": 889.9
-            },
-            {
-              "week": "W36",
-              "value": 189.7
-            },
-            {
-              "week": "W37",
-              "value": 552.5
-            },
-            {
-              "week": "W38",
-              "value": 228.5
-            },
-            {
-              "week": "W39",
-              "value": 376.2
-            },
-            {
-              "week": "W40",
-              "value": 703.1
-            },
-            {
-              "week": "W41",
-              "value": 50.2
-            },
-            {
-              "week": "W42",
-              "value": 54.6
-            },
-            {
-              "week": "W43",
-              "value": 432
-            },
-            {
-              "week": "W44",
-              "value": 5
-            },
-            {
-              "week": "W45",
-              "value": 110
-            },
-            {
-              "week": "W46",
-              "value": 899.5
-            },
-            {
-              "week": "W47",
-              "value": 125.7
-            },
-            {
-              "week": "W48",
-              "value": 67.1
-            },
-            {
-              "week": "W49",
-              "value": 17.2
-            },
-            {
-              "week": "W50",
-              "value": 166.2
-            },
-            {
-              "week": "W51",
-              "value": 212.5
-            },
-            {
-              "week": "W52",
-              "value": 126.9
+              "month": "Mar'25",
+              "value": 215.2
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 64.6,
+          "blendedDSO": 1.5,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 39.9,
+              "dso": 10.9,
               "weight": 35.1,
-              "contribution": -8.7
+              "contribution": 3.3
             },
             {
               "segment": "KEY",
-              "dso": 61.7,
+              "dso": 16.9,
               "weight": 37.7,
-              "contribution": -1.1
+              "contribution": 5.8
             },
             {
               "segment": "STANDARD",
-              "dso": 95.2,
+              "dso": 26.1,
               "weight": 17.8,
-              "contribution": 5.4
+              "contribution": 4.4
             },
             {
               "segment": "SMB",
-              "dso": 109.9,
+              "dso": 30.1,
               "weight": 9.4,
-              "contribution": 4.3
+              "contribution": 2.7
             }
           ]
         },
         "arHealthScore": {
-          "score": 36,
-          "grade": "D",
+          "score": 56,
+          "grade": "C",
           "components": {
-            "DSO": 0,
+            "DSO": 100,
             "CEI": 85,
             "Overdue": 0,
             "Aging": 0,
@@ -13079,50 +13029,50 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'24",
-              "change": -28.8
+              "change": -29.9
             },
             {
               "month": "Jun'24",
-              "change": -6.4
+              "change": -5.8
             },
             {
               "month": "Jul'24",
-              "change": 34.1
+              "change": 34.9
             },
             {
               "month": "Aug'24",
-              "change": -23.7
+              "change": -23.4
             },
             {
               "month": "Sep'24",
-              "change": 40
+              "change": 39.7
             },
             {
               "month": "Oct'24",
-              "change": -14.3
+              "change": -15.6
             },
             {
               "month": "Nov'24",
-              "change": 5.6
+              "change": 7.3
             },
             {
               "month": "Dec'24",
-              "change": -8.8
+              "change": -9.4
             },
             {
               "month": "Jan'25",
-              "change": -11.5
+              "change": -11
             },
             {
               "month": "Feb'25",
-              "change": 23.9
+              "change": 24.7
             },
             {
               "month": "Mar'25",
-              "change": -14
+              "change": -15.1
             }
           ],
-          "avgChange": -0.4
+          "avgChange": -0.3
         },
         "pbdi": {
           "alertCount": 31,
@@ -13333,13 +13283,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 36,
-          "grade": "D"
+          "score": 56,
+          "grade": "C"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 0
+            "value": 100
           },
           {
             "dim": "CEI",
@@ -13411,19 +13361,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "warning",
-            "headline": "AR Health Grade D (36/100) — Structural issues require CFO action",
-            "narrative": "For FY 2024-25, the receivables portfolio shows elevated stress. DSO sits at 64.6 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. ",
+            "severity": "info",
+            "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
+            "narrative": "For FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 1.5 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "36/100",
-                "color": "text-accent-red"
+                "value": "56/100",
+                "color": "text-accent-amber"
               },
               {
                 "label": "DSO",
-                "value": "64.6 days",
-                "color": "text-accent-amber"
+                "value": "1.5 days",
+                "color": "text-accent-green"
               },
               {
                 "label": "CEI",
@@ -13449,7 +13399,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "type": "opportunity",
-                "text": "Largest improvement lever is \"DSO\" — even a 10-point lift moves overall grade up one letter."
+                "text": "Largest improvement lever is \"Overdue\" — even a 10-point lift moves overall grade up one letter."
               },
               {
                 "type": "opportunity",
@@ -13467,12 +13417,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "warning",
-            "headline": "STANDARD drags blended DSO up by +5.4 days",
-            "narrative": "The blended 64.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving 25.0 days of behavioural leakage worth ₹7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +5.8 days",
+            "narrative": "The blended 1.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving 25.0 days of behavioural leakage worth ₹7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "64.6d",
+                "value": "1.5d",
                 "color": "text-accent-red"
               },
               {
@@ -13492,9 +13442,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 95d, weight 18%, contribution +5.4d.",
-              "SMB: DSO 110d, weight 9%, contribution +4.3d.",
-              "KEY: DSO 62d, weight 38%, contribution -1.1d."
+              "KEY: DSO 17d, weight 38%, contribution +5.8d.",
+              "STANDARD: DSO 26d, weight 18%, contribution +4.4d.",
+              "STRATEGIC: DSO 11d, weight 35%, contribution +3.3d."
             ],
             "risksAndOpportunities": [
               {
@@ -13507,7 +13457,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -13625,8 +13575,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 85% · 0/52 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 85% · 0/12 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -13639,25 +13589,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/52",
+                "label": "Months ≥ Target",
+                "value": "0/12",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "283d",
+                "value": "565d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 60% · 15 days 62% · 30 days 67% · 45 days 77% · 60 days 80%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -13665,7 +13615,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -13827,6 +13777,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For FY 2024-25, DSO is 1.5 (healthy). Average AR ₹20422087 sits against ₹115.4B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹20.4B) is past due across 5,504 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 5,504 invoices in the 60+ bucket (₹20.4B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 57.3% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 112.9× for FY 2024-25. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across FY 2024-25.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 85% for FY 2024-25; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 12 months in FY 2024-25.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 12 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 60% · 15 days 62% · 30 days 67% · 45 days 77% · 60 days 80%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹20.4B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.9Cr (20250003886, company 3000, 663 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 38 days · P90 65 days. Wide P50–P90 gap (27d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 134% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 564.7 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 1.5. Largest drag: KEY contributing 5.8 pts at 38% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -0.3%. Stable.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 40d vs actual pay days 38d — behavioural drag -2d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 56/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "31 customers show > 25% deterioration in payment behaviour. Worst: Ambuja Enterprises (87.4%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 31 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "338 customers exceed credit limit. Average utilisation across sample: 732%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 338 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 1.72 touches per ₹Crore of open AR (3,513 touches on 2041.5Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 10 days between dunning escalations (target 10). Sample size: 2342.",
+          "recommendation": "Cadence is on target.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 49/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Low consistency — forecasting cash inflow is unreliable. Consider customer-level forecasts for top accounts.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.7% of available early-payment discount (₹4.3Cr saved; ₹1.7B left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 13 days after due (target 3). Drift: 10 days.",
+          "recommendation": "This is the #1 controllable DSO lever — closing the gap typically saves 5–10 DSO days.",
+          "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 3.0 days (₹93.5Cr disputed AR). Clean DSO: 61.6 days vs total 64.6.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "7% of dunning records carry a block (243 of 3513). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹55.9L at 10% cost of capital. Annualised: ₹3.0B.",
+          "recommendation": "Every DSO day saved is ~₹55.9L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "25 days between actual DSO (65d) and best-possible (40d terms-implied) leak ₹7.9B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹3.9B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹1.4B.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹1.4B on ₹115.4B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Services & Solutions at 59d. Lagging: Manufacturing Division at 70d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "FY 2024-25 headline: DSO 1.5 · CEI 85% · 100% overdue · ₹20.4B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "31 PBDI alerts + 338 credit breaches + 7% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹7.9B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 85%, monthly effectiveness average 0%, 0/12 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     }
   },
@@ -13844,19 +14001,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 19.4,
+          "overall": 7.2,
           "monthly": [
             {
               "month": "Apr'25",
-              "value": 7
+              "value": 23.3
             },
             {
               "month": "May'25",
-              "value": 6.1
+              "value": 20.5
             },
             {
               "month": "Jun'25",
-              "value": 6.2
+              "value": 20.8
             }
           ]
         },
@@ -13936,113 +14093,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'25",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'25",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'25",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'25",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'25",
               "value": 0
             },
             {
-              "week": "W3",
-              "value": 0
-            },
-            {
-              "week": "W4",
-              "value": 0
-            },
-            {
-              "week": "W5",
-              "value": 0
-            },
-            {
-              "week": "W6",
-              "value": 0
-            },
-            {
-              "week": "W7",
-              "value": 0
-            },
-            {
-              "week": "W8",
-              "value": 0
-            },
-            {
-              "week": "W9",
-              "value": 0
-            },
-            {
-              "week": "W10",
-              "value": 0
-            },
-            {
-              "week": "W11",
-              "value": 0
-            },
-            {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
+              "month": "Jun'25",
               "value": 0
             }
           ]
@@ -14165,89 +14242,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 86.9
-            },
-            {
-              "week": "W2",
+              "month": "Apr'25",
               "value": 999
             },
             {
-              "week": "W3",
-              "value": 999
+              "month": "May'25",
+              "value": 936.8
             },
             {
-              "week": "W4",
-              "value": 374.7
-            },
-            {
-              "week": "W5",
-              "value": 249.3
-            },
-            {
-              "week": "W6",
-              "value": 93
-            },
-            {
-              "week": "W7",
-              "value": 152.9
-            },
-            {
-              "week": "W8",
-              "value": 570.7
-            },
-            {
-              "week": "W9",
-              "value": 999
-            },
-            {
-              "week": "W10",
-              "value": 999
-            },
-            {
-              "week": "W11",
-              "value": 23
-            },
-            {
-              "week": "W12",
-              "value": 87.2
-            },
-            {
-              "week": "W13",
-              "value": 999
+              "month": "Jun'25",
+              "value": 486.3
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 19.4,
+          "blendedDSO": 7.2,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 15.2,
+              "dso": 16.8,
               "weight": 34.9,
-              "contribution": -1.5
+              "contribution": 3.4
             },
             {
               "segment": "KEY",
-              "dso": 18.1,
+              "dso": 20.2,
               "weight": 39.1,
-              "contribution": -0.5
+              "contribution": 5.1
             },
             {
               "segment": "STANDARD",
-              "dso": 26.2,
+              "dso": 29.1,
               "weight": 16.5,
-              "contribution": 1.1
+              "contribution": 3.6
             },
             {
               "segment": "SMB",
-              "dso": 28.5,
+              "dso": 31.7,
               "weight": 9.5,
-              "contribution": 0.9
+              "contribution": 2.3
             }
           ]
         },
@@ -14260,7 +14297,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 64,
-            "Trend": 56
+            "Trend": 55
           }
         },
         "termsMixDrag": {
@@ -14344,14 +14381,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'25",
-              "change": -12.9
+              "change": -12
             },
             {
               "month": "Jun'25",
-              "change": 1.6
+              "change": 1.5
             }
           ],
-          "avgChange": -5.6
+          "avgChange": -5.3
         },
         "pbdi": {
           "alertCount": 68,
@@ -14588,7 +14625,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 56
+            "value": 55
           }
         ],
         "segmentEfficiencyChart": [
@@ -14642,7 +14679,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (54/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 19.4 days against a best-possible benchmark of 39.8 days (terms-implied). Collection effectiveness is 81% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.2 days against a best-possible benchmark of 39.8 days (terms-implied). Collection effectiveness is 81% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -14651,7 +14688,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "19.4 days",
+                "value": "7.2 days",
                 "color": "text-accent-green"
               },
               {
@@ -14695,13 +14732,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.1 days",
-            "narrative": "The blended 19.4-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.8 days — leaving -20.4 days of behavioural leakage worth ₹-5.4B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "warning",
+            "headline": "KEY drags blended DSO up by +5.1 days",
+            "narrative": "The blended 7.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.8 days — leaving -20.4 days of behavioural leakage worth ₹-5.4B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "19.4d",
+                "value": "7.2d",
                 "color": "text-accent-red"
               },
               {
@@ -14721,9 +14758,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 26d, weight 17%, contribution +1.1d.",
-              "SMB: DSO 29d, weight 10%, contribution +0.9d.",
-              "KEY: DSO 18d, weight 39%, contribution -0.5d."
+              "KEY: DSO 20d, weight 39%, contribution +5.1d.",
+              "STANDARD: DSO 29d, weight 17%, contribution +3.6d.",
+              "STRATEGIC: DSO 17d, weight 35%, contribution +3.4d."
             ],
             "risksAndOpportunities": [
               {
@@ -14732,7 +14769,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -14850,8 +14887,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 81% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 81% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -14864,25 +14901,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "510d",
+                "value": "807d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 55% · 15 days 51% · 30 days 65% · 45 days 74% · 60 days 76%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -14890,7 +14927,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -15052,6 +15089,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q1 FY 2025-26, DSO is 7.2 (healthy). Average AR ₹5126664 sits against ₹23.8B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹5.1B) is past due across 1,223 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,223 invoices in the 60+ bucket (₹5.1B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 58.7% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 27.9× for Q1 FY 2025-26. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q1 FY 2025-26.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 81% for Q1 FY 2025-26; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q1 FY 2025-26.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 55% · 15 days 51% · 30 days 65% · 45 days 74% · 60 days 76%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹5.1B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹14.8Cr (20260013177, company 3000, 254 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 39 days · P90 67 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 141% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 807.4 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 7.2. Largest drag: KEY contributing 5.1 pts at 39% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -5.3%. Steady improvement.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 40d vs actual pay days 39d — behavioural drag -1d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 54/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "68 customers show > 25% deterioration in payment behaviour. Worst: HCL Group (333.3%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 68 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "168 customers exceed credit limit. Average utilisation across sample: 165%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 168 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 0.00 touches per ₹Crore of open AR (0 touches on 512.8Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 0 days between dunning escalations (target 10). Sample size: 0.",
+          "recommendation": "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 54/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 1.6% of available early-payment discount (₹51.3L saved; ₹32.9Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 0 days after due (target 3). Drift: 0 days.",
+          "recommendation": "Within tolerance.",
+          "nextAction": "Maintain."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.0 days (₹0 disputed AR). Clean DSO: 19.4 days vs total 19.4.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "0% of dunning records carry a block (0 of 0). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹14.0L at 10% cost of capital. Annualised: ₹45.1Cr.",
+          "recommendation": "Every DSO day saved is ~₹14.0L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-20 days between actual DSO (19d) and best-possible (40d terms-implied) leak ₹-5.4B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-2.7B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹18.5Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹18.5Cr on ₹23.8B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 18d. Lagging: Services & Solutions at 21d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q1 FY 2025-26 headline: DSO 7.2 · CEI 81% · 100% overdue · ₹5.1B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "68 PBDI alerts + 168 credit breaches + 0% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-5.4B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 81%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q2": {
@@ -15067,19 +15311,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 19.2,
+          "overall": 7.1,
           "monthly": [
             {
               "month": "Jul'25",
-              "value": 5.5
+              "value": 18.3
             },
             {
               "month": "Aug'25",
-              "value": 7
+              "value": 23.2
             },
             {
               "month": "Sep'25",
-              "value": 6.7
+              "value": 22.2
             }
           ]
         },
@@ -15159,121 +15403,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'25",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'25",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'25",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
+              "month": "Jul'25",
               "value": 0
             },
             {
-              "week": "W15",
+              "month": "Aug'25",
               "value": 0
             },
             {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
+              "month": "Sep'25",
               "value": 0
             }
           ]
@@ -15396,93 +15552,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W14",
-              "value": 348.8
+              "month": "Jul'25",
+              "value": 904.9
             },
             {
-              "week": "W15",
-              "value": 180.5
+              "month": "Aug'25",
+              "value": 294.4
             },
             {
-              "week": "W16",
-              "value": 248.4
-            },
-            {
-              "week": "W17",
-              "value": 124.8
-            },
-            {
-              "week": "W18",
-              "value": 608.2
-            },
-            {
-              "week": "W19",
-              "value": 25.4
-            },
-            {
-              "week": "W20",
-              "value": 391
-            },
-            {
-              "week": "W21",
-              "value": 240.3
-            },
-            {
-              "week": "W22",
-              "value": 229.3
-            },
-            {
-              "week": "W23",
-              "value": 18.1
-            },
-            {
-              "week": "W24",
-              "value": 493.9
-            },
-            {
-              "week": "W25",
-              "value": 906.2
-            },
-            {
-              "week": "W26",
-              "value": 242.8
-            },
-            {
-              "week": "W27",
-              "value": 441.9
+              "month": "Sep'25",
+              "value": 382.4
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 19.2,
+          "blendedDSO": 7.1,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 15.9,
+              "dso": 17.7,
               "weight": 34,
-              "contribution": -1.1
+              "contribution": 3.6
             },
             {
               "segment": "KEY",
-              "dso": 16.6,
+              "dso": 18.5,
               "weight": 38.1,
-              "contribution": -1
+              "contribution": 4.3
             },
             {
               "segment": "STANDARD",
-              "dso": 25.6,
+              "dso": 28.5,
               "weight": 18.2,
-              "contribution": 1.2
+              "contribution": 3.9
             },
             {
               "segment": "SMB",
-              "dso": 28.5,
+              "dso": 31.7,
               "weight": 9.7,
-              "contribution": 0.9
+              "contribution": 2.4
             }
           ]
         },
@@ -15579,14 +15691,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'25",
-              "change": 27.3
+              "change": 26.8
             },
             {
               "month": "Sep'25",
               "change": -4.3
             }
           ],
-          "avgChange": 11.5
+          "avgChange": 11.2
         },
         "pbdi": {
           "alertCount": 83,
@@ -15877,7 +15989,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 19.2 days against a best-possible benchmark of 37.8 days (terms-implied). Collection effectiveness is 82% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.2 days, overdue ratio by +0.0 pts, and the health score by -2 pts.",
+            "narrative": "For Q2 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.1 days against a best-possible benchmark of 37.8 days (terms-implied). Collection effectiveness is 82% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.1 days, overdue ratio by +0.0 pts, and the health score by -2 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -15886,7 +15998,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "19.2 days",
+                "value": "7.1 days",
                 "color": "text-accent-green"
               },
               {
@@ -15931,12 +16043,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.2 days",
-            "narrative": "The blended 19.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.8 days — leaving -18.6 days of behavioural leakage worth ₹-5.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.3 days",
+            "narrative": "The blended 7.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.8 days — leaving -18.6 days of behavioural leakage worth ₹-5.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "19.2d",
+                "value": "7.1d",
                 "color": "text-accent-red"
               },
               {
@@ -15956,9 +16068,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 26d, weight 18%, contribution +1.2d.",
-              "SMB: DSO 29d, weight 10%, contribution +0.9d.",
-              "KEY: DSO 17d, weight 38%, contribution -1.0d."
+              "KEY: DSO 19d, weight 38%, contribution +4.3d.",
+              "STANDARD: DSO 29d, weight 18%, contribution +3.9d.",
+              "STRATEGIC: DSO 18d, weight 34%, contribution +3.6d."
             ],
             "risksAndOpportunities": [
               {
@@ -15967,7 +16079,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -16085,8 +16197,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 82% · 0/14 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 82% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -16099,25 +16211,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/14",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "321d",
+                "value": "527d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 66% · 15 days 57% · 30 days 57% · 45 days 67% · 60 days 80%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -16125,7 +16237,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -16287,6 +16399,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q2 FY 2025-26, DSO is 7.1 (healthy). Average AR ₹5745626 sits against ₹27.0B of credit sales; -0.1 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹5.7B) is past due across 1,449 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,449 invoices in the 60+ bucket (₹5.7B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 54.7% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 14.9× for Q2 FY 2025-26. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q2 FY 2025-26.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 82% for Q2 FY 2025-26; +1.4pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q2 FY 2025-26.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 66% · 15 days 57% · 30 days 57% · 45 days 67% · 60 days 80%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 100% of AR (₹5.7B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 100% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹17.8Cr (20260020276, company 3000, 178 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 39 days · P90 66 days. Wide P50–P90 gap (27d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 138% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 527.2 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 7.1. Largest drag: KEY contributing 4.3 pts at 38% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +11.2%. Accelerating upward — losing ground.",
+          "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 38d vs actual pay days 39d — behavioural drag +1d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 52/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "83 customers show > 25% deterioration in payment behaviour. Worst: Bharti Solutions (512.1%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 83 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "188 customers exceed credit limit. Average utilisation across sample: 201%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 188 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 0.00 touches per ₹Crore of open AR (0 touches on 574.9Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 0 days between dunning escalations (target 10). Sample size: 0.",
+          "recommendation": "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 53/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 2.9% of available early-payment discount (₹1.1Cr saved; ₹36.6Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.4 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 0 days after due (target 3). Drift: 0 days.",
+          "recommendation": "Within tolerance.",
+          "nextAction": "Maintain."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.0 days (₹0 disputed AR). Clean DSO: 19.2 days vs total 19.2.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "0% of dunning records carry a block (0 of 0). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹15.8L at 10% cost of capital. Annualised: ₹35.7Cr.",
+          "recommendation": "Every DSO day saved is ~₹15.8L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-19 days between actual DSO (19d) and best-possible (38d terms-implied) leak ₹-5.6B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-2.8B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹45.5Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 2% (collected ₹45.5Cr on ₹27.0B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Services & Solutions at 17d. Lagging: Manufacturing Division at 21d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q2 FY 2025-26 headline: DSO 7.1 · CEI 82% · 100% overdue · ₹5.7B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "83 PBDI alerts + 188 credit breaches + 0% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 2%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-5.6B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 82%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q3": {
@@ -16302,19 +16621,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 18.9,
+          "overall": 7,
           "monthly": [
             {
               "month": "Oct'25",
-              "value": 6.4
+              "value": 21.4
             },
             {
               "month": "Nov'25",
-              "value": 6.9
+              "value": 22.9
             },
             {
               "month": "Dec'25",
-              "value": 5.5
+              "value": 18.4
             }
           ]
         },
@@ -16394,113 +16713,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'25",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'25",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'25",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
+              "month": "Oct'25",
               "value": 0
             },
             {
-              "week": "W29",
+              "month": "Nov'25",
               "value": 0
             },
             {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
+              "month": "Dec'25",
               "value": 0
             }
           ]
@@ -16623,89 +16862,49 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W28",
-              "value": 32.4
+              "month": "Oct'25",
+              "value": 462.5
             },
             {
-              "week": "W29",
-              "value": 534.2
+              "month": "Nov'25",
+              "value": 289.6
             },
             {
-              "week": "W30",
-              "value": 999
-            },
-            {
-              "week": "W31",
-              "value": 96.9
-            },
-            {
-              "week": "W32",
-              "value": 27
-            },
-            {
-              "week": "W33",
-              "value": 69.6
-            },
-            {
-              "week": "W34",
-              "value": 273.4
-            },
-            {
-              "week": "W35",
-              "value": 220
-            },
-            {
-              "week": "W36",
-              "value": 294.1
-            },
-            {
-              "week": "W37",
-              "value": 87.9
-            },
-            {
-              "week": "W38",
-              "value": 219.6
-            },
-            {
-              "week": "W39",
-              "value": 173.6
-            },
-            {
-              "week": "W40",
-              "value": 999
+              "month": "Dec'25",
+              "value": 981
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 18.9,
+          "blendedDSO": 7,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 14.8,
+              "dso": 16.4,
               "weight": 31.7,
-              "contribution": -1.3
+              "contribution": 3
             },
             {
               "segment": "KEY",
-              "dso": 17.3,
+              "dso": 19.3,
               "weight": 38.4,
-              "contribution": -0.6
+              "contribution": 4.7
             },
             {
               "segment": "STANDARD",
-              "dso": 24.1,
+              "dso": 26.8,
               "weight": 19.9,
-              "contribution": 1
+              "contribution": 3.9
             },
             {
               "segment": "SMB",
-              "dso": 27.2,
+              "dso": 30.2,
               "weight": 10,
-              "contribution": 0.8
+              "contribution": 2.3
             }
           ]
         },
@@ -16802,14 +17001,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'25",
-              "change": 7.8
+              "change": 7
             },
             {
               "month": "Dec'25",
-              "change": -20.3
+              "change": -19.7
             }
           ],
-          "avgChange": -6.2
+          "avgChange": -6.3
         },
         "pbdi": {
           "alertCount": 72,
@@ -17100,7 +17299,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 18.9 days against a best-possible benchmark of 38.9 days (terms-implied). Collection effectiveness is 83% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.3 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
+            "narrative": "For Q3 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.0 days against a best-possible benchmark of 38.9 days (terms-implied). Collection effectiveness is 83% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.1 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -17109,7 +17308,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "18.9 days",
+                "value": "7.0 days",
                 "color": "text-accent-green"
               },
               {
@@ -17154,12 +17353,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +1.0 days",
-            "narrative": "The blended 18.9-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.9 days — leaving -20.1 days of behavioural leakage worth ₹-5.8B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "headline": "KEY drags blended DSO up by +4.7 days",
+            "narrative": "The blended 7.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.9 days — leaving -20.1 days of behavioural leakage worth ₹-5.8B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "18.9d",
+                "value": "7.0d",
                 "color": "text-accent-red"
               },
               {
@@ -17179,9 +17378,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 24d, weight 20%, contribution +1.0d.",
-              "SMB: DSO 27d, weight 10%, contribution +0.8d.",
-              "KEY: DSO 17d, weight 38%, contribution -0.6d."
+              "KEY: DSO 19d, weight 38%, contribution +4.7d.",
+              "STANDARD: DSO 27d, weight 20%, contribution +3.9d.",
+              "STRATEGIC: DSO 16d, weight 32%, contribution +3.0d."
             ],
             "risksAndOpportunities": [
               {
@@ -17190,7 +17389,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -17308,8 +17507,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 83% · 0/13 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 83% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -17322,25 +17521,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/13",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "310d",
+                "value": "578d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 64% · 15 days 54% · 30 days 68% · 45 days 70% · 60 days 75%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -17348,7 +17547,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -17510,6 +17709,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q3 FY 2025-26, DSO is 7.0 (healthy). Average AR ₹5393064 sits against ₹25.8B of credit sales; -0.1 vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "100.0% of open AR (₹5.4B) is past due across 1,432 invoices; flat vs prev period.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 1,353 invoices in the 60+ bucket (₹5.0B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 59.3% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 15.1× for Q3 FY 2025-26. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q3 FY 2025-26.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 83% for Q3 FY 2025-26; +0.6pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q3 FY 2025-26.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 64% · 15 days 54% · 30 days 68% · 45 days 70% · 60 days 75%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 92% of AR (₹5.0B). Not-Due: 0%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 0% not-due and 92% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 100% vs value density 100%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹16.2Cr (20260006984, company 2000, 71 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 39 days · P90 67 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 140% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 577.7 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 7.0. Largest drag: KEY contributing 4.7 pts at 38% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: -6.3%. Steady improvement.",
+          "recommendation": "Maintain the cadence; watch for inflection.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 39d vs actual pay days 39d — behavioural drag +0d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 55/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "72 customers show > 25% deterioration in payment behaviour. Worst: Cipla Pharma (309.1%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 72 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "182 customers exceed credit limit. Average utilisation across sample: 182%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 182 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 0.00 touches per ₹Crore of open AR (0 touches on 540.9Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 0 days between dunning escalations (target 10). Sample size: 0.",
+          "recommendation": "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 53/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 4.0% of available early-payment discount (₹1.4Cr saved; ₹35.0Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 0 days after due (target 3). Drift: 0 days.",
+          "recommendation": "Within tolerance.",
+          "nextAction": "Maintain."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.0 days (₹0 disputed AR). Clean DSO: 18.9 days vs total 18.9.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "0% of dunning records carry a block (0 of 0). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹14.8L at 10% cost of capital. Annualised: ₹20.2Cr.",
+          "recommendation": "Every DSO day saved is ~₹14.8L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "-20 days between actual DSO (19d) and best-possible (39d terms-implied) leak ₹-5.8B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹-2.9B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹35.5Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 1% (collected ₹35.5Cr on ₹25.8B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: HQ Operations India at 16d. Lagging: Services & Solutions at 21d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 0. STRATEGIC at 0.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q3 FY 2025-26 headline: DSO 7.0 · CEI 83% · 100% overdue · ₹5.4B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "72 PBDI alerts + 182 credit breaches + 0% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 1%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹-5.8B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 83%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "Q4": {
@@ -17525,19 +17931,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 50.6,
+          "overall": 18.8,
           "monthly": [
             {
               "month": "Jan'26",
-              "value": 7
+              "value": 23.2
             },
             {
               "month": "Feb'26",
-              "value": 17.4
+              "value": 58
             },
             {
               "month": "Mar'26",
-              "value": 26
+              "value": 86.6
             }
           ]
         },
@@ -17617,105 +18023,33 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'26",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'26",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'26",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
+              "month": "Jan'26",
               "value": 0
             },
             {
-              "week": "W42",
+              "month": "Feb'26",
               "value": 0
             },
             {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'26",
               "value": 0
             }
           ]
@@ -17838,93 +18172,57 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W41",
-              "value": 74
+              "month": "Jan'26",
+              "value": 348.9
             },
             {
-              "week": "W42",
-              "value": 147.5
+              "month": "Feb'26",
+              "value": 581.6
             },
             {
-              "week": "W43",
-              "value": 159.7
-            },
-            {
-              "week": "W44",
-              "value": 20.3
-            },
-            {
-              "week": "W45",
-              "value": 204.3
-            },
-            {
-              "week": "W46",
-              "value": 82.5
-            },
-            {
-              "week": "W47",
-              "value": 173.6
-            },
-            {
-              "week": "W48",
-              "value": 182.1
-            },
-            {
-              "week": "W49",
-              "value": 53.5
-            },
-            {
-              "week": "W50",
-              "value": 11.1
-            },
-            {
-              "week": "W51",
-              "value": 4.4
-            },
-            {
-              "week": "W52",
-              "value": 0.1
+              "month": "Mar'26",
+              "value": 37
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 50.6,
+          "blendedDSO": 18.8,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 55.3,
+              "dso": 61.4,
               "weight": 34.3,
-              "contribution": 1.6
+              "contribution": 14.6
             },
             {
               "segment": "KEY",
-              "dso": 50.5,
+              "dso": 56.1,
               "weight": 37.9,
-              "contribution": -0.1
+              "contribution": 14.1
             },
             {
               "segment": "STANDARD",
-              "dso": 46.8,
+              "dso": 52.1,
               "weight": 18.1,
-              "contribution": -0.7
+              "contribution": 6
             },
             {
               "segment": "SMB",
-              "dso": 41.9,
+              "dso": 46.6,
               "weight": 9.6,
-              "contribution": -0.8
+              "contribution": 2.7
             }
           ]
         },
         "arHealthScore": {
-          "score": 54,
-          "grade": "C",
+          "score": 65,
+          "grade": "B",
           "components": {
-            "DSO": 23,
+            "DSO": 81,
             "CEI": 84,
             "Overdue": 73,
             "Aging": 73,
@@ -18013,14 +18311,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'26",
-              "change": 148.6
+              "change": 150
             },
             {
               "month": "Mar'26",
-              "change": 49.4
+              "change": 49.3
             }
           ],
-          "avgChange": 99
+          "avgChange": 99.7
         },
         "pbdi": {
           "alertCount": 12,
@@ -18231,13 +18529,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 54,
-          "grade": "C"
+          "score": 65,
+          "grade": "B"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 23
+            "value": 81
           },
           {
             "dim": "CEI",
@@ -18309,19 +18607,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "info",
-            "headline": "AR Health Grade C (54/100) — Mixed signals require attention",
-            "narrative": "For Q4 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 50.6 days against a best-possible benchmark of 44.0 days (terms-implied). Collection effectiveness is 84% and 27% of open AR is overdue. Quarter-on-quarter, DSO moved by +31.7 days, overdue ratio by -73.3 pts, and the health score by -1 pts.",
+            "severity": "positive",
+            "headline": "AR Health Grade B (65/100) — Stable footing with watch areas",
+            "narrative": "For Q4 FY 2025-26, the receivables portfolio shows healthy stress. DSO sits at 18.8 days against a best-possible benchmark of 44.0 days (terms-implied). Collection effectiveness is 84% and 27% of open AR is overdue. Quarter-on-quarter, DSO moved by +11.8 days, overdue ratio by -73.3 pts, and the health score by +10 pts.",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "54/100",
-                "color": "text-accent-amber"
+                "value": "65/100",
+                "color": "text-accent-green"
               },
               {
                 "label": "DSO",
-                "value": "50.6 days",
-                "color": "text-accent-amber"
+                "value": "18.8 days",
+                "color": "text-accent-green"
               },
               {
                 "label": "CEI",
@@ -18343,7 +18641,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "Largest improvement lever is \"Trend\" — even a 10-point lift moves overall grade up one letter."
+                "text": "Health score in the \"B\" band — focus on the weakest dimension (Trend) to push into \"A\"."
               },
               {
                 "type": "opportunity",
@@ -18360,13 +18658,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "info",
-            "headline": "STRATEGIC drags blended DSO up by +1.6 days",
-            "narrative": "The blended 50.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 44.0 days — leaving 6.7 days of behavioural leakage worth ₹2.5B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "warning",
+            "headline": "STRATEGIC drags blended DSO up by +14.6 days",
+            "narrative": "The blended 18.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 44.0 days — leaving 6.7 days of behavioural leakage worth ₹2.5B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "50.6d",
+                "value": "18.8d",
                 "color": "text-accent-red"
               },
               {
@@ -18386,9 +18684,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STRATEGIC: DSO 55d, weight 34%, contribution +1.6d.",
-              "KEY: DSO 51d, weight 38%, contribution -0.1d.",
-              "STANDARD: DSO 47d, weight 18%, contribution -0.7d."
+              "STRATEGIC: DSO 61d, weight 34%, contribution +14.6d.",
+              "KEY: DSO 56d, weight 38%, contribution +14.1d.",
+              "STANDARD: DSO 52d, weight 18%, contribution +6.0d."
             ],
             "risksAndOpportunities": [
               {
@@ -18507,8 +18805,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 84% · 0/12 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 84% · 0/3 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -18521,25 +18819,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/12",
+                "label": "Months ≥ Target",
+                "value": "0/3",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "93d",
+                "value": "323d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 55% · 15 days 62% · 30 days 67% · 45 days 79% · 60 days 87%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -18547,7 +18845,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -18705,6 +19003,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For Q4 FY 2025-26, DSO is 18.8 (manageable). Average AR ₹18938188 sits against ₹33.4B of credit sales; +11.8 vs prev period.",
+          "recommendation": "Tighten dunning cadence on the slowest-paying segment to push DSO toward < 15.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "26.7% of open AR (₹5.0B) is past due across 1,530 invoices; -73.3pp vs prev period.",
+          "recommendation": "Run a focused blitz on invoices > 30 days overdue before they migrate to 60+ where recovery drops sharply.",
+          "nextAction": "Triage the 123 invoices in the 60+ bucket (₹41.3Cr). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 11.6% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Risk concentration is manageable. Continue to mine the longer-term cohort for early signs of distress.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 5.7× for Q4 FY 2025-26. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across Q4 FY 2025-26.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 84% for Q4 FY 2025-26; +0.9pp vs prev period.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 3 months in Q4 FY 2025-26.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 3 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 55% · 15 days 62% · 30 days 67% · 45 days 79% · 60 days 87%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 2% of AR (₹41.3Cr). Not-Due: 73%.",
+          "recommendation": "Aging distribution is acceptable. Watch for migration of 16–30 → 31–45 month over month.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 73% not-due and 2% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 44% vs value density 27%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹13.2Cr (20260014923, company 2000, 11 days overdue).",
+          "recommendation": "Personal collector ownership; daily progress update until cleared.",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 28 days · P90 56 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 130% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 322.5 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 18.8. Largest drag: STRATEGIC contributing 14.6 pts at 34% of sales.",
+          "recommendation": "Target the STRATEGIC segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STRATEGIC DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +99.7%. Accelerating upward — losing ground.",
+          "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 44d vs actual pay days 31d — behavioural drag -14d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 65/100 (Grade B). Strongest dim: CEI. Weakest: Trend.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "12 customers show > 25% deterioration in payment behaviour. Worst: HDFC Group (140%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 12 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "304 customers exceed credit limit. Average utilisation across sample: 419%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 304 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 0.00 touches per ₹Crore of open AR (0 touches on 1879.5Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 0 days between dunning escalations (target 10). Sample size: 0.",
+          "recommendation": "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 52/100 (lower CV = more predictable). Sample: 346 customers.",
+          "recommendation": "Moderately predictable. Stratify forecasts by segment for better accuracy.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 8.4% of available early-payment discount (₹2.2Cr saved; ₹23.7Cr left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 0 days after due (target 3). Drift: 0 days.",
+          "recommendation": "Within tolerance.",
+          "nextAction": "Maintain."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.0 days (₹0 disputed AR). Clean DSO: 50.6 days vs total 50.6.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "0% of dunning records carry a block (0 of 0). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹51.5L at 10% cost of capital. Annualised: ₹17.6Cr.",
+          "recommendation": "Every DSO day saved is ~₹51.5L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "7 days between actual DSO (51d) and best-possible (44d terms-implied) leak ₹2.5B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹1.2B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹60.1Cr.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 2% (collected ₹60.1Cr on ₹33.4B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 48d. Lagging: HQ Operations India at 53d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 608. SMB at 544.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "Q4 FY 2025-26 headline: DSO 18.8 · CEI 84% · 27% overdue · ₹18.8B cash trapped.",
+          "recommendation": "Portfolio in healthy band. Use the headroom for strategic terms negotiations and capacity investment.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "12 PBDI alerts + 304 credit breaches + 0% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 2%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹2.5B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 84%, monthly effectiveness average 0%, 0/3 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     },
     "All": {
@@ -18720,55 +19225,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 116.5,
+          "overall": 2.7,
           "monthly": [
             {
               "month": "Apr'25",
-              "value": 7
+              "value": 23.3
             },
             {
               "month": "May'25",
-              "value": 6.1
+              "value": 20.5
             },
             {
               "month": "Jun'25",
-              "value": 6.2
+              "value": 20.8
             },
             {
               "month": "Jul'25",
-              "value": 5.5
+              "value": 18.3
             },
             {
               "month": "Aug'25",
-              "value": 7
+              "value": 23.2
             },
             {
               "month": "Sep'25",
-              "value": 6.7
+              "value": 22.2
             },
             {
               "month": "Oct'25",
-              "value": 6.4
+              "value": 21.4
             },
             {
               "month": "Nov'25",
-              "value": 6.9
+              "value": 22.9
             },
             {
               "month": "Dec'25",
-              "value": 5.5
+              "value": 18.4
             },
             {
               "month": "Jan'26",
-              "value": 7
+              "value": 23.2
             },
             {
               "month": "Feb'26",
-              "value": 17.4
+              "value": 58
             },
             {
               "month": "Mar'26",
-              "value": 26
+              "value": 86.6
             }
           ]
         },
@@ -19001,425 +19506,105 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "onTimePayment": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'25",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'25",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'25",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'25",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'25",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'25",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'25",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'25",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'25",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'26",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'26",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'26",
               "value": 0
             }
           ]
         },
         "collectionEffectiveness": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
+              "month": "Apr'25",
               "value": 0
             },
             {
-              "week": "W2",
+              "month": "May'25",
               "value": 0
             },
             {
-              "week": "W3",
+              "month": "Jun'25",
               "value": 0
             },
             {
-              "week": "W4",
+              "month": "Jul'25",
               "value": 0
             },
             {
-              "week": "W5",
+              "month": "Aug'25",
               "value": 0
             },
             {
-              "week": "W6",
+              "month": "Sep'25",
               "value": 0
             },
             {
-              "week": "W7",
+              "month": "Oct'25",
               "value": 0
             },
             {
-              "week": "W8",
+              "month": "Nov'25",
               "value": 0
             },
             {
-              "week": "W9",
+              "month": "Dec'25",
               "value": 0
             },
             {
-              "week": "W10",
+              "month": "Jan'26",
               "value": 0
             },
             {
-              "week": "W11",
+              "month": "Feb'26",
               "value": 0
             },
             {
-              "week": "W12",
-              "value": 0
-            },
-            {
-              "week": "W13",
-              "value": 0
-            },
-            {
-              "week": "W14",
-              "value": 0
-            },
-            {
-              "week": "W15",
-              "value": 0
-            },
-            {
-              "week": "W16",
-              "value": 0
-            },
-            {
-              "week": "W17",
-              "value": 0
-            },
-            {
-              "week": "W18",
-              "value": 0
-            },
-            {
-              "week": "W19",
-              "value": 0
-            },
-            {
-              "week": "W20",
-              "value": 0
-            },
-            {
-              "week": "W21",
-              "value": 0
-            },
-            {
-              "week": "W22",
-              "value": 0
-            },
-            {
-              "week": "W23",
-              "value": 0
-            },
-            {
-              "week": "W24",
-              "value": 0
-            },
-            {
-              "week": "W25",
-              "value": 0
-            },
-            {
-              "week": "W26",
-              "value": 0
-            },
-            {
-              "week": "W27",
-              "value": 0
-            },
-            {
-              "week": "W28",
-              "value": 0
-            },
-            {
-              "week": "W29",
-              "value": 0
-            },
-            {
-              "week": "W30",
-              "value": 0
-            },
-            {
-              "week": "W31",
-              "value": 0
-            },
-            {
-              "week": "W32",
-              "value": 0
-            },
-            {
-              "week": "W33",
-              "value": 0
-            },
-            {
-              "week": "W34",
-              "value": 0
-            },
-            {
-              "week": "W35",
-              "value": 0
-            },
-            {
-              "week": "W36",
-              "value": 0
-            },
-            {
-              "week": "W37",
-              "value": 0
-            },
-            {
-              "week": "W38",
-              "value": 0
-            },
-            {
-              "week": "W39",
-              "value": 0
-            },
-            {
-              "week": "W40",
-              "value": 0
-            },
-            {
-              "week": "W41",
-              "value": 0
-            },
-            {
-              "week": "W42",
-              "value": 0
-            },
-            {
-              "week": "W43",
-              "value": 0
-            },
-            {
-              "week": "W44",
-              "value": 0
-            },
-            {
-              "week": "W45",
-              "value": 0
-            },
-            {
-              "week": "W46",
-              "value": 0
-            },
-            {
-              "week": "W47",
-              "value": 0
-            },
-            {
-              "week": "W48",
-              "value": 0
-            },
-            {
-              "week": "W49",
-              "value": 0
-            },
-            {
-              "week": "W50",
-              "value": 0
-            },
-            {
-              "week": "W51",
-              "value": 0
-            },
-            {
-              "week": "W52",
+              "month": "Mar'26",
               "value": 0
             }
           ]
@@ -19578,253 +19763,93 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           ]
         },
         "daysToClearBacklog": {
-          "weekly": [
+          "monthly": [
             {
-              "week": "W1",
-              "value": 86.9
-            },
-            {
-              "week": "W2",
+              "month": "Apr'25",
               "value": 999
             },
             {
-              "week": "W3",
-              "value": 999
+              "month": "May'25",
+              "value": 936.8
             },
             {
-              "week": "W4",
-              "value": 374.7
+              "month": "Jun'25",
+              "value": 486.3
             },
             {
-              "week": "W5",
-              "value": 249.3
+              "month": "Jul'25",
+              "value": 904.9
             },
             {
-              "week": "W6",
-              "value": 93
+              "month": "Aug'25",
+              "value": 294.4
             },
             {
-              "week": "W7",
-              "value": 152.9
+              "month": "Sep'25",
+              "value": 382.4
             },
             {
-              "week": "W8",
-              "value": 570.7
+              "month": "Oct'25",
+              "value": 462.5
             },
             {
-              "week": "W9",
-              "value": 999
+              "month": "Nov'25",
+              "value": 289.6
             },
             {
-              "week": "W10",
-              "value": 999
+              "month": "Dec'25",
+              "value": 981
             },
             {
-              "week": "W11",
-              "value": 23
+              "month": "Jan'26",
+              "value": 348.9
             },
             {
-              "week": "W12",
-              "value": 87.2
+              "month": "Feb'26",
+              "value": 581.6
             },
             {
-              "week": "W13",
-              "value": 999
-            },
-            {
-              "week": "W14",
-              "value": 348.8
-            },
-            {
-              "week": "W15",
-              "value": 180.5
-            },
-            {
-              "week": "W16",
-              "value": 248.4
-            },
-            {
-              "week": "W17",
-              "value": 124.8
-            },
-            {
-              "week": "W18",
-              "value": 608.2
-            },
-            {
-              "week": "W19",
-              "value": 25.4
-            },
-            {
-              "week": "W20",
-              "value": 391
-            },
-            {
-              "week": "W21",
-              "value": 240.3
-            },
-            {
-              "week": "W22",
-              "value": 229.3
-            },
-            {
-              "week": "W23",
-              "value": 18.1
-            },
-            {
-              "week": "W24",
-              "value": 493.9
-            },
-            {
-              "week": "W25",
-              "value": 906.2
-            },
-            {
-              "week": "W26",
-              "value": 242.8
-            },
-            {
-              "week": "W27",
-              "value": 441.9
-            },
-            {
-              "week": "W28",
-              "value": 32.4
-            },
-            {
-              "week": "W29",
-              "value": 534.2
-            },
-            {
-              "week": "W30",
-              "value": 999
-            },
-            {
-              "week": "W31",
-              "value": 96.9
-            },
-            {
-              "week": "W32",
-              "value": 27
-            },
-            {
-              "week": "W33",
-              "value": 69.6
-            },
-            {
-              "week": "W34",
-              "value": 273.4
-            },
-            {
-              "week": "W35",
-              "value": 220
-            },
-            {
-              "week": "W36",
-              "value": 294.1
-            },
-            {
-              "week": "W37",
-              "value": 87.9
-            },
-            {
-              "week": "W38",
-              "value": 219.6
-            },
-            {
-              "week": "W39",
-              "value": 173.6
-            },
-            {
-              "week": "W40",
-              "value": 999
-            },
-            {
-              "week": "W41",
-              "value": 74
-            },
-            {
-              "week": "W42",
-              "value": 147.5
-            },
-            {
-              "week": "W43",
-              "value": 159.7
-            },
-            {
-              "week": "W44",
-              "value": 20.3
-            },
-            {
-              "week": "W45",
-              "value": 204.3
-            },
-            {
-              "week": "W46",
-              "value": 82.5
-            },
-            {
-              "week": "W47",
-              "value": 173.6
-            },
-            {
-              "week": "W48",
-              "value": 182.1
-            },
-            {
-              "week": "W49",
-              "value": 53.5
-            },
-            {
-              "week": "W50",
-              "value": 11.1
-            },
-            {
-              "week": "W51",
-              "value": 4.4
-            },
-            {
-              "week": "W52",
-              "value": 0.1
+              "month": "Mar'26",
+              "value": 37
             }
           ]
         }
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 116.5,
+          "blendedDSO": 2.7,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 112.2,
+              "dso": 30.7,
               "weight": 33.7,
-              "contribution": -1.5
+              "contribution": 9.5
             },
             {
               "segment": "KEY",
-              "dso": 110.7,
+              "dso": 30.3,
               "weight": 38.3,
-              "contribution": -2.2
+              "contribution": 10.6
             },
             {
               "segment": "STANDARD",
-              "dso": 128.8,
+              "dso": 35.3,
               "weight": 18.2,
-              "contribution": 2.3
+              "contribution": 5.9
             },
             {
               "segment": "SMB",
-              "dso": 130.7,
+              "dso": 35.8,
               "weight": 9.7,
-              "contribution": 1.4
+              "contribution": 3.2
             }
           ]
         },
         "arHealthScore": {
-          "score": 44,
-          "grade": "D",
+          "score": 64,
+          "grade": "C",
           "components": {
-            "DSO": 0,
+            "DSO": 100,
             "CEI": 83,
             "Overdue": 39,
             "Aging": 39,
@@ -19913,19 +19938,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'25",
-              "change": -12.9
+              "change": -12
             },
             {
               "month": "Jun'25",
-              "change": 1.6
+              "change": 1.5
             },
             {
               "month": "Jul'25",
-              "change": -11.3
+              "change": -12
             },
             {
               "month": "Aug'25",
-              "change": 27.3
+              "change": 26.8
             },
             {
               "month": "Sep'25",
@@ -19933,27 +19958,27 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Oct'25",
-              "change": -4.5
+              "change": -3.6
             },
             {
               "month": "Nov'25",
-              "change": 7.8
+              "change": 7
             },
             {
               "month": "Dec'25",
-              "change": -20.3
+              "change": -19.7
             },
             {
               "month": "Jan'26",
-              "change": 27.3
+              "change": 26.1
             },
             {
               "month": "Feb'26",
-              "change": 148.6
+              "change": 150
             },
             {
               "month": "Mar'26",
-              "change": 49.4
+              "change": 49.3
             }
           ],
           "avgChange": 19
@@ -20167,13 +20192,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 44,
-          "grade": "D"
+          "score": 64,
+          "grade": "C"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 0
+            "value": 100
           },
           {
             "dim": "CEI",
@@ -20245,19 +20270,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "warning",
-            "headline": "AR Health Grade D (44/100) — Structural issues require CFO action",
-            "narrative": "For FY 2025-26, the receivables portfolio shows elevated stress. DSO sits at 116.5 days against a best-possible benchmark of 41.6 days (terms-implied). Collection effectiveness is 83% and 61% of open AR is overdue. ",
+            "severity": "info",
+            "headline": "AR Health Grade C (64/100) — Mixed signals require attention",
+            "narrative": "For FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 2.7 days against a best-possible benchmark of 41.6 days (terms-implied). Collection effectiveness is 83% and 61% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "44/100",
-                "color": "text-accent-red"
+                "value": "64/100",
+                "color": "text-accent-amber"
               },
               {
                 "label": "DSO",
-                "value": "116.5 days",
-                "color": "text-accent-red"
+                "value": "2.7 days",
+                "color": "text-accent-green"
               },
               {
                 "label": "CEI",
@@ -20283,7 +20308,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "type": "opportunity",
-                "text": "Largest improvement lever is \"DSO\" — even a 10-point lift moves overall grade up one letter."
+                "text": "Largest improvement lever is \"Trend\" — even a 10-point lift moves overall grade up one letter."
               },
               {
                 "type": "opportunity",
@@ -20300,13 +20325,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +2.3 days",
-            "narrative": "The blended 116.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 41.6 days — leaving 74.9 days of behavioural leakage worth ₹22.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "warning",
+            "headline": "KEY drags blended DSO up by +10.6 days",
+            "narrative": "The blended 2.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 41.6 days — leaving 74.9 days of behavioural leakage worth ₹22.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "116.5d",
+                "value": "2.7d",
                 "color": "text-accent-red"
               },
               {
@@ -20326,9 +20351,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 129d, weight 18%, contribution +2.3d.",
-              "SMB: DSO 131d, weight 10%, contribution +1.4d.",
-              "STRATEGIC: DSO 112d, weight 34%, contribution -1.5d."
+              "KEY: DSO 30d, weight 38%, contribution +10.6d.",
+              "STRATEGIC: DSO 31d, weight 34%, contribution +9.5d.",
+              "STANDARD: DSO 35d, weight 18%, contribution +5.9d."
             ],
             "risksAndOpportunities": [
               {
@@ -20337,7 +20362,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -20451,8 +20476,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Collections Efficiency",
             "iconKey": "collections",
             "severity": "info",
-            "headline": "CEI 83% · 0/52 weeks above 70% effectiveness target",
-            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends weekly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
+            "headline": "CEI 83% · 0/12 months above 70% effectiveness target",
+            "narrative": "CEI measures how well opened AR converts to cash. Between 70–85% is industry-typical. On-time payment rate trends monthly — high on-time rates with low effectiveness suggest large invoices slip while small ones clear.",
             "metrics": [
               {
                 "label": "CEI",
@@ -20465,25 +20490,25 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
                 "color": "text-accent-blue"
               },
               {
-                "label": "Weeks ≥ Target",
-                "value": "0/52",
+                "label": "Months ≥ Target",
+                "value": "0/12",
                 "color": "text-accent-amber"
               },
               {
                 "label": "Backlog Days",
-                "value": "313d",
+                "value": "559d",
                 "color": "text-accent-amber"
               }
             ],
             "keyObservations": [
-              "Average weekly on-time payment rate: 0%.",
-              "Average weekly collection effectiveness: 0%.",
+              "Average monthly on-time payment rate: 0%.",
+              "Average monthly collection effectiveness: 0%.",
               "Credit-period effectiveness varies by term: 7 days 60% · 15 days 56% · 30 days 64% · 45 days 72% · 60 days 79%."
             ],
             "risksAndOpportunities": [
               {
                 "type": "risk",
-                "text": "Sustained underperformance across most weeks — staffing or process review needed."
+                "text": "Sustained underperformance across most months — staffing or process review needed."
               },
               {
                 "type": "opportunity",
@@ -20491,7 +20516,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Set weekly CEI floor at 75% with daily standups when missing.",
+              "Set monthly CEI floor at 75% with weekly progress reviews when missing.",
               "Pre-call top 20 AR customers 5 days before due-date (the dunning gap).",
               "Match collector seniority to invoice value — large invoices need senior handlers."
             ]
@@ -20653,6 +20678,213 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             ]
           }
         ]
+      },
+      "insights": {
+        "basic-dso": {
+          "observation": "For FY 2025-26, DSO is 2.7 (healthy). Average AR ₹34973824 sits against ₹109.9B of credit sales; no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
+          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+        },
+        "basic-overdue-ratio": {
+          "observation": "60.8% of open AR (₹21.3B) is past due across 5,634 invoices; no prior period to compare.",
+          "recommendation": "Escalate the 60+ cohort — recoverability falls below 60% after 60 days. Engage senior collectors on top accounts.",
+          "nextAction": "Triage the 4,148 invoices in the 60+ bucket (₹16.3B). Decide write-off vs legal action for each by week's end."
+        },
+        "basic-revenue-at-risk": {
+          "observation": "Revenue at risk: 32.9% — that's the share of open AR sitting in 45+ day credit-term invoices and already overdue.",
+          "recommendation": "Tighten credit policy on the 45/60-day terms cohort, or migrate those customers to milestone-based billing.",
+          "nextAction": "Pull the top 10 invoices on 45+ day terms older than due date and assign personal collector ownership this week."
+        },
+        "basic-receivables-turnover": {
+          "observation": "Receivables turnover ratio: 21.7× for FY 2025-26. Lower than 4× indicates AR is growing faster than sales.",
+          "recommendation": "Healthy turnover — sales pace is supported by collection cadence.",
+          "nextAction": "Map monthly sales vs collections — if sales > collections for 2 consecutive months, expand the collections team or automate L1 dunning."
+        },
+        "basic-net-ar-movement": {
+          "observation": "Monthly AR movement traces whether the portfolio is expanding (cash trap) or contracting (cash release) across FY 2025-26.",
+          "recommendation": "Persistently positive movement indicates billed > collected. Tie sales growth targets to a parallel collections target to keep AR neutral.",
+          "nextAction": "Add a 'net AR movement' threshold to the monthly leadership review — alert if any month exceeds +5% of avg AR."
+        },
+        "basic-cei": {
+          "observation": "Collection Effectiveness Index is 83% for FY 2025-26; no prior period to compare.",
+          "recommendation": "Strong, but the gap to 90% likely comes from the 60+ bucket — focus there.",
+          "nextAction": "Maintain the cadence and ratchet the floor target up by 2 pts each quarter."
+        },
+        "basic-on-time-payment": {
+          "observation": "Monthly on-time payment rate averages 0% across 12 months in FY 2025-26.",
+          "recommendation": "Low on-time rate — review billing accuracy and dispute volumes; many late payments may be reactive to billing issues.",
+          "nextAction": "Pre-due-date reminders (5–7 days before) on the top 100 invoices for the next quarter."
+        },
+        "basic-collection-effectiveness-weekly": {
+          "observation": "Average monthly collection effectiveness: 0%. 0 of 12 months hit the 70% target.",
+          "recommendation": "Below target — pair every overdue customer with a named collector and weekly check-ins.",
+          "nextAction": "Run a 30-day blitz on the bottom-quartile months; require daily progress notes per top-20 customer."
+        },
+        "basic-credit-period-effectiveness": {
+          "observation": "Effectiveness varies sharply by credit term: 7 days 60% · 15 days 56% · 30 days 64% · 45 days 72% · 60 days 79%.",
+          "recommendation": "Long credit terms (45/60 days) typically yield best discipline since they go to larger customers. Tighten 7/15-day exception terms — they're often used for SMBs that drift.",
+          "nextAction": "Audit short-term (7/15-day) customers — convert to standard 30-day terms unless there's a strategic reason for the exception."
+        },
+        "basic-aging-buckets": {
+          "observation": "60+ day bucket: 46% of AR (₹16.3B). Not-Due: 39%.",
+          "recommendation": "Inverted aging pyramid — focus on the 30-60 cohort to prevent migration into 60+.",
+          "nextAction": "Schedule a 14-day blitz on 31–60 day invoices; treat the bucket as the early-warning leading indicator for next month's 60+."
+        },
+        "basic-aging-donut": {
+          "observation": "Composition split shows 39% not-due and 46% in 60+. The donut visualises the bucket proportions of the bar chart.",
+          "recommendation": "Use the donut to spot inversion at a glance — green should dominate the centre of the chart.",
+          "nextAction": "Report the donut weekly in CFO dashboards — quick visual heuristic for portfolio health drift."
+        },
+        "basic-overdue-density": {
+          "observation": "Count density 74% vs value density 61%. A gap means the problem is concentrated in either many small invoices or a few large ones.",
+          "recommendation": "Many small invoices — automate L1 dunning to clear them at low cost.",
+          "nextAction": "Segment the overdue book by amount: above ₹50L → personal collector; below → automated dunning sequence."
+        },
+        "basic-peak-exposure": {
+          "observation": "Single largest overdue invoice: ₹17.8Cr (20260020276, company 3000, 178 days overdue).",
+          "recommendation": "Escalate to CFO-to-CFO call this week — high-exposure overdue past 60 days needs immediate decision (settle, write-off, or sue).",
+          "nextAction": "Open an action ticket on this invoice; senior collector + CFO update by end of week."
+        },
+        "basic-invoice-to-cash": {
+          "observation": "Median time to cash: P50 37 days · P90 65 days. Wide P50–P90 gap (28d) indicates a bimodal distribution — fast payers and stuck invoices.",
+          "recommendation": "Distribution is tight. Continue to monitor the long tail for new outliers.",
+          "nextAction": "Pull the top 5% of cleared invoices by daysForPayment — analyse common attributes (customer, term, product) and address root cause."
+        },
+        "basic-credit-period-utilization": {
+          "observation": "Customers use 137% of the allowed credit period on average. Above 100% means systematic late payment.",
+          "recommendation": "Customers exceed terms — terms are effectively longer than agreed. Renegotiate or enforce a stricter dunning cadence.",
+          "nextAction": "Letter to top 20 customers exceeding > 110% utilisation citing breach of agreed terms."
+        },
+        "basic-days-to-clear-backlog": {
+          "observation": "Monthly average backlog clear time: 558.7 days. Above 5 days indicates collections can't keep up with new overdue accumulation.",
+          "recommendation": "Capacity gap. Add collector headcount or automate L1 reminders to absorb the inflow.",
+          "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
+        },
+        "dso-bridge": {
+          "observation": "Blended DSO 2.7. Largest drag: KEY contributing 10.6 pts at 38% of sales.",
+          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+        },
+        "dso-velocity": {
+          "observation": "Average month-on-month DSO change: +19.0%. Accelerating upward — losing ground.",
+          "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
+          "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
+        },
+        "terms-mix-drag": {
+          "observation": "Weighted avg terms 42d vs actual pay days 37d — behavioural drag -4d.",
+          "recommendation": "Drag is contained. Maintain monitoring.",
+          "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
+        },
+        "ar-health-score": {
+          "observation": "AR Health: 64/100 (Grade C). Strongest dim: DSO. Weakest: Trend.",
+          "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
+          "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
+        },
+        "pbdi": {
+          "observation": "14 customers show > 25% deterioration in payment behaviour. Worst: Godrej Pvt Ltd (59.5%).",
+          "recommendation": "Treat PBDI alerts as early-warning signals — many will hit 60+ overdue within a quarter without intervention.",
+          "nextAction": "Open a watchlist of 14 accounts; assign to senior collectors with weekly check-ins."
+        },
+        "credit-limit-util": {
+          "observation": "349 customers exceed credit limit. Average utilisation across sample: 955%.",
+          "recommendation": "Many customers breach limits — either credit limits are stale or risk policy is loose. Review both.",
+          "nextAction": "Refresh credit ratings for the 349 breaching customers within 30 days; consider order holds for repeat offenders."
+        },
+        "touches-per-dollar": {
+          "observation": "Collection effort: 0.00 touches per ₹Crore of open AR (0 touches on 3508.1Cr).",
+          "recommendation": "Highly efficient — keep the playbook.",
+          "nextAction": "Monitor monthly; flag if rate exceeds 4."
+        },
+        "escalation-velocity": {
+          "observation": "Average 0 days between dunning escalations (target 10). Sample size: 0.",
+          "recommendation": "Possibly too aggressive — may damage customer relationships. Match velocity to risk tier.",
+          "nextAction": "Sustain the cadence."
+        },
+        "payment-consistency": {
+          "observation": "Portfolio payment-consistency score: 49/100 (lower CV = more predictable). Sample: 350 customers.",
+          "recommendation": "Low consistency — forecasting cash inflow is unreliable. Consider customer-level forecasts for top accounts.",
+          "nextAction": "Build per-customer payment-pattern profiles for top-20 accounts; feed into weekly cash forecast."
+        },
+        "discount-capture": {
+          "observation": "Captured 3.9% of available early-payment discount (₹5.3Cr saved; ₹1.3B left on the table).",
+          "recommendation": "Either discounts aren't attractive enough or AP teams aren't aware. Test 2/10 net 30 messaging on top customers.",
+          "nextAction": "Email campaign to top 50 customers reminding them of available discount terms."
+        },
+        "posting-lag": {
+          "observation": "Average posting lag 2.5 days (P90 6). Every lag day delays the DSO clock start.",
+          "recommendation": "Compress to same-day posting via system integration or workflow change.",
+          "nextAction": "Audit the document-to-posting workflow; identify and remove approval steps causing delay."
+        },
+        "dunning-gap": {
+          "observation": "First dunning lands 0 days after due (target 3). Drift: 0 days.",
+          "recommendation": "Within tolerance.",
+          "nextAction": "Maintain."
+        },
+        "dispute-adjusted-dso": {
+          "observation": "Dispute impact on DSO: 0.0 days (₹0 disputed AR). Clean DSO: 116.5 days vs total 116.5.",
+          "recommendation": "Dispute drag is contained.",
+          "nextAction": "Maintain quarterly review of dispute volume."
+        },
+        "dunning-block-rate": {
+          "observation": "0% of dunning records carry a block (0 of 0). Industry band: 10–15%.",
+          "recommendation": "Block rate is unusually low — disputes may be under-recorded.",
+          "nextAction": "Sustain."
+        },
+        "carrying-cost": {
+          "observation": "Daily carrying cost ₹96.1L at 10% cost of capital. Annualised: ₹1.3B.",
+          "recommendation": "Every DSO day saved is ~₹96.1L in annualised cost-of-capital. Use this to justify AR automation investments.",
+          "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
+        },
+        "cash-flow-leakage": {
+          "observation": "75 days between actual DSO (117d) and best-possible (42d terms-implied) leak ₹22.6B of cash.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹11.3B of working capital — a meaningful balance-sheet improvement.",
+          "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
+        },
+        "forecast-mape": {
+          "observation": "Forecast MAPE: 0% (confidence 0%). Expected ₹0 vs actual ₹1.6B.",
+          "recommendation": "Forecast is reliable.",
+          "nextAction": "Monitor monthly."
+        },
+        "cash-conversion-efficiency": {
+          "observation": "Cash conversion ratio: 2% (collected ₹1.6B on ₹109.9B sales).",
+          "recommendation": "AR is building faster than collections. Pair sales growth with proportional collections investment.",
+          "nextAction": "Add a 'collections-to-sales' KPI to the monthly leadership review."
+        },
+        "company-code-index": {
+          "observation": "Leaders: Manufacturing Division at 114d. Lagging: HQ Operations India at 119d.",
+          "recommendation": "Replicate the leader's playbook (cadence, contact mapping, escalation) into the lagging entity.",
+          "nextAction": "Cross-pollinate via a 30-day swap of senior collectors between leader and lagging entities."
+        },
+        "segment-efficiency": {
+          "observation": "STRATEGIC runs at 333. SMB at 82.",
+          "recommendation": "Lift the weakest segment through targeted process improvements; the upside is disproportionate.",
+          "nextAction": "Quarterly segment review with explicit improvement targets per segment."
+        },
+        "executive-summary": {
+          "observation": "FY 2025-26 headline: DSO 2.7 · CEI 83% · 61% overdue · ₹35.1B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
+          "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
+        },
+        "risk-heatmap": {
+          "observation": "14 PBDI alerts + 349 credit breaches + 0% block rate combine into the current risk surface.",
+          "recommendation": "Risk concentration is elevated — initiate a portfolio review and tighten credit policy.",
+          "nextAction": "Quarterly risk review with executive escalation for any account triggering 2+ of the three risk dimensions."
+        },
+        "cash-forecast": {
+          "observation": "0% forecast confidence, 0% MAPE. Cash conversion 2%.",
+          "recommendation": "Treasury can plan liquidity decisions based on forecasts at MAPE < 15%. Above that, hold a larger buffer.",
+          "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
+        },
+        "working-capital-opportunity": {
+          "observation": "₹22.6B of working capital sits trapped beyond credit terms.",
+          "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
+          "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
+        },
+        "collections-efficiency-trend": {
+          "observation": "CEI 83%, monthly effectiveness average 0%, 0/12 months at target.",
+          "recommendation": "Sustain and lift the floor target by 2pp next quarter.",
+          "nextAction": "Tie collector compensation to monthly effectiveness — 80% floor with kicker above 90%."
+        }
       }
     }
   }

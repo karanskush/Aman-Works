@@ -18,22 +18,40 @@ const revenueAtRiskData = { value: _all.executive.revenueAtRisk.value };
 const receivablesTurnoverData = { overall: _all.executive.receivablesTurnover.overall, monthly: _all.executive.receivablesTurnover.monthly };
 const netARMovementData = { monthly: _all.executive.netARMovement.monthly };
 const ceiData = { overall: _all.collection.cei.overall, monthly: _all.collection.cei.monthly };
-const onTimePaymentData = { weekly: _all.collection.onTimePayment.weekly };
-const collectionEffectivenessWeeklyData = { weekly: _all.collection.collectionEffectiveness.weekly };
+// Backwards-compat shape for the chatbot's hardcoded templates that pre-date
+// the weekly→monthly migration. The `weekly` alias points to monthly data so
+// index lookups (W2, W10, etc.) still resolve to a valid datapoint.
+const onTimePaymentData = {
+  monthly: _all.collection.onTimePayment.monthly,
+  weekly: _all.collection.onTimePayment.monthly.map(m => ({ week: m.month, value: m.value })),
+};
+const collectionEffectivenessWeeklyData = {
+  monthly: _all.collection.collectionEffectiveness.monthly,
+  weekly: _all.collection.collectionEffectiveness.monthly.map(m => ({ week: m.month, value: m.value })),
+};
 const collectionPeriodEffectivenessData = { data: _all.collection.creditPeriodEffectiveness.data };
 const agingBucketData = { data: _all.aging.buckets.map(b => ({ bucket: b.bucket, percentage: b.percentage, color: b.color })) };
 const overdueInvoiceDensityData = { count: _all.aging.overdueDensity.count, value: _all.aging.overdueDensity.value };
 const peakOverdueExposureData = _all.aging.peakExposure;
 const invoiceToCashData = _all.operational.invoiceToCash;
 const creditPeriodUtilizationData = { overall: _all.operational.creditPeriodUtilization.overall, monthly: _all.operational.creditPeriodUtilization.monthly };
-const daysToClearBacklogData = { weekly: _all.operational.daysToClearBacklog.weekly };
+const daysToClearBacklogData = {
+  monthly: _all.operational.daysToClearBacklog.monthly,
+  weekly: _all.operational.daysToClearBacklog.monthly.map(m => ({ week: m.month, value: m.value })),
+};
 
 // ---- Derived calculations ----
 const totalARQ1 = netARMovementData.monthly.reduce((s, m) => s + m.value, 0);
-const avgOnTime = Math.round(onTimePaymentData.weekly.reduce((s, w) => s + w.value, 0) / onTimePaymentData.weekly.length * 10) / 10;
-const avgCollEff = Math.round(collectionEffectivenessWeeklyData.weekly.reduce((s, w) => s + w.value, 0) / collectionEffectivenessWeeklyData.weekly.length * 10) / 10;
-const weeksAboveTarget = onTimePaymentData.weekly.filter(w => w.value >= 85).length;
-const backlogLatest = daysToClearBacklogData.weekly[daysToClearBacklogData.weekly.length - 1].value;
+const avgOnTime = onTimePaymentData.monthly.length > 0
+  ? Math.round(onTimePaymentData.monthly.reduce((s, w) => s + w.value, 0) / onTimePaymentData.monthly.length * 10) / 10
+  : 0;
+const avgCollEff = collectionEffectivenessWeeklyData.monthly.length > 0
+  ? Math.round(collectionEffectivenessWeeklyData.monthly.reduce((s, w) => s + w.value, 0) / collectionEffectivenessWeeklyData.monthly.length * 10) / 10
+  : 0;
+const weeksAboveTarget = onTimePaymentData.monthly.filter(w => w.value >= 85).length;
+const backlogLatest = daysToClearBacklogData.monthly.length > 0
+  ? daysToClearBacklogData.monthly[daysToClearBacklogData.monthly.length - 1].value
+  : 0;
 const agingHealthy = agingBucketData.data.filter(d => ["Not Due", "1-7 days", "8-15 days", "16-30 days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
 const agingRisky = agingBucketData.data.filter(d => ["31-45 days", "46-60 days", "60+ days"].includes(d.bucket)).reduce((s, d) => s + d.percentage, 0);
 
