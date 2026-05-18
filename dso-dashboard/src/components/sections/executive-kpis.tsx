@@ -93,8 +93,8 @@ export function ExecutiveKPIs() {
         kpiId="basic-dso"
         title="DSO"
         value={executive.dso.overall.toFixed(1)}
-        suffix="%"
-        valueLabel={`Avg AR / Credit Sales · ${quarterLabel}`}
+        suffix="days"
+        valueLabel={`Days Sales Outstanding · ${quarterLabel}`}
         insight={dsoInsight}
         glowClass="glow-amber"
       >

@@ -15,11 +15,11 @@ export interface KPIInsight {
 
 export const dsoInsight: KPIInsight = {
   businessPurpose:
-    "AR intensity ratio. The share of credit sales currently parked in receivables. Lower = faster cash conversion. < 15% is best-in-class.",
+    "Days Sales Outstanding — the average number of days credit sales stay locked in receivables before cash is collected. Lower = faster cash conversion. < 45 days is best-in-class.",
   formula:
-    "DSO = (Average AR / Total Credit Sales) × 100",
+    "DSO = (Accounts Receivable / Total Credit Sales) × Days in Period",
   aiInsight:
-    "Cross-reference with aging buckets and overdue ratio for root cause analysis. Rising DSO signals collection slipping behind sales pace.",
+    "Cross-reference with aging buckets and overdue ratio for root cause analysis. Rising DSO signals collections slipping behind sales pace.",
   trend: "warning",
 };
 

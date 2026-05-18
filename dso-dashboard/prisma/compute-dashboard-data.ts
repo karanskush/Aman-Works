@@ -59,11 +59,8 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   const totalSalesAll = allInvoices.reduce((s, i) => s + i.amount, 0);
 
   // ---- DSO ----
-  // Period length still used for traditional days-based metrics derived
-  // internally (leakage, dispute-adjusted DSO, segment DSO weights).
+  // Days in the period: 365 for a full FY, 90 for a quarter, 30 for a month.
   const periodDays = quarter === "All" ? 365 : 90;
-  // Traditional days-based DSO kept for downstream rupee/days math.
-  const dsoDays = totalSalesAll > 0 ? (totalOpenAR / totalSalesAll) * periodDays : 0;
 
   const rawSnapshots = await prisma.monthlySnapshot.findMany({
     where: { fiscalPeriodId: { in: fpIds } },
@@ -109,19 +106,18 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   }
   const monthlySnapshots = [...snapshotByPeriod.values()].sort((a, b) => a.order - b.order);
 
-  // New DSO formula per spec: DSO = (Average AR / Total Credit Sales) × 100
-  // Treated as an AR-intensity ratio. Per-month uses that month's snapshot.
+  // Days Sales Outstanding — DSO = (Accounts Receivable / Total Credit Sales) × Days in Period.
+  // AR is the open receivables balance for the slice; credit sales is total billings
+  // for the slice. Per-month uses that month's snapshot over a 30-day window.
   const dsoMonthly = monthlySnapshots.map(ms => ({
     month: ms.label,
-    value: parseFloat((ms.totalCreditSales > 0 ? (ms.totalAR / ms.totalCreditSales) * 100 : 0).toFixed(1)),
+    value: parseFloat((ms.totalCreditSales > 0 ? (ms.totalAR / ms.totalCreditSales) * 30 : 0).toFixed(1)),
   }));
-  const avgARacross = monthlySnapshots.length > 0
-    ? monthlySnapshots.reduce((s, ms) => s + ms.totalAR, 0) / monthlySnapshots.length
-    : totalOpenAR;
-  const totalCreditSalesAcross = monthlySnapshots.reduce((s, ms) => s + ms.totalCreditSales, 0) || totalSalesAll;
-  const dsoOverall = totalCreditSalesAcross > 0
-    ? parseFloat(((avgARacross / totalCreditSalesAcross) * 100).toFixed(1))
+  const dsoOverall = totalSalesAll > 0
+    ? parseFloat(((totalOpenAR / totalSalesAll) * periodDays).toFixed(1))
     : 0;
+  // Canonical days-based DSO reused by downstream metrics.
+  const dsoDays = dsoOverall;
 
   const overdueRatio = totalOpenAR > 0 ? (overdueAR / totalOpenAR) * 100 : 0;
   const overdueRatioMonthly = monthlySnapshots.map(ms => ({
@@ -300,9 +296,8 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   });
 
   // ---- Advanced: DSO Bridge ----
-  // DSO Bridge uses the new ratio-based formula consistently across segments,
-  // so the per-segment numbers add up to the headline DSO with sales-weighted
-  // contributions.
+  // DSO Bridge — per-segment days-based DSO so contributions decompose the
+  // blended figure with sales-weighted contributions.
   const blendedDSO = dsoOverall;
   const segments = ["STRATEGIC", "KEY", "STANDARD", "SMB"] as const;
   const dsoBridgeSegments = segments.map(seg => {
@@ -310,7 +305,7 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
     const segOpen = segInvs.filter(i => i.status === "OPEN" || i.status === "PARTIAL");
     const segOpenAR = segOpen.reduce((s, i) => s + i.amount, 0);
     const segSales = segInvs.reduce((s, i) => s + i.amount, 0);
-    const segDSO = segSales > 0 ? (segOpenAR / segSales) * 100 : 0;
+    const segDSO = segSales > 0 ? (segOpenAR / segSales) * periodDays : 0;
     const weight = totalSalesAll > 0 ? segSales / totalSalesAll : 0;
     const contribution = (segDSO - blendedDSO) * weight;
     return {
@@ -326,8 +321,8 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   };
 
   // ---- AR Health Score ----
-  // Score from the new ratio-based DSO. Healthy < 15%, stressed > 35%.
-  const dsoHealthScore = Math.max(0, Math.min(100, 100 - (blendedDSO - 15) / (35 - 15) * 100));
+  // Score from days-based DSO. 30 days → 100, 90 days → 0.
+  const dsoHealthScore = Math.max(0, Math.min(100, 100 - (blendedDSO - 30) / (90 - 30) * 100));
   const ceiHealthScore = Math.min(100, Math.max(0, ceiOverall));
   const overdueHealthScore = Math.max(0, 100 - overdueRatio);
   const notDueAR = openInvoices.filter(i => !i.isOverdue).reduce((s, i) => s + i.amount, 0);
@@ -600,10 +595,11 @@ async function computeForFYQuarter(fy: FY, quarter: Quarter) {
   };
 
   // ---- Dispute-Adjusted DSO ----
-  // Reported in days using traditional formula so the impact is intuitive.
+  // Clean DSO scales the blended days-based DSO by the non-disputed share of AR.
   const blockedInvoiceIds = new Set(dunningRecords.filter(d => d.dunningBlock != null).map(d => d.invoiceId));
   const cleanOpenAR = openInvoices.filter(i => !blockedInvoiceIds.has(i.id)).reduce((s, i) => s + i.amount, 0);
-  const cleanDSO = totalSalesAll > 0 ? (cleanOpenAR / totalSalesAll) * periodDays : 0;
+  const cleanShare = totalOpenAR > 0 ? cleanOpenAR / totalOpenAR : 1;
+  const cleanDSO = dsoDays * cleanShare;
   const disputeAdjusted = {
     actualDSO: parseFloat(dsoDays.toFixed(1)),
     cleanDSO: parseFloat(cleanDSO.toFixed(1)),
@@ -783,7 +779,7 @@ function computePerKpiInsights(slice: Slice, fy: FY, quarter: Quarter, prevSlice
 
   const dsoCurr = e.dso.overall;
   const dsoPrev = prevSlice?.executive.dso.overall;
-  const dsoBand = dsoCurr < 15 ? "healthy" : dsoCurr < 25 ? "manageable" : dsoCurr < 35 ? "elevated" : "critical";
+  const dsoBand = dsoCurr < 45 ? "healthy" : dsoCurr < 60 ? "manageable" : dsoCurr < 90 ? "elevated" : "critical";
 
   const overdueCurr = e.overdueRatio.overall;
   const overduePrev = prevSlice?.executive.overdueRatio.overall;
@@ -827,20 +823,20 @@ function computePerKpiInsights(slice: Slice, fy: FY, quarter: Quarter, prevSlice
   const out: Record<string, KpiInsight> = {};
 
   // ---------- Basic KPIs ----------
+  // Cash freed per day of DSO reduction = one day of average daily credit sales.
+  const dailyCreditSales = sum.totalSales / (quarter === "All" ? 365 : 90);
   out["basic-dso"] = {
-    observation: `For ${periodLbl}, DSO is ${dsoCurr.toFixed(1)} (${dsoBand}). Average AR ₹${(adv.carryingCost.annualCost / Math.max(0.01, adv.carryingCost.avgDaysOutstanding) * 365 / 100).toFixed(0)} sits against ${fmtMillions(sum.totalSales)} of credit sales; ${trendDelta(dsoCurr, dsoPrev)}.`,
-    recommendation: dsoCurr < 15
-      ? "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers."
-      : dsoCurr < 25
-      ? "Tighten dunning cadence on the slowest-paying segment to push DSO toward < 15."
-      : dsoCurr < 35
-      ? "Stand up a focused collections taskforce — every 1-point reduction frees ~₹"
-        + (sum.totalSales / 100).toFixed(0)
-        + " of working capital."
-      : "Initiate an emergency cash recovery program; the AR-to-sales ratio signals systemic collection failure.",
-    nextAction: dsoCurr < 25
-      ? `Maintain weekly collector cadence and review top ${Math.min(5, pbdi.alertCount || 5)} accounts for early signs of slip.`
-      : `Within 14 days, complete a top-20 customer call sweep targeting accounts contributing > ${(dsoBridge.segments[0]?.contribution ?? 0).toFixed(1)} pts to blended DSO.`,
+    observation: `For ${periodLbl}, DSO is ${dsoCurr.toFixed(1)} days (${dsoBand}) — that's how long, on average, credit sales stay locked in receivables before cash lands. ${trendDelta(dsoCurr, dsoPrev, " days")}.`,
+    recommendation: dsoCurr < 45
+      ? "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers."
+      : dsoCurr < 60
+      ? "Manageable, but tighten the dunning cadence on the slowest-paying segment to drive DSO below 45 days."
+      : dsoCurr < 90
+      ? `Elevated. Stand up a focused collections taskforce — each day of DSO reduction frees ~${fmtMillions(dailyCreditSales)} of working capital.`
+      : "Critical. Launch an emergency cash-recovery program; DSO beyond 90 days signals systemic collection failure.",
+    nextAction: dsoCurr < 60
+      ? `Maintain weekly collector cadence; review the top ${Math.min(5, pbdi.alertCount || 5)} accounts for early signs of slip.`
+      : `Within 14 days, complete a top-20 customer call sweep targeting accounts contributing > ${(dsoBridge.segments[0]?.contribution ?? 0).toFixed(1)} days to blended DSO.`,
   };
 
   out["basic-overdue-ratio"] = {
@@ -988,9 +984,9 @@ function computePerKpiInsights(slice: Slice, fy: FY, quarter: Quarter, prevSlice
   // ---------- Advanced KPIs ----------
   const worstDriver = [...dsoBridge.segments].sort((a, b) => b.contribution - a.contribution)[0];
   out["dso-bridge"] = {
-    observation: `Blended DSO ${dsoBridge.blendedDSO.toFixed(1)}. Largest drag: ${worstDriver?.segment ?? "—"} contributing ${(worstDriver?.contribution ?? 0).toFixed(1)} pts at ${(worstDriver?.weight ?? 0).toFixed(0)}% of sales.`,
+    observation: `Blended DSO ${dsoBridge.blendedDSO.toFixed(1)} days. Largest drag: ${worstDriver?.segment ?? "—"} contributing ${(worstDriver?.contribution ?? 0).toFixed(1)} days at ${(worstDriver?.weight ?? 0).toFixed(0)}% of sales.`,
     recommendation: `Target the ${worstDriver?.segment ?? "weakest"} segment first — fixing the heaviest contributor yields the largest DSO impact.`,
-    nextAction: `Set a 60-day target to reduce ${worstDriver?.segment ?? "the worst segment"} DSO by 3 points via dedicated collector pod.`,
+    nextAction: `Set a 60-day target to reduce ${worstDriver?.segment ?? "the worst segment"} DSO by 3 days via dedicated collector pod.`,
   };
 
   out["dso-velocity"] = {
@@ -1173,7 +1169,7 @@ function computePerKpiInsights(slice: Slice, fy: FY, quarter: Quarter, prevSlice
 
   // ---------- AI-Insights ‘tiles' (mirrored to enable per-tile drill-in) ----------
   out["executive-summary"] = {
-    observation: `${periodLbl} headline: DSO ${dsoCurr.toFixed(1)} · CEI ${ceiCurr.toFixed(0)}% · ${overdueCurr.toFixed(0)}% overdue · ${fmtMillions(sum.totalOpenAR)} cash trapped.`,
+    observation: `${periodLbl} headline: DSO ${dsoCurr.toFixed(1)} days · CEI ${ceiCurr.toFixed(0)}% · ${overdueCurr.toFixed(0)}% overdue · ${fmtMillions(sum.totalOpenAR)} cash trapped.`,
     recommendation: health.score >= 65
       ? "Portfolio in healthy band. Use the headroom for strategic terms negotiations and capacity investment."
       : "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",

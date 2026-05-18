@@ -135,10 +135,10 @@ export function HeroKPIBand({ section }: { section: ActiveSection }) {
     metrics = [
       {
         label: "DSO",
-        value: `${dso.toFixed(1)}%`,
-        sublabel: "of credit sales",
-        delta: deltaStr(dso, prev?.executive.dso.overall, "pp", true),
-        tooltip: "DSO = (Average AR / Total Credit Sales) × 100. Lower is better.",
+        value: dso.toFixed(1),
+        sublabel: "days",
+        delta: deltaStr(dso, prev?.executive.dso.overall, "d", true),
+        tooltip: "Days Sales Outstanding = (Accounts Receivable / Total Credit Sales) × Days in Period. Lower is better.",
         accent: "var(--accent-blue)",
       },
       {

@@ -119,19 +119,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 5,
+          "overall": 13.5,
           "monthly": [
             {
               "month": "Apr'23",
-              "value": 18.5
+              "value": 5.5
             },
             {
               "month": "May'23",
-              "value": 12.4
+              "value": 3.7
             },
             {
               "month": "Jun'23",
-              "value": 14.5
+              "value": 4.4
             }
           ]
         },
@@ -378,31 +378,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 5,
+          "blendedDSO": 13.5,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 4.4,
+              "dso": 3.9,
               "weight": 29.3,
-              "contribution": -0.2
+              "contribution": -2.8
             },
             {
               "segment": "KEY",
-              "dso": 16.2,
+              "dso": 14.6,
               "weight": 43.5,
-              "contribution": 4.9
+              "contribution": 0.5
             },
             {
               "segment": "STANDARD",
-              "dso": 21.2,
+              "dso": 19,
               "weight": 17.6,
-              "contribution": 2.8
+              "contribution": 1
             },
             {
               "segment": "SMB",
-              "dso": 30.8,
+              "dso": 27.7,
               "weight": 9.6,
-              "contribution": 2.5
+              "contribution": 1.4
             }
           ]
         },
@@ -415,7 +415,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 69,
-            "Trend": 58
+            "Trend": 57
           }
         },
         "termsMixDrag": {
@@ -433,7 +433,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 35.3,
           "actualDSO": 13.5,
           "leakageDays": -21.8,
-          "leakageINR": -6086010670
+          "leakageINR": -6092374724
         },
         "companyCodePerformance": [
           {
@@ -499,14 +499,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'23",
-              "change": -33
+              "change": -32.7
             },
             {
               "month": "Jun'23",
-              "change": 16.9
+              "change": 18.9
             }
           ],
-          "avgChange": -8
+          "avgChange": -6.9
         },
         "pbdi": {
           "alertCount": 82,
@@ -743,7 +743,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 58
+            "value": 57
           }
         ],
         "segmentEfficiencyChart": [
@@ -771,7 +771,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2130103734
+            "value": -2132331153
           },
           {
             "name": "Slow Segment",
@@ -797,7 +797,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 5.0 days against a best-possible benchmark of 35.3 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 13.5 days against a best-possible benchmark of 35.3 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -806,7 +806,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "5.0 days",
+                "value": "13.5 days",
                 "color": "text-accent-green"
               },
               {
@@ -851,12 +851,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.9 days",
-            "narrative": "The blended 5.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 35.3 days — leaving -21.8 days of behavioural leakage worth ₹-6.1B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "SMB drags blended DSO up by +1.4 days",
+            "narrative": "The blended 13.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 35.3 days — leaving -21.8 days of behavioural leakage worth ₹-6.1B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "5.0d",
+                "value": "13.5d",
                 "color": "text-accent-red"
               },
               {
@@ -876,9 +876,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 16d, weight 44%, contribution +4.9d.",
-              "STANDARD: DSO 21d, weight 18%, contribution +2.8d.",
-              "SMB: DSO 31d, weight 10%, contribution +2.5d."
+              "SMB: DSO 28d, weight 10%, contribution +1.4d.",
+              "STANDARD: DSO 19d, weight 18%, contribution +1.0d.",
+              "KEY: DSO 15d, weight 44%, contribution +0.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -891,7 +891,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target SMB segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -1109,7 +1109,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-48.3Cr of working capital releasable · ₹10.3L/day carrying cost",
+            "headline": "₹-48.5Cr of working capital releasable · ₹10.3L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹10.3L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -1129,7 +1129,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-48.3Cr",
+                "value": "₹-48.5Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -1143,7 +1143,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-48.3Cr total unlock represents -13% of current open AR."
+                "text": "₹-48.5Cr total unlock represents -13% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -1214,9 +1214,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q1 FY 2023-24, DSO is 5.0 (healthy). Average AR ₹3773352 sits against ₹25.1B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q1 FY 2023-24, DSO is 13.5 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹3.8B) is past due across 1,068 invoices; no prior period to compare.",
@@ -1294,12 +1294,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 5.0. Largest drag: KEY contributing 4.9 pts at 44% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 13.5 days. Largest drag: SMB contributing 1.4 days at 10% of sales.",
+          "recommendation": "Target the SMB segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce SMB DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -8.0%. Steady improvement.",
+          "observation": "Average month-on-month DSO change: -6.9%. Steady improvement.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -1394,7 +1394,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q1 FY 2023-24 headline: DSO 5.0 · CEI 86% · 100% overdue · ₹3.8B cash trapped.",
+          "observation": "Q1 FY 2023-24 headline: DSO 13.5 days · CEI 86% · 100% overdue · ₹3.8B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -1433,19 +1433,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 4.5,
+          "overall": 12.1,
           "monthly": [
             {
               "month": "Jul'23",
-              "value": 11.5
+              "value": 3.5
             },
             {
               "month": "Aug'23",
-              "value": 13.5
+              "value": 4
             },
             {
               "month": "Sep'23",
-              "value": 15.2
+              "value": 4.6
             }
           ]
         },
@@ -1692,31 +1692,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 4.5,
+          "blendedDSO": 12.1,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 7.4,
+              "dso": 6.6,
               "weight": 37.7,
-              "contribution": 1.1
+              "contribution": -2.1
             },
             {
               "segment": "KEY",
-              "dso": 12.5,
+              "dso": 11.3,
               "weight": 37.1,
-              "contribution": 3
+              "contribution": -0.3
             },
             {
               "segment": "STANDARD",
-              "dso": 22.5,
+              "dso": 20.2,
               "weight": 16.1,
-              "contribution": 2.9
+              "contribution": 1.3
             },
             {
               "segment": "SMB",
-              "dso": 26.3,
+              "dso": 23.7,
               "weight": 9,
-              "contribution": 2
+              "contribution": 1
             }
           ]
         },
@@ -1746,8 +1746,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "cashFlowLeakage": {
           "bestPossibleDSO": 37.7,
           "actualDSO": 12.1,
-          "leakageDays": -25.7,
-          "leakageINR": -8273043752
+          "leakageDays": -25.6,
+          "leakageINR": -8265387600
         },
         "companyCodePerformance": [
           {
@@ -1813,14 +1813,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'23",
-              "change": 17.4
+              "change": 14.3
             },
             {
               "month": "Sep'23",
-              "change": 12.6
+              "change": 15
             }
           ],
-          "avgChange": 15
+          "avgChange": 14.6
         },
         "pbdi": {
           "alertCount": 88,
@@ -2085,7 +2085,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2895565313
+            "value": -2892885660
           },
           {
             "name": "Slow Segment",
@@ -2111,7 +2111,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.5 days against a best-possible benchmark of 37.7 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.5 days, overdue ratio by +0.0 pts, and the health score by -4 pts.",
+            "narrative": "For Q2 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 12.1 days against a best-possible benchmark of 37.7 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -1.4 days, overdue ratio by +0.0 pts, and the health score by -4 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -2120,7 +2120,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "4.5 days",
+                "value": "12.1 days",
                 "color": "text-accent-green"
               },
               {
@@ -2165,12 +2165,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +3.0 days",
-            "narrative": "The blended 4.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.7 days — leaving -25.7 days of behavioural leakage worth ₹-8.3B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.3 days",
+            "narrative": "The blended 12.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.7 days — leaving -25.6 days of behavioural leakage worth ₹-8.3B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "4.5d",
+                "value": "12.1d",
                 "color": "text-accent-red"
               },
               {
@@ -2180,7 +2180,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Leakage",
-                "value": "-25.7d",
+                "value": "-25.6d",
                 "color": "text-accent-amber"
               },
               {
@@ -2190,9 +2190,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 13d, weight 37%, contribution +3.0d.",
-              "STANDARD: DSO 23d, weight 16%, contribution +2.9d.",
-              "SMB: DSO 26d, weight 9%, contribution +2.0d."
+              "STANDARD: DSO 20d, weight 16%, contribution +1.3d.",
+              "SMB: DSO 24d, weight 9%, contribution +1.0d.",
+              "KEY: DSO 11d, weight 37%, contribution -0.3d."
             ],
             "risksAndOpportunities": [
               {
@@ -2205,7 +2205,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -2528,9 +2528,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q2 FY 2023-24, DSO is 4.5 (healthy). Average AR ₹3891869 sits against ₹29.0B of credit sales; -0.5 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q2 FY 2023-24, DSO is 12.1 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. -1.4 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹3.9B) is past due across 1,144 invoices; flat vs prev period.",
@@ -2608,12 +2608,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 4.5. Largest drag: KEY contributing 3.0 pts at 37% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 12.1 days. Largest drag: STANDARD contributing 1.3 days at 16% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: +15.0%. Accelerating upward — losing ground.",
+          "observation": "Average month-on-month DSO change: +14.6%. Accelerating upward — losing ground.",
           "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -2708,7 +2708,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q2 FY 2023-24 headline: DSO 4.5 · CEI 88% · 100% overdue · ₹3.9B cash trapped.",
+          "observation": "Q2 FY 2023-24 headline: DSO 12.1 days · CEI 88% · 100% overdue · ₹3.9B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -2747,19 +2747,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 4.7,
+          "overall": 12.7,
           "monthly": [
             {
               "month": "Oct'23",
-              "value": 16.2
+              "value": 4.8
             },
             {
               "month": "Nov'23",
-              "value": 14.6
+              "value": 4.4
             },
             {
               "month": "Dec'23",
-              "value": 12.3
+              "value": 3.7
             }
           ]
         },
@@ -3006,31 +3006,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 4.7,
+          "blendedDSO": 12.7,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6.6,
+              "dso": 6,
               "weight": 33.9,
-              "contribution": 0.7
+              "contribution": -2.3
             },
             {
               "segment": "KEY",
-              "dso": 13.8,
+              "dso": 12.4,
               "weight": 39.7,
-              "contribution": 3.6
+              "contribution": -0.1
             },
             {
               "segment": "STANDARD",
-              "dso": 21.8,
+              "dso": 19.6,
               "weight": 17.2,
-              "contribution": 2.9
+              "contribution": 1.2
             },
             {
               "segment": "SMB",
-              "dso": 29,
+              "dso": 26.1,
               "weight": 9.2,
-              "contribution": 2.2
+              "contribution": 1.2
             }
           ]
         },
@@ -3043,7 +3043,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 68,
-            "Trend": 63
+            "Trend": 62
           }
         },
         "termsMixDrag": {
@@ -3061,7 +3061,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 37.3,
           "actualDSO": 12.7,
           "leakageDays": -24.6,
-          "leakageINR": -7765265648
+          "leakageINR": -7772426262
         },
         "companyCodePerformance": [
           {
@@ -3127,14 +3127,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'23",
-              "change": -9.9
+              "change": -8.3
             },
             {
               "month": "Dec'23",
-              "change": -15.8
+              "change": -15.9
             }
           ],
-          "avgChange": -12.8
+          "avgChange": -12.1
         },
         "pbdi": {
           "alertCount": 63,
@@ -3317,7 +3317,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         },
         "disputeAdjusted": {
           "actualDSO": 12.7,
-          "cleanDSO": 10.3,
+          "cleanDSO": 10.2,
           "disputeImpactDays": 2.5,
           "disputedAR": 778091448
         },
@@ -3371,7 +3371,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 63
+            "value": 62
           }
         ],
         "segmentEfficiencyChart": [
@@ -3399,7 +3399,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2717842977
+            "value": -2720349192
           },
           {
             "name": "Slow Segment",
@@ -3425,7 +3425,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (57/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.7 days against a best-possible benchmark of 37.3 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.2 days, overdue ratio by +0.0 pts, and the health score by +5 pts.",
+            "narrative": "For Q3 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 12.7 days against a best-possible benchmark of 37.3 days (terms-implied). Collection effectiveness is 88% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.6 days, overdue ratio by +0.0 pts, and the health score by +5 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -3434,7 +3434,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "4.7 days",
+                "value": "12.7 days",
                 "color": "text-accent-green"
               },
               {
@@ -3479,12 +3479,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +3.6 days",
-            "narrative": "The blended 4.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.3 days — leaving -24.6 days of behavioural leakage worth ₹-7.8B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.2 days",
+            "narrative": "The blended 12.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.3 days — leaving -24.6 days of behavioural leakage worth ₹-7.8B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "4.7d",
+                "value": "12.7d",
                 "color": "text-accent-red"
               },
               {
@@ -3504,9 +3504,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 14d, weight 40%, contribution +3.6d.",
-              "STANDARD: DSO 22d, weight 17%, contribution +2.9d.",
-              "SMB: DSO 29d, weight 9%, contribution +2.2d."
+              "STANDARD: DSO 20d, weight 17%, contribution +1.2d.",
+              "SMB: DSO 26d, weight 9%, contribution +1.2d.",
+              "KEY: DSO 12d, weight 40%, contribution -0.1d."
             ],
             "risksAndOpportunities": [
               {
@@ -3519,7 +3519,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -3737,7 +3737,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-94.9Cr of working capital releasable · ₹11.0L/day carrying cost",
+            "headline": "₹-95.2Cr of working capital releasable · ₹11.0L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹11.0L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -3757,7 +3757,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-94.9Cr",
+                "value": "₹-95.2Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -3771,7 +3771,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-94.9Cr total unlock represents -24% of current open AR."
+                "text": "₹-95.2Cr total unlock represents -24% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -3842,9 +3842,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q3 FY 2023-24, DSO is 4.7 (healthy). Average AR ₹4017639 sits against ₹28.4B of credit sales; +0.2 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q3 FY 2023-24, DSO is 12.7 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. +0.6 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹4.0B) is past due across 1,200 invoices; flat vs prev period.",
@@ -3922,12 +3922,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 4.7. Largest drag: KEY contributing 3.6 pts at 40% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 12.7 days. Largest drag: STANDARD contributing 1.2 days at 17% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -12.8%. Steady improvement.",
+          "observation": "Average month-on-month DSO change: -12.1%. Steady improvement.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -3982,7 +3982,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
         },
         "dispute-adjusted-dso": {
-          "observation": "Dispute impact on DSO: 2.5 days (₹77.8Cr disputed AR). Clean DSO: 10.3 days vs total 12.7.",
+          "observation": "Dispute impact on DSO: 2.5 days (₹77.8Cr disputed AR). Clean DSO: 10.2 days vs total 12.7.",
           "recommendation": "Dispute drag is contained.",
           "nextAction": "Maintain quarterly review of dispute volume."
         },
@@ -4022,7 +4022,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q3 FY 2023-24 headline: DSO 4.7 · CEI 88% · 100% overdue · ₹4.0B cash trapped.",
+          "observation": "Q3 FY 2023-24 headline: DSO 12.7 days · CEI 88% · 100% overdue · ₹4.0B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -4061,19 +4061,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 4.8,
+          "overall": 13.1,
           "monthly": [
             {
               "month": "Jan'24",
-              "value": 15.1
+              "value": 4.5
             },
             {
               "month": "Feb'24",
-              "value": 14
+              "value": 4.2
             },
             {
               "month": "Mar'24",
-              "value": 14.7
+              "value": 4.4
             }
           ]
         },
@@ -4320,31 +4320,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 4.8,
+          "blendedDSO": 13.1,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6.6,
+              "dso": 6,
               "weight": 33.5,
-              "contribution": 0.6
+              "contribution": -2.4
             },
             {
               "segment": "KEY",
-              "dso": 13.5,
+              "dso": 12.2,
               "weight": 38.5,
-              "contribution": 3.3
+              "contribution": -0.4
             },
             {
               "segment": "STANDARD",
-              "dso": 23,
+              "dso": 20.7,
               "weight": 18,
-              "contribution": 3.3
+              "contribution": 1.4
             },
             {
               "segment": "SMB",
-              "dso": 29.7,
+              "dso": 26.7,
               "weight": 10,
-              "contribution": 2.5
+              "contribution": 1.4
             }
           ]
         },
@@ -4374,8 +4374,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "cashFlowLeakage": {
           "bestPossibleDSO": 34.6,
           "actualDSO": 13.1,
-          "leakageDays": -21.6,
-          "leakageINR": -7899412700
+          "leakageDays": -21.5,
+          "leakageINR": -7888901512
         },
         "companyCodePerformance": [
           {
@@ -4441,14 +4441,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'24",
-              "change": -7.3
+              "change": -6.7
             },
             {
               "month": "Mar'24",
-              "change": 5
+              "change": 4.8
             }
           ],
-          "avgChange": -1.1
+          "avgChange": -1
         },
         "pbdi": {
           "alertCount": 66,
@@ -4713,7 +4713,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2764794445
+            "value": -2761115529
           },
           {
             "name": "Slow Segment",
@@ -4739,7 +4739,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
-            "narrative": "For Q4 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 4.8 days against a best-possible benchmark of 34.6 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.1 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
+            "narrative": "For Q4 FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 13.1 days against a best-possible benchmark of 34.6 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.4 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -4748,7 +4748,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "4.8 days",
+                "value": "13.1 days",
                 "color": "text-accent-green"
               },
               {
@@ -4793,12 +4793,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +3.3 days",
-            "narrative": "The blended 4.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 34.6 days — leaving -21.6 days of behavioural leakage worth ₹-7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.4 days",
+            "narrative": "The blended 13.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 34.6 days — leaving -21.5 days of behavioural leakage worth ₹-7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "4.8d",
+                "value": "13.1d",
                 "color": "text-accent-red"
               },
               {
@@ -4808,7 +4808,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Leakage",
-                "value": "-21.6d",
+                "value": "-21.5d",
                 "color": "text-accent-amber"
               },
               {
@@ -4818,9 +4818,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 14d, weight 39%, contribution +3.3d.",
-              "STANDARD: DSO 23d, weight 18%, contribution +3.3d.",
-              "SMB: DSO 30d, weight 10%, contribution +2.5d."
+              "STANDARD: DSO 21d, weight 18%, contribution +1.4d.",
+              "SMB: DSO 27d, weight 10%, contribution +1.4d.",
+              "KEY: DSO 12d, weight 39%, contribution -0.4d."
             ],
             "risksAndOpportunities": [
               {
@@ -4833,7 +4833,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -5051,7 +5051,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-62.6Cr of working capital releasable · ₹13.1L/day carrying cost",
+            "headline": "₹-62.2Cr of working capital releasable · ₹13.1L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹13.1L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -5071,7 +5071,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-62.6Cr",
+                "value": "₹-62.2Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -5085,7 +5085,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-62.6Cr total unlock represents -13% of current open AR."
+                "text": "₹-62.2Cr total unlock represents -13% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -5156,9 +5156,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q4 FY 2023-24, DSO is 4.8 (healthy). Average AR ₹4790633 sits against ₹33.0B of credit sales; +0.1 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q4 FY 2023-24, DSO is 13.1 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. +0.4 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹4.8B) is past due across 1,417 invoices; flat vs prev period.",
@@ -5236,12 +5236,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 4.8. Largest drag: KEY contributing 3.3 pts at 39% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 13.1 days. Largest drag: STANDARD contributing 1.4 days at 18% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -1.1%. Stable.",
+          "observation": "Average month-on-month DSO change: -1.0%. Stable.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -5336,7 +5336,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q4 FY 2023-24 headline: DSO 4.8 · CEI 87% · 100% overdue · ₹4.8B cash trapped.",
+          "observation": "Q4 FY 2023-24 headline: DSO 13.1 days · CEI 87% · 100% overdue · ₹4.8B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -5375,55 +5375,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 1.2,
+          "overall": 52,
           "monthly": [
             {
               "month": "Apr'23",
-              "value": 18.5
+              "value": 5.5
             },
             {
               "month": "May'23",
-              "value": 12.4
+              "value": 3.7
             },
             {
               "month": "Jun'23",
-              "value": 14.5
+              "value": 4.4
             },
             {
               "month": "Jul'23",
-              "value": 11.5
+              "value": 3.5
             },
             {
               "month": "Aug'23",
-              "value": 13.5
+              "value": 4
             },
             {
               "month": "Sep'23",
-              "value": 15.2
+              "value": 4.6
             },
             {
               "month": "Oct'23",
-              "value": 16.2
+              "value": 4.8
             },
             {
               "month": "Nov'23",
-              "value": 14.6
+              "value": 4.4
             },
             {
               "month": "Dec'23",
-              "value": 12.3
+              "value": 3.7
             },
             {
               "month": "Jan'24",
-              "value": 15.1
+              "value": 4.5
             },
             {
               "month": "Feb'24",
-              "value": 14
+              "value": 4.2
             },
             {
               "month": "Mar'24",
-              "value": 14.7
+              "value": 4.4
             }
           ]
         },
@@ -5967,39 +5967,39 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 1.2,
+          "blendedDSO": 52,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 6.4,
+              "dso": 23.4,
               "weight": 33.7,
-              "contribution": 1.8
+              "contribution": -9.7
             },
             {
               "segment": "KEY",
-              "dso": 14,
+              "dso": 51.1,
               "weight": 39.5,
-              "contribution": 5.1
+              "contribution": -0.4
             },
             {
               "segment": "STANDARD",
-              "dso": 22.2,
+              "dso": 80.9,
               "weight": 17.3,
-              "contribution": 3.6
+              "contribution": 5
             },
             {
               "segment": "SMB",
-              "dso": 29,
+              "dso": 105.7,
               "weight": 9.5,
-              "contribution": 2.6
+              "contribution": 5.1
             }
           ]
         },
         "arHealthScore": {
-          "score": 58,
+          "score": 50,
           "grade": "C",
           "components": {
-            "DSO": 100,
+            "DSO": 63,
             "CEI": 87,
             "Overdue": 0,
             "Aging": 0,
@@ -6021,8 +6021,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "cashFlowLeakage": {
           "bestPossibleDSO": 36.2,
           "actualDSO": 52,
-          "leakageDays": 15.9,
-          "leakageINR": 5022738138
+          "leakageDays": 15.8,
+          "leakageINR": 5007543850
         },
         "companyCodePerformance": [
           {
@@ -6088,47 +6088,47 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'23",
-              "change": -33
+              "change": -32.7
             },
             {
               "month": "Jun'23",
-              "change": 16.9
+              "change": 18.9
             },
             {
               "month": "Jul'23",
-              "change": -20.7
+              "change": -20.5
             },
             {
               "month": "Aug'23",
-              "change": 17.4
+              "change": 14.3
             },
             {
               "month": "Sep'23",
-              "change": 12.6
+              "change": 15
             },
             {
               "month": "Oct'23",
-              "change": 6.6
+              "change": 4.3
             },
             {
               "month": "Nov'23",
-              "change": -9.9
+              "change": -8.3
             },
             {
               "month": "Dec'23",
-              "change": -15.8
+              "change": -15.9
             },
             {
               "month": "Jan'24",
-              "change": 22.8
+              "change": 21.6
             },
             {
               "month": "Feb'24",
-              "change": -7.3
+              "change": -6.7
             },
             {
               "month": "Mar'24",
-              "change": 5
+              "change": 4.8
             }
           ],
           "avgChange": -0.5
@@ -6314,7 +6314,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         },
         "disputeAdjusted": {
           "actualDSO": 52,
-          "cleanDSO": 42.2,
+          "cleanDSO": 42.1,
           "disputeImpactDays": 9.9,
           "disputedAR": 3128388003
         },
@@ -6342,13 +6342,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 58,
+          "score": 50,
           "grade": "C"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 100
+            "value": 63
           },
           {
             "dim": "CEI",
@@ -6396,7 +6396,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": 1757958348
+            "value": 1752640348
           },
           {
             "name": "Slow Segment",
@@ -6421,18 +6421,18 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Executive Summary",
             "iconKey": "summary",
             "severity": "info",
-            "headline": "AR Health Grade C (58/100) — Mixed signals require attention",
-            "narrative": "For FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 1.2 days against a best-possible benchmark of 36.2 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. ",
+            "headline": "AR Health Grade C (50/100) — Mixed signals require attention",
+            "narrative": "For FY 2023-24, the receivables portfolio shows manageable stress. DSO sits at 52.0 days against a best-possible benchmark of 36.2 days (terms-implied). Collection effectiveness is 87% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "58/100",
+                "value": "50/100",
                 "color": "text-accent-amber"
               },
               {
                 "label": "DSO",
-                "value": "1.2 days",
-                "color": "text-accent-green"
+                "value": "52.0 days",
+                "color": "text-accent-amber"
               },
               {
                 "label": "CEI",
@@ -6476,12 +6476,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "warning",
-            "headline": "KEY drags blended DSO up by +5.1 days",
-            "narrative": "The blended 1.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 36.2 days — leaving 15.9 days of behavioural leakage worth ₹5.0B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "SMB drags blended DSO up by +5.1 days",
+            "narrative": "The blended 52.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 36.2 days — leaving 15.8 days of behavioural leakage worth ₹5.0B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "1.2d",
+                "value": "52.0d",
                 "color": "text-accent-red"
               },
               {
@@ -6491,7 +6491,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Leakage",
-                "value": "15.9d",
+                "value": "15.8d",
                 "color": "text-accent-amber"
               },
               {
@@ -6501,9 +6501,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 14d, weight 40%, contribution +5.1d.",
-              "STANDARD: DSO 22d, weight 17%, contribution +3.6d.",
-              "SMB: DSO 29d, weight 10%, contribution +2.6d."
+              "SMB: DSO 106d, weight 10%, contribution +5.1d.",
+              "STANDARD: DSO 81d, weight 17%, contribution +5.0d.",
+              "KEY: DSO 51d, weight 40%, contribution -0.4d."
             ],
             "risksAndOpportunities": [
               {
@@ -6516,7 +6516,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target SMB segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -6734,7 +6734,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹6.7B of working capital releasable · ₹45.1L/day carrying cost",
+            "headline": "₹6.6B of working capital releasable · ₹45.1L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹45.1L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -6754,7 +6754,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹6.7B",
+                "value": "₹6.6B",
                 "color": "text-accent-green"
               }
             ],
@@ -6768,7 +6768,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹6.7B total unlock represents 40% of current open AR."
+                "text": "₹6.6B total unlock represents 40% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -6839,9 +6839,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For FY 2023-24, DSO is 1.2 (healthy). Average AR ₹16473885 sits against ₹115.5B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For FY 2023-24, DSO is 52.0 days (manageable) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Manageable, but tighten the dunning cadence on the slowest-paying segment to drive DSO below 45 days.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹16.5B) is past due across 4,829 invoices; no prior period to compare.",
@@ -6919,9 +6919,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 1.2. Largest drag: KEY contributing 5.1 pts at 40% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 52.0 days. Largest drag: SMB contributing 5.1 days at 10% of sales.",
+          "recommendation": "Target the SMB segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce SMB DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
           "observation": "Average month-on-month DSO change: -0.5%. Stable.",
@@ -6934,7 +6934,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
         },
         "ar-health-score": {
-          "observation": "AR Health: 58/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "observation": "AR Health: 50/100 (Grade C). Strongest dim: CEI. Weakest: Overdue.",
           "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
           "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
         },
@@ -6979,7 +6979,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
         },
         "dispute-adjusted-dso": {
-          "observation": "Dispute impact on DSO: 9.9 days (₹3.1B disputed AR). Clean DSO: 42.2 days vs total 52.0.",
+          "observation": "Dispute impact on DSO: 9.9 days (₹3.1B disputed AR). Clean DSO: 42.1 days vs total 52.0.",
           "recommendation": "Disputes inflate DSO meaningfully. Separately track dispute aging and SLA for resolution.",
           "nextAction": "Stand up a dispute war-room with 14-day resolution SLA on each blocked invoice."
         },
@@ -7019,7 +7019,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "FY 2023-24 headline: DSO 1.2 · CEI 87% · 100% overdue · ₹16.5B cash trapped.",
+          "observation": "FY 2023-24 headline: DSO 52.0 days · CEI 87% · 100% overdue · ₹16.5B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -7060,19 +7060,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 5.8,
+          "overall": 15.6,
           "monthly": [
             {
               "month": "Apr'24",
-              "value": 22.1
+              "value": 6.6
             },
             {
               "month": "May'24",
-              "value": 15.5
+              "value": 4.7
             },
             {
               "month": "Jun'24",
-              "value": 14.6
+              "value": 4.4
             }
           ]
         },
@@ -7319,31 +7319,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 5.8,
+          "blendedDSO": 15.6,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 13.4,
+              "dso": 12.1,
               "weight": 35.3,
-              "contribution": 2.7
+              "contribution": -1.2
             },
             {
               "segment": "KEY",
-              "dso": 14.1,
+              "dso": 12.7,
               "weight": 37.6,
-              "contribution": 3.1
+              "contribution": -1.1
             },
             {
               "segment": "STANDARD",
-              "dso": 26.2,
+              "dso": 23.6,
               "weight": 18.6,
-              "contribution": 3.8
+              "contribution": 1.5
             },
             {
               "segment": "SMB",
-              "dso": 28.7,
+              "dso": 25.8,
               "weight": 8.5,
-              "contribution": 1.9
+              "contribution": 0.9
             }
           ]
         },
@@ -7374,7 +7374,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 39.7,
           "actualDSO": 15.6,
           "leakageDays": -24.1,
-          "leakageINR": -6571490304
+          "leakageINR": -6574142045
         },
         "companyCodePerformance": [
           {
@@ -7440,14 +7440,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'24",
-              "change": -29.9
+              "change": -28.8
             },
             {
               "month": "Jun'24",
-              "change": -5.8
+              "change": -6.4
             }
           ],
-          "avgChange": -17.8
+          "avgChange": -17.6
         },
         "pbdi": {
           "alertCount": 82,
@@ -7712,7 +7712,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2300021606
+            "value": -2300949716
           },
           {
             "name": "Slow Segment",
@@ -7738,7 +7738,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 5.8 days against a best-possible benchmark of 39.7 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 15.6 days against a best-possible benchmark of 39.7 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -7747,7 +7747,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "5.8 days",
+                "value": "15.6 days",
                 "color": "text-accent-green"
               },
               {
@@ -7792,12 +7792,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "STANDARD drags blended DSO up by +3.8 days",
-            "narrative": "The blended 5.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.7 days — leaving -24.1 days of behavioural leakage worth ₹-6.6B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.5 days",
+            "narrative": "The blended 15.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.7 days — leaving -24.1 days of behavioural leakage worth ₹-6.6B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "5.8d",
+                "value": "15.6d",
                 "color": "text-accent-red"
               },
               {
@@ -7817,9 +7817,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STANDARD: DSO 26d, weight 19%, contribution +3.8d.",
-              "KEY: DSO 14d, weight 38%, contribution +3.1d.",
-              "STRATEGIC: DSO 13d, weight 35%, contribution +2.7d."
+              "STANDARD: DSO 24d, weight 19%, contribution +1.5d.",
+              "SMB: DSO 26d, weight 9%, contribution +0.9d.",
+              "KEY: DSO 13d, weight 38%, contribution -1.1d."
             ],
             "risksAndOpportunities": [
               {
@@ -8050,7 +8050,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-95.6Cr of working capital releasable · ₹11.7L/day carrying cost",
+            "headline": "₹-95.7Cr of working capital releasable · ₹11.7L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹11.7L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -8070,7 +8070,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-95.6Cr",
+                "value": "₹-95.7Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -8084,7 +8084,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-95.6Cr total unlock represents -22% of current open AR."
+                "text": "₹-95.7Cr total unlock represents -22% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -8155,9 +8155,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q1 FY 2024-25, DSO is 5.8 (healthy). Average AR ₹4256568 sits against ₹24.6B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q1 FY 2024-25, DSO is 15.6 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹4.3B) is past due across 1,159 invoices; no prior period to compare.",
@@ -8235,12 +8235,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 5.8. Largest drag: STANDARD contributing 3.8 pts at 19% of sales.",
+          "observation": "Blended DSO 15.6 days. Largest drag: STANDARD contributing 1.5 days at 19% of sales.",
           "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 points via dedicated collector pod."
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -17.8%. Steady improvement.",
+          "observation": "Average month-on-month DSO change: -17.6%. Steady improvement.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -8335,7 +8335,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q1 FY 2024-25 headline: DSO 5.8 · CEI 84% · 100% overdue · ₹4.3B cash trapped.",
+          "observation": "Q1 FY 2024-25 headline: DSO 15.6 days · CEI 84% · 100% overdue · ₹4.3B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -8374,19 +8374,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 6.3,
+          "overall": 16.9,
           "monthly": [
             {
               "month": "Jul'24",
-              "value": 19.7
+              "value": 5.9
             },
             {
               "month": "Aug'24",
-              "value": 15.1
+              "value": 4.5
             },
             {
               "month": "Sep'24",
-              "value": 21.1
+              "value": 6.3
             }
           ]
         },
@@ -8633,31 +8633,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 6.3,
+          "blendedDSO": 16.9,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 10.7,
+              "dso": 9.6,
               "weight": 33.4,
-              "contribution": 1.5
+              "contribution": -2.4
             },
             {
               "segment": "KEY",
-              "dso": 18.7,
+              "dso": 16.8,
               "weight": 37.9,
-              "contribution": 4.7
+              "contribution": 0
             },
             {
               "segment": "STANDARD",
-              "dso": 27.3,
+              "dso": 24.6,
               "weight": 18.5,
-              "contribution": 3.9
+              "contribution": 1.4
             },
             {
               "segment": "SMB",
-              "dso": 30.4,
+              "dso": 27.4,
               "weight": 10.1,
-              "contribution": 2.4
+              "contribution": 1.1
             }
           ]
         },
@@ -8688,7 +8688,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 38.5,
           "actualDSO": 16.9,
           "leakageDays": -21.6,
-          "leakageINR": -6191148761
+          "leakageINR": -6192878658
         },
         "companyCodePerformance": [
           {
@@ -8754,14 +8754,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'24",
-              "change": -23.4
+              "change": -23.7
             },
             {
               "month": "Sep'24",
-              "change": 39.7
+              "change": 40
             }
           ],
-          "avgChange": 8.2
+          "avgChange": 8.1
         },
         "pbdi": {
           "alertCount": 86,
@@ -9026,7 +9026,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2166902066
+            "value": -2167507530
           },
           {
             "name": "Slow Segment",
@@ -9052,7 +9052,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 6.3 days against a best-possible benchmark of 38.5 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +0.5 days, overdue ratio by +0.0 pts, and the health score by -3 pts.",
+            "narrative": "For Q2 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 16.9 days against a best-possible benchmark of 38.5 days (terms-implied). Collection effectiveness is 84% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by +1.3 days, overdue ratio by +0.0 pts, and the health score by -3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -9061,7 +9061,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "6.3 days",
+                "value": "16.9 days",
                 "color": "text-accent-green"
               },
               {
@@ -9106,12 +9106,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.7 days",
-            "narrative": "The blended 6.3-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.5 days — leaving -21.6 days of behavioural leakage worth ₹-6.2B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.4 days",
+            "narrative": "The blended 16.9-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.5 days — leaving -21.6 days of behavioural leakage worth ₹-6.2B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "6.3d",
+                "value": "16.9d",
                 "color": "text-accent-red"
               },
               {
@@ -9131,9 +9131,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 19d, weight 38%, contribution +4.7d.",
-              "STANDARD: DSO 27d, weight 19%, contribution +3.9d.",
-              "SMB: DSO 30d, weight 10%, contribution +2.4d."
+              "STANDARD: DSO 25d, weight 19%, contribution +1.4d.",
+              "SMB: DSO 27d, weight 10%, contribution +1.1d.",
+              "KEY: DSO 17d, weight 38%, contribution +0.0d."
             ],
             "risksAndOpportunities": [
               {
@@ -9146,7 +9146,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -9364,7 +9364,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-77.4Cr of working capital releasable · ₹13.3L/day carrying cost",
+            "headline": "₹-77.5Cr of working capital releasable · ₹13.3L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹13.3L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -9384,7 +9384,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-77.4Cr",
+                "value": "₹-77.5Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -9398,7 +9398,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-77.4Cr total unlock represents -16% of current open AR."
+                "text": "₹-77.5Cr total unlock represents -16% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -9469,9 +9469,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q2 FY 2024-25, DSO is 6.3 (healthy). Average AR ₹4836820 sits against ₹25.8B of credit sales; +0.5 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q2 FY 2024-25, DSO is 16.9 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. +1.3 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹4.8B) is past due across 1,362 invoices; flat vs prev period.",
@@ -9549,12 +9549,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 6.3. Largest drag: KEY contributing 4.7 pts at 38% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 16.9 days. Largest drag: STANDARD contributing 1.4 days at 19% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: +8.2%. Accelerating upward — losing ground.",
+          "observation": "Average month-on-month DSO change: +8.1%. Accelerating upward — losing ground.",
           "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -9649,7 +9649,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q2 FY 2024-25 headline: DSO 6.3 · CEI 84% · 100% overdue · ₹4.8B cash trapped.",
+          "observation": "Q2 FY 2024-25 headline: DSO 16.9 days · CEI 84% · 100% overdue · ₹4.8B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -9688,19 +9688,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 6,
+          "overall": 16.3,
           "monthly": [
             {
               "month": "Oct'24",
-              "value": 17.8
+              "value": 5.4
             },
             {
               "month": "Nov'24",
-              "value": 19.1
+              "value": 5.7
             },
             {
               "month": "Dec'24",
-              "value": 17.3
+              "value": 5.2
             }
           ]
         },
@@ -9947,31 +9947,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 6,
+          "blendedDSO": 16.3,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 11.4,
+              "dso": 10.3,
               "weight": 33.1,
-              "contribution": 1.8
+              "contribution": -2
             },
             {
               "segment": "KEY",
-              "dso": 17,
+              "dso": 15.3,
               "weight": 39.5,
-              "contribution": 4.3
+              "contribution": -0.4
             },
             {
               "segment": "STANDARD",
-              "dso": 26.2,
+              "dso": 23.6,
               "weight": 17.2,
-              "contribution": 3.5
+              "contribution": 1.3
             },
             {
               "segment": "SMB",
-              "dso": 30.3,
+              "dso": 27.2,
               "weight": 10.1,
-              "contribution": 2.5
+              "contribution": 1.1
             }
           ]
         },
@@ -9984,7 +9984,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 67,
-            "Trend": 51
+            "Trend": 52
           }
         },
         "termsMixDrag": {
@@ -10002,7 +10002,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 39.6,
           "actualDSO": 16.3,
           "leakageDays": -23.3,
-          "leakageINR": -7420260391
+          "leakageINR": -7404540802
         },
         "companyCodePerformance": [
           {
@@ -10068,14 +10068,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'24",
-              "change": 7.3
+              "change": 5.6
             },
             {
               "month": "Dec'24",
-              "change": -9.4
+              "change": -8.8
             }
           ],
-          "avgChange": -1.1
+          "avgChange": -1.6
         },
         "pbdi": {
           "alertCount": 78,
@@ -10312,7 +10312,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 51
+            "value": 52
           }
         ],
         "segmentEfficiencyChart": [
@@ -10340,7 +10340,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2597091137
+            "value": -2591589281
           },
           {
             "name": "Slow Segment",
@@ -10366,7 +10366,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 6.0 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.3 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
+            "narrative": "For Q3 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 16.3 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.6 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -10375,7 +10375,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "6.0 days",
+                "value": "16.3 days",
                 "color": "text-accent-green"
               },
               {
@@ -10420,12 +10420,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.3 days",
-            "narrative": "The blended 6.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving -23.3 days of behavioural leakage worth ₹-7.4B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.3 days",
+            "narrative": "The blended 16.3-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving -23.3 days of behavioural leakage worth ₹-7.4B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "6.0d",
+                "value": "16.3d",
                 "color": "text-accent-red"
               },
               {
@@ -10445,9 +10445,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 17d, weight 40%, contribution +4.3d.",
-              "STANDARD: DSO 26d, weight 17%, contribution +3.5d.",
-              "SMB: DSO 30d, weight 10%, contribution +2.5d."
+              "STANDARD: DSO 24d, weight 17%, contribution +1.3d.",
+              "SMB: DSO 27d, weight 10%, contribution +1.1d.",
+              "KEY: DSO 15d, weight 40%, contribution -0.4d."
             ],
             "risksAndOpportunities": [
               {
@@ -10460,7 +10460,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -10678,7 +10678,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-1.1B of working capital releasable · ₹14.2L/day carrying cost",
+            "headline": "₹-1.0B of working capital releasable · ₹14.2L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹14.2L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -10698,7 +10698,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-1.1B",
+                "value": "₹-1.0B",
                 "color": "text-accent-green"
               }
             ],
@@ -10712,7 +10712,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-1.1B total unlock represents -20% of current open AR."
+                "text": "₹-1.0B total unlock represents -20% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -10783,9 +10783,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q3 FY 2024-25, DSO is 6.0 (healthy). Average AR ₹5175596 sits against ₹28.6B of credit sales; -0.3 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q3 FY 2024-25, DSO is 16.3 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. -0.6 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹5.2B) is past due across 1,368 invoices; flat vs prev period.",
@@ -10863,12 +10863,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 6.0. Largest drag: KEY contributing 4.3 pts at 40% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 16.3 days. Largest drag: STANDARD contributing 1.3 days at 17% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -1.1%. Stable.",
+          "observation": "Average month-on-month DSO change: -1.6%. Stable.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -10963,7 +10963,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q3 FY 2024-25 headline: DSO 6.0 · CEI 85% · 100% overdue · ₹5.2B cash trapped.",
+          "observation": "Q3 FY 2024-25 headline: DSO 16.3 days · CEI 85% · 100% overdue · ₹5.2B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -11002,19 +11002,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 5.6,
+          "overall": 15.2,
           "monthly": [
             {
               "month": "Jan'25",
-              "value": 15.4
+              "value": 4.6
             },
             {
               "month": "Feb'25",
-              "value": 19.2
+              "value": 5.7
             },
             {
               "month": "Mar'25",
-              "value": 16.3
+              "value": 4.9
             }
           ]
         },
@@ -11261,31 +11261,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 5.6,
+          "blendedDSO": 15.2,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 9.2,
+              "dso": 8.3,
               "weight": 37.8,
-              "contribution": 1.4
+              "contribution": -2.6
             },
             {
               "segment": "KEY",
-              "dso": 17.6,
+              "dso": 15.8,
               "weight": 36.1,
-              "contribution": 4.3
+              "contribution": 0.2
             },
             {
               "segment": "STANDARD",
-              "dso": 25,
+              "dso": 22.5,
               "weight": 17.1,
-              "contribution": 3.3
+              "contribution": 1.2
             },
             {
               "segment": "SMB",
-              "dso": 30.6,
+              "dso": 27.5,
               "weight": 9,
-              "contribution": 2.3
+              "contribution": 1.1
             }
           ]
         },
@@ -11316,7 +11316,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 40.4,
           "actualDSO": 15.2,
           "leakageDays": -25.2,
-          "leakageINR": -10201829120
+          "leakageINR": -10192159135
         },
         "companyCodePerformance": [
           {
@@ -11382,14 +11382,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'25",
-              "change": 24.7
+              "change": 23.9
             },
             {
               "month": "Mar'25",
-              "change": -15.1
+              "change": -14
             }
           ],
-          "avgChange": 4.8
+          "avgChange": 4.9
         },
         "pbdi": {
           "alertCount": 70,
@@ -11572,7 +11572,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         },
         "disputeAdjusted": {
           "actualDSO": 15.2,
-          "cleanDSO": 14.3,
+          "cleanDSO": 14.4,
           "disputeImpactDays": 0.8,
           "disputedAR": 339668690
         },
@@ -11654,7 +11654,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -3570640192
+            "value": -3567255697
           },
           {
             "name": "Slow Segment",
@@ -11680,7 +11680,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (54/100) — Mixed signals require attention",
-            "narrative": "For Q4 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 5.6 days against a best-possible benchmark of 40.4 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.4 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
+            "narrative": "For Q4 FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 15.2 days against a best-possible benchmark of 40.4 days (terms-implied). Collection effectiveness is 86% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -1.1 days, overdue ratio by +0.0 pts, and the health score by -1 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -11689,7 +11689,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "5.6 days",
+                "value": "15.2 days",
                 "color": "text-accent-green"
               },
               {
@@ -11734,12 +11734,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.3 days",
-            "narrative": "The blended 5.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 40.4 days — leaving -25.2 days of behavioural leakage worth ₹-10.2B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.2 days",
+            "narrative": "The blended 15.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 40.4 days — leaving -25.2 days of behavioural leakage worth ₹-10.2B. Process-side, the dunning gap currently runs 12 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "5.6d",
+                "value": "15.2d",
                 "color": "text-accent-red"
               },
               {
@@ -11759,9 +11759,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 18d, weight 36%, contribution +4.3d.",
-              "STANDARD: DSO 25d, weight 17%, contribution +3.3d.",
-              "SMB: DSO 31d, weight 9%, contribution +2.3d."
+              "STANDARD: DSO 23d, weight 17%, contribution +1.2d.",
+              "SMB: DSO 28d, weight 9%, contribution +1.1d.",
+              "KEY: DSO 16d, weight 36%, contribution +0.2d."
             ],
             "risksAndOpportunities": [
               {
@@ -11774,7 +11774,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 12d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -12097,9 +12097,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q4 FY 2024-25, DSO is 5.6 (healthy). Average AR ₹6147281 sits against ₹36.4B of credit sales; -0.4 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q4 FY 2024-25, DSO is 15.2 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. -1.1 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹6.1B) is past due across 1,615 invoices; flat vs prev period.",
@@ -12177,12 +12177,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 5.6. Largest drag: KEY contributing 4.3 pts at 36% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 15.2 days. Largest drag: STANDARD contributing 1.2 days at 17% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: +4.8%. Stable.",
+          "observation": "Average month-on-month DSO change: +4.9%. Stable.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -12237,7 +12237,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Automate L1 reminder firing at due-date + 1 day, no manual gate."
         },
         "dispute-adjusted-dso": {
-          "observation": "Dispute impact on DSO: 0.8 days (₹34.0Cr disputed AR). Clean DSO: 14.3 days vs total 15.2.",
+          "observation": "Dispute impact on DSO: 0.8 days (₹34.0Cr disputed AR). Clean DSO: 14.4 days vs total 15.2.",
           "recommendation": "Dispute drag is contained.",
           "nextAction": "Maintain quarterly review of dispute volume."
         },
@@ -12277,7 +12277,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q4 FY 2024-25 headline: DSO 5.6 · CEI 86% · 100% overdue · ₹6.1B cash trapped.",
+          "observation": "Q4 FY 2024-25 headline: DSO 15.2 days · CEI 86% · 100% overdue · ₹6.1B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -12316,55 +12316,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 1.5,
+          "overall": 64.6,
           "monthly": [
             {
               "month": "Apr'24",
-              "value": 22.1
+              "value": 6.6
             },
             {
               "month": "May'24",
-              "value": 15.5
+              "value": 4.7
             },
             {
               "month": "Jun'24",
-              "value": 14.6
+              "value": 4.4
             },
             {
               "month": "Jul'24",
-              "value": 19.7
+              "value": 5.9
             },
             {
               "month": "Aug'24",
-              "value": 15.1
+              "value": 4.5
             },
             {
               "month": "Sep'24",
-              "value": 21.1
+              "value": 6.3
             },
             {
               "month": "Oct'24",
-              "value": 17.8
+              "value": 5.4
             },
             {
               "month": "Nov'24",
-              "value": 19.1
+              "value": 5.7
             },
             {
               "month": "Dec'24",
-              "value": 17.3
+              "value": 5.2
             },
             {
               "month": "Jan'25",
-              "value": 15.4
+              "value": 4.6
             },
             {
               "month": "Feb'25",
-              "value": 19.2
+              "value": 5.7
             },
             {
               "month": "Mar'25",
-              "value": 16.3
+              "value": 4.9
             }
           ]
         },
@@ -12908,39 +12908,39 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 1.5,
+          "blendedDSO": 64.6,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 10.9,
+              "dso": 39.9,
               "weight": 35.1,
-              "contribution": 3.3
+              "contribution": -8.7
             },
             {
               "segment": "KEY",
-              "dso": 16.9,
+              "dso": 61.7,
               "weight": 37.7,
-              "contribution": 5.8
+              "contribution": -1.1
             },
             {
               "segment": "STANDARD",
-              "dso": 26.1,
+              "dso": 95.2,
               "weight": 17.8,
-              "contribution": 4.4
+              "contribution": 5.4
             },
             {
               "segment": "SMB",
-              "dso": 30.1,
+              "dso": 109.9,
               "weight": 9.4,
-              "contribution": 2.7
+              "contribution": 4.3
             }
           ]
         },
         "arHealthScore": {
-          "score": 56,
-          "grade": "C",
+          "score": 45,
+          "grade": "D",
           "components": {
-            "DSO": 100,
+            "DSO": 42,
             "CEI": 85,
             "Overdue": 0,
             "Aging": 0,
@@ -12963,7 +12963,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 39.6,
           "actualDSO": 64.6,
           "leakageDays": 25,
-          "leakageINR": 7897652295
+          "leakageINR": 7907078783
         },
         "companyCodePerformance": [
           {
@@ -13029,50 +13029,50 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'24",
-              "change": -29.9
+              "change": -28.8
             },
             {
               "month": "Jun'24",
-              "change": -5.8
+              "change": -6.4
             },
             {
               "month": "Jul'24",
-              "change": 34.9
+              "change": 34.1
             },
             {
               "month": "Aug'24",
-              "change": -23.4
+              "change": -23.7
             },
             {
               "month": "Sep'24",
-              "change": 39.7
+              "change": 40
             },
             {
               "month": "Oct'24",
-              "change": -15.6
+              "change": -14.3
             },
             {
               "month": "Nov'24",
-              "change": 7.3
+              "change": 5.6
             },
             {
               "month": "Dec'24",
-              "change": -9.4
+              "change": -8.8
             },
             {
               "month": "Jan'25",
-              "change": -11
+              "change": -11.5
             },
             {
               "month": "Feb'25",
-              "change": 24.7
+              "change": 23.9
             },
             {
               "month": "Mar'25",
-              "change": -15.1
+              "change": -14
             }
           ],
-          "avgChange": -0.3
+          "avgChange": -0.4
         },
         "pbdi": {
           "alertCount": 31,
@@ -13283,13 +13283,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 56,
-          "grade": "C"
+          "score": 45,
+          "grade": "D"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 100
+            "value": 42
           },
           {
             "dim": "CEI",
@@ -13337,7 +13337,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": 2764178303
+            "value": 2767477574
           },
           {
             "name": "Slow Segment",
@@ -13361,19 +13361,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "info",
-            "headline": "AR Health Grade C (56/100) — Mixed signals require attention",
-            "narrative": "For FY 2024-25, the receivables portfolio shows manageable stress. DSO sits at 1.5 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. ",
+            "severity": "warning",
+            "headline": "AR Health Grade D (45/100) — Structural issues require CFO action",
+            "narrative": "For FY 2024-25, the receivables portfolio shows elevated stress. DSO sits at 64.6 days against a best-possible benchmark of 39.6 days (terms-implied). Collection effectiveness is 85% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "56/100",
-                "color": "text-accent-amber"
+                "value": "45/100",
+                "color": "text-accent-red"
               },
               {
                 "label": "DSO",
-                "value": "1.5 days",
-                "color": "text-accent-green"
+                "value": "64.6 days",
+                "color": "text-accent-amber"
               },
               {
                 "label": "CEI",
@@ -13417,12 +13417,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "warning",
-            "headline": "KEY drags blended DSO up by +5.8 days",
-            "narrative": "The blended 1.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving 25.0 days of behavioural leakage worth ₹7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +5.4 days",
+            "narrative": "The blended 64.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.6 days — leaving 25.0 days of behavioural leakage worth ₹7.9B. Process-side, the dunning gap currently runs 13 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "1.5d",
+                "value": "64.6d",
                 "color": "text-accent-red"
               },
               {
@@ -13442,9 +13442,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 17d, weight 38%, contribution +5.8d.",
-              "STANDARD: DSO 26d, weight 18%, contribution +4.4d.",
-              "STRATEGIC: DSO 11d, weight 35%, contribution +3.3d."
+              "STANDARD: DSO 95d, weight 18%, contribution +5.4d.",
+              "SMB: DSO 110d, weight 9%, contribution +4.3d.",
+              "KEY: DSO 62d, weight 38%, contribution -1.1d."
             ],
             "risksAndOpportunities": [
               {
@@ -13457,7 +13457,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 13d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -13780,9 +13780,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For FY 2024-25, DSO is 1.5 (healthy). Average AR ₹20422087 sits against ₹115.4B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For FY 2024-25, DSO is 64.6 days (elevated) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Elevated. Stand up a focused collections taskforce — each day of DSO reduction frees ~₹31.6Cr of working capital.",
+          "nextAction": "Within 14 days, complete a top-20 customer call sweep targeting accounts contributing > -8.7 days to blended DSO."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹20.4B) is past due across 5,504 invoices; no prior period to compare.",
@@ -13860,12 +13860,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 1.5. Largest drag: KEY contributing 5.8 pts at 38% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 64.6 days. Largest drag: STANDARD contributing 5.4 days at 18% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -0.3%. Stable.",
+          "observation": "Average month-on-month DSO change: -0.4%. Stable.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -13875,7 +13875,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
         },
         "ar-health-score": {
-          "observation": "AR Health: 56/100 (Grade C). Strongest dim: DSO. Weakest: Overdue.",
+          "observation": "AR Health: 45/100 (Grade D). Strongest dim: CEI. Weakest: Overdue.",
           "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
           "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
         },
@@ -13936,7 +13936,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         },
         "cash-flow-leakage": {
           "observation": "25 days between actual DSO (65d) and best-possible (40d terms-implied) leak ₹7.9B of cash.",
-          "recommendation": "Closing 50% of the leakage gap unlocks ~₹3.9B of working capital — a meaningful balance-sheet improvement.",
+          "recommendation": "Closing 50% of the leakage gap unlocks ~₹4.0B of working capital — a meaningful balance-sheet improvement.",
           "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
         },
         "forecast-mape": {
@@ -13960,7 +13960,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "FY 2024-25 headline: DSO 1.5 · CEI 85% · 100% overdue · ₹20.4B cash trapped.",
+          "observation": "FY 2024-25 headline: DSO 64.6 days · CEI 85% · 100% overdue · ₹20.4B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -14001,19 +14001,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 7.2,
+          "overall": 19.4,
           "monthly": [
             {
               "month": "Apr'25",
-              "value": 23.3
+              "value": 7
             },
             {
               "month": "May'25",
-              "value": 20.5
+              "value": 6.1
             },
             {
               "month": "Jun'25",
-              "value": 20.8
+              "value": 6.2
             }
           ]
         },
@@ -14260,31 +14260,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 7.2,
+          "blendedDSO": 19.4,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 16.8,
+              "dso": 15.2,
               "weight": 34.9,
-              "contribution": 3.4
+              "contribution": -1.5
             },
             {
               "segment": "KEY",
-              "dso": 20.2,
+              "dso": 18.1,
               "weight": 39.1,
-              "contribution": 5.1
+              "contribution": -0.5
             },
             {
               "segment": "STANDARD",
-              "dso": 29.1,
+              "dso": 26.2,
               "weight": 16.5,
-              "contribution": 3.6
+              "contribution": 1.1
             },
             {
               "segment": "SMB",
-              "dso": 31.7,
+              "dso": 28.5,
               "weight": 9.5,
-              "contribution": 2.3
+              "contribution": 0.9
             }
           ]
         },
@@ -14297,7 +14297,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "Overdue": 0,
             "Aging": 0,
             "Concentration": 64,
-            "Trend": 55
+            "Trend": 56
           }
         },
         "termsMixDrag": {
@@ -14315,7 +14315,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 39.8,
           "actualDSO": 19.4,
           "leakageDays": -20.4,
-          "leakageINR": -5394873410
+          "leakageINR": -5398889164
         },
         "companyCodePerformance": [
           {
@@ -14381,14 +14381,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'25",
-              "change": -12
+              "change": -12.9
             },
             {
               "month": "Jun'25",
-              "change": 1.5
+              "change": 1.6
             }
           ],
-          "avgChange": -5.3
+          "avgChange": -5.6
         },
         "pbdi": {
           "alertCount": 68,
@@ -14625,7 +14625,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           },
           {
             "dim": "Trend",
-            "value": 55
+            "value": 56
           }
         ],
         "segmentEfficiencyChart": [
@@ -14653,7 +14653,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -1888205693
+            "value": -1889611207
           },
           {
             "name": "Slow Segment",
@@ -14679,7 +14679,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (54/100) — Mixed signals require attention",
-            "narrative": "For Q1 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.2 days against a best-possible benchmark of 39.8 days (terms-implied). Collection effectiveness is 81% and 100% of open AR is overdue. ",
+            "narrative": "For Q1 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 19.4 days against a best-possible benchmark of 39.8 days (terms-implied). Collection effectiveness is 81% and 100% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
@@ -14688,7 +14688,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "7.2 days",
+                "value": "19.4 days",
                 "color": "text-accent-green"
               },
               {
@@ -14732,13 +14732,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "warning",
-            "headline": "KEY drags blended DSO up by +5.1 days",
-            "narrative": "The blended 7.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.8 days — leaving -20.4 days of behavioural leakage worth ₹-5.4B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "info",
+            "headline": "STANDARD drags blended DSO up by +1.1 days",
+            "narrative": "The blended 19.4-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 39.8 days — leaving -20.4 days of behavioural leakage worth ₹-5.4B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "7.2d",
+                "value": "19.4d",
                 "color": "text-accent-red"
               },
               {
@@ -14758,9 +14758,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 20d, weight 39%, contribution +5.1d.",
-              "STANDARD: DSO 29d, weight 17%, contribution +3.6d.",
-              "STRATEGIC: DSO 17d, weight 35%, contribution +3.4d."
+              "STANDARD: DSO 26d, weight 17%, contribution +1.1d.",
+              "SMB: DSO 29d, weight 10%, contribution +0.9d.",
+              "KEY: DSO 18d, weight 39%, contribution -0.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -14769,7 +14769,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -14987,7 +14987,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-64.3Cr of working capital releasable · ₹14.0L/day carrying cost",
+            "headline": "₹-64.4Cr of working capital releasable · ₹14.0L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹14.0L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -15007,7 +15007,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-64.3Cr",
+                "value": "₹-64.4Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -15021,7 +15021,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-64.3Cr total unlock represents -13% of current open AR."
+                "text": "₹-64.4Cr total unlock represents -13% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -15092,9 +15092,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q1 FY 2025-26, DSO is 7.2 (healthy). Average AR ₹5126664 sits against ₹23.8B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q1 FY 2025-26, DSO is 19.4 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹5.1B) is past due across 1,223 invoices; no prior period to compare.",
@@ -15172,12 +15172,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 7.2. Largest drag: KEY contributing 5.1 pts at 39% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 19.4 days. Largest drag: STANDARD contributing 1.1 days at 17% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -5.3%. Steady improvement.",
+          "observation": "Average month-on-month DSO change: -5.6%. Steady improvement.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -15272,7 +15272,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q1 FY 2025-26 headline: DSO 7.2 · CEI 81% · 100% overdue · ₹5.1B cash trapped.",
+          "observation": "Q1 FY 2025-26 headline: DSO 19.4 days · CEI 81% · 100% overdue · ₹5.1B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -15311,19 +15311,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 7.1,
+          "overall": 19.2,
           "monthly": [
             {
               "month": "Jul'25",
-              "value": 18.3
+              "value": 5.5
             },
             {
               "month": "Aug'25",
-              "value": 23.2
+              "value": 7
             },
             {
               "month": "Sep'25",
-              "value": 22.2
+              "value": 6.7
             }
           ]
         },
@@ -15570,31 +15570,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 7.1,
+          "blendedDSO": 19.2,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 17.7,
+              "dso": 15.9,
               "weight": 34,
-              "contribution": 3.6
+              "contribution": -1.1
             },
             {
               "segment": "KEY",
-              "dso": 18.5,
+              "dso": 16.6,
               "weight": 38.1,
-              "contribution": 4.3
+              "contribution": -1
             },
             {
               "segment": "STANDARD",
-              "dso": 28.5,
+              "dso": 25.6,
               "weight": 18.2,
-              "contribution": 3.9
+              "contribution": 1.2
             },
             {
               "segment": "SMB",
-              "dso": 31.7,
+              "dso": 28.5,
               "weight": 9.7,
-              "contribution": 2.4
+              "contribution": 0.9
             }
           ]
         },
@@ -15625,7 +15625,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 37.8,
           "actualDSO": 19.2,
           "leakageDays": -18.6,
-          "leakageINR": -5585997811
+          "leakageINR": -5582436602
         },
         "companyCodePerformance": [
           {
@@ -15691,14 +15691,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Aug'25",
-              "change": 26.8
+              "change": 27.3
             },
             {
               "month": "Sep'25",
               "change": -4.3
             }
           ],
-          "avgChange": 11.2
+          "avgChange": 11.5
         },
         "pbdi": {
           "alertCount": 83,
@@ -15963,7 +15963,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -1955099234
+            "value": -1953852811
           },
           {
             "name": "Slow Segment",
@@ -15989,7 +15989,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (52/100) — Mixed signals require attention",
-            "narrative": "For Q2 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.1 days against a best-possible benchmark of 37.8 days (terms-implied). Collection effectiveness is 82% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.1 days, overdue ratio by +0.0 pts, and the health score by -2 pts.",
+            "narrative": "For Q2 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 19.2 days against a best-possible benchmark of 37.8 days (terms-implied). Collection effectiveness is 82% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.2 days, overdue ratio by +0.0 pts, and the health score by -2 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -15998,7 +15998,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "7.1 days",
+                "value": "19.2 days",
                 "color": "text-accent-green"
               },
               {
@@ -16043,12 +16043,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.3 days",
-            "narrative": "The blended 7.1-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.8 days — leaving -18.6 days of behavioural leakage worth ₹-5.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.2 days",
+            "narrative": "The blended 19.2-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 37.8 days — leaving -18.6 days of behavioural leakage worth ₹-5.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "7.1d",
+                "value": "19.2d",
                 "color": "text-accent-red"
               },
               {
@@ -16068,9 +16068,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 19d, weight 38%, contribution +4.3d.",
-              "STANDARD: DSO 29d, weight 18%, contribution +3.9d.",
-              "STRATEGIC: DSO 18d, weight 34%, contribution +3.6d."
+              "STANDARD: DSO 26d, weight 18%, contribution +1.2d.",
+              "SMB: DSO 29d, weight 10%, contribution +0.9d.",
+              "KEY: DSO 17d, weight 38%, contribution -1.0d."
             ],
             "risksAndOpportunities": [
               {
@@ -16079,7 +16079,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -16297,7 +16297,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-58.2Cr of working capital releasable · ₹15.8L/day carrying cost",
+            "headline": "₹-58.1Cr of working capital releasable · ₹15.8L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹15.8L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -16317,7 +16317,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-58.2Cr",
+                "value": "₹-58.1Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -16331,7 +16331,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-58.2Cr total unlock represents -10% of current open AR."
+                "text": "₹-58.1Cr total unlock represents -10% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -16402,9 +16402,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q2 FY 2025-26, DSO is 7.1 (healthy). Average AR ₹5745626 sits against ₹27.0B of credit sales; -0.1 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q2 FY 2025-26, DSO is 19.2 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. -0.2 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹5.7B) is past due across 1,449 invoices; flat vs prev period.",
@@ -16482,12 +16482,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 7.1. Largest drag: KEY contributing 4.3 pts at 38% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 19.2 days. Largest drag: STANDARD contributing 1.2 days at 18% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: +11.2%. Accelerating upward — losing ground.",
+          "observation": "Average month-on-month DSO change: +11.5%. Accelerating upward — losing ground.",
           "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -16582,7 +16582,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q2 FY 2025-26 headline: DSO 7.1 · CEI 82% · 100% overdue · ₹5.7B cash trapped.",
+          "observation": "Q2 FY 2025-26 headline: DSO 19.2 days · CEI 82% · 100% overdue · ₹5.7B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -16621,19 +16621,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 7,
+          "overall": 18.9,
           "monthly": [
             {
               "month": "Oct'25",
-              "value": 21.4
+              "value": 6.4
             },
             {
               "month": "Nov'25",
-              "value": 22.9
+              "value": 6.9
             },
             {
               "month": "Dec'25",
-              "value": 18.4
+              "value": 5.5
             }
           ]
         },
@@ -16880,31 +16880,31 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 7,
+          "blendedDSO": 18.9,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 16.4,
+              "dso": 14.8,
               "weight": 31.7,
-              "contribution": 3
+              "contribution": -1.3
             },
             {
               "segment": "KEY",
-              "dso": 19.3,
+              "dso": 17.3,
               "weight": 38.4,
-              "contribution": 4.7
+              "contribution": -0.6
             },
             {
               "segment": "STANDARD",
-              "dso": 26.8,
+              "dso": 24.1,
               "weight": 19.9,
-              "contribution": 3.9
+              "contribution": 1
             },
             {
               "segment": "SMB",
-              "dso": 30.2,
+              "dso": 27.2,
               "weight": 10,
-              "contribution": 2.3
+              "contribution": 0.8
             }
           ]
         },
@@ -16934,8 +16934,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "cashFlowLeakage": {
           "bestPossibleDSO": 38.9,
           "actualDSO": 18.9,
-          "leakageDays": -20.1,
-          "leakageINR": -5755963053
+          "leakageDays": -20,
+          "leakageINR": -5745149641
         },
         "companyCodePerformance": [
           {
@@ -17001,14 +17001,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Nov'25",
-              "change": 7
+              "change": 7.8
             },
             {
               "month": "Dec'25",
-              "change": -19.7
+              "change": -20.3
             }
           ],
-          "avgChange": -6.3
+          "avgChange": -6.2
         },
         "pbdi": {
           "alertCount": 72,
@@ -17273,7 +17273,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": -2014587069
+            "value": -2010802374
           },
           {
             "name": "Slow Segment",
@@ -17299,7 +17299,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "iconKey": "summary",
             "severity": "info",
             "headline": "AR Health Grade C (55/100) — Mixed signals require attention",
-            "narrative": "For Q3 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 7.0 days against a best-possible benchmark of 38.9 days (terms-implied). Collection effectiveness is 83% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.1 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
+            "narrative": "For Q3 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 18.9 days against a best-possible benchmark of 38.9 days (terms-implied). Collection effectiveness is 83% and 100% of open AR is overdue. Quarter-on-quarter, DSO moved by -0.3 days, overdue ratio by +0.0 pts, and the health score by +3 pts.",
             "metrics": [
               {
                 "label": "Health Score",
@@ -17308,7 +17308,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "DSO",
-                "value": "7.0 days",
+                "value": "18.9 days",
                 "color": "text-accent-green"
               },
               {
@@ -17339,7 +17339,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "type": "opportunity",
-                "text": "Closing the -20-day leakage to terms releases ₹-5.8B of working capital."
+                "text": "Closing the -20-day leakage to terms releases ₹-5.7B of working capital."
               }
             ],
             "actions": [
@@ -17353,12 +17353,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
             "severity": "info",
-            "headline": "KEY drags blended DSO up by +4.7 days",
-            "narrative": "The blended 7.0-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.9 days — leaving -20.1 days of behavioural leakage worth ₹-5.8B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "headline": "STANDARD drags blended DSO up by +1.0 days",
+            "narrative": "The blended 18.9-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 38.9 days — leaving -20.0 days of behavioural leakage worth ₹-5.7B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "7.0d",
+                "value": "18.9d",
                 "color": "text-accent-red"
               },
               {
@@ -17368,7 +17368,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Leakage",
-                "value": "-20.1d",
+                "value": "-20.0d",
                 "color": "text-accent-amber"
               },
               {
@@ -17378,18 +17378,18 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 19d, weight 38%, contribution +4.7d.",
-              "STANDARD: DSO 27d, weight 20%, contribution +3.9d.",
-              "STRATEGIC: DSO 16d, weight 32%, contribution +3.0d."
+              "STANDARD: DSO 24d, weight 20%, contribution +1.0d.",
+              "SMB: DSO 27d, weight 10%, contribution +0.8d.",
+              "KEY: DSO 17d, weight 38%, contribution -0.6d."
             ],
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "Closing the gap to best-possible DSO yields ~₹-5.8B cash release."
+                "text": "Closing the gap to best-possible DSO yields ~₹-5.7B cash release."
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -17607,7 +17607,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "title": "Working Capital Opportunities",
             "iconKey": "working-capital",
             "severity": "info",
-            "headline": "₹-67.7Cr of working capital releasable · ₹14.8L/day carrying cost",
+            "headline": "₹-67.3Cr of working capital releasable · ₹14.8L/day carrying cost",
             "narrative": "Each day of DSO costs roughly ₹14.8L at a 10% cost-of-capital assumption. The largest unlocks come from (a) closing the dunning gap, (b) accelerating slow-segment collections, (c) capturing offered early-payment discounts, (d) resolving disputed AR, and (e) compressing the posting lag.",
             "metrics": [
               {
@@ -17627,7 +17627,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Total Unlock",
-                "value": "₹-67.7Cr",
+                "value": "₹-67.3Cr",
                 "color": "text-accent-green"
               }
             ],
@@ -17641,7 +17641,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "₹-67.7Cr total unlock represents -13% of current open AR."
+                "text": "₹-67.3Cr total unlock represents -12% of current open AR."
               },
               {
                 "type": "opportunity",
@@ -17712,9 +17712,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q3 FY 2025-26, DSO is 7.0 (healthy). Average AR ₹5393064 sits against ₹25.8B of credit sales; -0.1 vs prev period.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q3 FY 2025-26, DSO is 18.9 days (healthy) — that's how long, on average, credit sales stay locked in receivables before cash lands. -0.3 days vs prev period.",
+          "recommendation": "Hold the line — DSO is in best-in-class territory (< 45 days). Any headroom can fund strategic terms extensions with key customers.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "100.0% of open AR (₹5.4B) is past due across 1,432 invoices; flat vs prev period.",
@@ -17792,12 +17792,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 7.0. Largest drag: KEY contributing 4.7 pts at 38% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 18.9 days. Largest drag: STANDARD contributing 1.0 days at 20% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: -6.3%. Steady improvement.",
+          "observation": "Average month-on-month DSO change: -6.2%. Steady improvement.",
           "recommendation": "Maintain the cadence; watch for inflection.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -17867,7 +17867,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Build a business case for AR-automation investment using the daily carrying cost as the savings denominator."
         },
         "cash-flow-leakage": {
-          "observation": "-20 days between actual DSO (19d) and best-possible (39d terms-implied) leak ₹-5.8B of cash.",
+          "observation": "-20 days between actual DSO (19d) and best-possible (39d terms-implied) leak ₹-5.7B of cash.",
           "recommendation": "Closing 50% of the leakage gap unlocks ~₹-2.9B of working capital — a meaningful balance-sheet improvement.",
           "nextAction": "Set an FY target to close 30% of the leakage; track quarterly."
         },
@@ -17892,7 +17892,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q3 FY 2025-26 headline: DSO 7.0 · CEI 83% · 100% overdue · ₹5.4B cash trapped.",
+          "observation": "Q3 FY 2025-26 headline: DSO 18.9 days · CEI 83% · 100% overdue · ₹5.4B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
@@ -17907,7 +17907,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Build a 13-week rolling cash forecast feeding the weekly treasury committee."
         },
         "working-capital-opportunity": {
-          "observation": "₹-5.8B of working capital sits trapped beyond credit terms.",
+          "observation": "₹-5.7B of working capital sits trapped beyond credit terms.",
           "recommendation": "Sequence initiatives by impact-vs-effort: posting lag (easy) → dispute fast-track (medium) → dunning gap closure (high impact).`",
           "nextAction": "Stand up a Working Capital War Room with quarterly release targets per business head."
         },
@@ -17931,19 +17931,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 18.8,
+          "overall": 50.6,
           "monthly": [
             {
               "month": "Jan'26",
-              "value": 23.2
+              "value": 7
             },
             {
               "month": "Feb'26",
-              "value": 58
+              "value": 17.4
             },
             {
               "month": "Mar'26",
-              "value": 86.6
+              "value": 26
             }
           ]
         },
@@ -18190,39 +18190,39 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 18.8,
+          "blendedDSO": 50.6,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 61.4,
+              "dso": 55.3,
               "weight": 34.3,
-              "contribution": 14.6
+              "contribution": 1.6
             },
             {
               "segment": "KEY",
-              "dso": 56.1,
+              "dso": 50.5,
               "weight": 37.9,
-              "contribution": 14.1
+              "contribution": -0.1
             },
             {
               "segment": "STANDARD",
-              "dso": 52.1,
+              "dso": 46.8,
               "weight": 18.1,
-              "contribution": 6
+              "contribution": -0.7
             },
             {
               "segment": "SMB",
-              "dso": 46.6,
+              "dso": 41.9,
               "weight": 9.6,
-              "contribution": 2.7
+              "contribution": -0.8
             }
           ]
         },
         "arHealthScore": {
-          "score": 65,
-          "grade": "B",
+          "score": 62,
+          "grade": "C",
           "components": {
-            "DSO": 81,
+            "DSO": 66,
             "CEI": 84,
             "Overdue": 73,
             "Aging": 73,
@@ -18244,8 +18244,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "cashFlowLeakage": {
           "bestPossibleDSO": 44,
           "actualDSO": 50.6,
-          "leakageDays": 6.7,
-          "leakageINR": 2468388564
+          "leakageDays": 6.6,
+          "leakageINR": 2452948214
         },
         "companyCodePerformance": [
           {
@@ -18311,14 +18311,14 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Feb'26",
-              "change": 150
+              "change": 148.6
             },
             {
               "month": "Mar'26",
-              "change": 49.3
+              "change": 49.4
             }
           ],
-          "avgChange": 99.7
+          "avgChange": 99
         },
         "pbdi": {
           "alertCount": 12,
@@ -18529,13 +18529,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 65,
-          "grade": "B"
+          "score": 62,
+          "grade": "C"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 81
+            "value": 66
           },
           {
             "dim": "CEI",
@@ -18583,7 +18583,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": 863935997
+            "value": 858531875
           },
           {
             "name": "Slow Segment",
@@ -18607,19 +18607,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "positive",
-            "headline": "AR Health Grade B (65/100) — Stable footing with watch areas",
-            "narrative": "For Q4 FY 2025-26, the receivables portfolio shows healthy stress. DSO sits at 18.8 days against a best-possible benchmark of 44.0 days (terms-implied). Collection effectiveness is 84% and 27% of open AR is overdue. Quarter-on-quarter, DSO moved by +11.8 days, overdue ratio by -73.3 pts, and the health score by +10 pts.",
+            "severity": "info",
+            "headline": "AR Health Grade C (62/100) — Mixed signals require attention",
+            "narrative": "For Q4 FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 50.6 days against a best-possible benchmark of 44.0 days (terms-implied). Collection effectiveness is 84% and 27% of open AR is overdue. Quarter-on-quarter, DSO moved by +31.7 days, overdue ratio by -73.3 pts, and the health score by +7 pts.",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "65/100",
-                "color": "text-accent-green"
+                "value": "62/100",
+                "color": "text-accent-amber"
               },
               {
                 "label": "DSO",
-                "value": "18.8 days",
-                "color": "text-accent-green"
+                "value": "50.6 days",
+                "color": "text-accent-amber"
               },
               {
                 "label": "CEI",
@@ -18641,7 +18641,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "risksAndOpportunities": [
               {
                 "type": "opportunity",
-                "text": "Health score in the \"B\" band — focus on the weakest dimension (Trend) to push into \"A\"."
+                "text": "Largest improvement lever is \"Trend\" — even a 10-point lift moves overall grade up one letter."
               },
               {
                 "type": "opportunity",
@@ -18658,13 +18658,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "warning",
-            "headline": "STRATEGIC drags blended DSO up by +14.6 days",
-            "narrative": "The blended 18.8-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 44.0 days — leaving 6.7 days of behavioural leakage worth ₹2.5B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "info",
+            "headline": "STRATEGIC drags blended DSO up by +1.6 days",
+            "narrative": "The blended 50.6-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 44.0 days — leaving 6.6 days of behavioural leakage worth ₹2.5B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "18.8d",
+                "value": "50.6d",
                 "color": "text-accent-red"
               },
               {
@@ -18674,7 +18674,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "label": "Leakage",
-                "value": "6.7d",
+                "value": "6.6d",
                 "color": "text-accent-amber"
               },
               {
@@ -18684,9 +18684,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "STRATEGIC: DSO 61d, weight 34%, contribution +14.6d.",
-              "KEY: DSO 56d, weight 38%, contribution +14.1d.",
-              "STANDARD: DSO 52d, weight 18%, contribution +6.0d."
+              "STRATEGIC: DSO 55d, weight 34%, contribution +1.6d.",
+              "KEY: DSO 51d, weight 38%, contribution -0.1d.",
+              "STANDARD: DSO 47d, weight 18%, contribution -0.7d."
             ],
             "risksAndOpportunities": [
               {
@@ -18930,7 +18930,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "Close dunning gap (0→3d): unlock ~₹86.4Cr.",
+              "Close dunning gap (0→3d): unlock ~₹85.9Cr.",
               "Collection blitz on slowest segment (SMB): unlock ~₹94.0Cr.",
               "Capture early-payment discounts left on table: ₹23.7Cr.",
               "Resolve disputed AR (₹0): unlock ~₹0.",
@@ -19006,9 +19006,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For Q4 FY 2025-26, DSO is 18.8 (manageable). Average AR ₹18938188 sits against ₹33.4B of credit sales; +11.8 vs prev period.",
-          "recommendation": "Tighten dunning cadence on the slowest-paying segment to push DSO toward < 15.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For Q4 FY 2025-26, DSO is 50.6 days (manageable) — that's how long, on average, credit sales stay locked in receivables before cash lands. +31.7 days vs prev period.",
+          "recommendation": "Manageable, but tighten the dunning cadence on the slowest-paying segment to drive DSO below 45 days.",
+          "nextAction": "Maintain weekly collector cadence; review the top 5 accounts for early signs of slip."
         },
         "basic-overdue-ratio": {
           "observation": "26.7% of open AR (₹5.0B) is past due across 1,530 invoices; -73.3pp vs prev period.",
@@ -19086,12 +19086,12 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 18.8. Largest drag: STRATEGIC contributing 14.6 pts at 34% of sales.",
+          "observation": "Blended DSO 50.6 days. Largest drag: STRATEGIC contributing 1.6 days at 34% of sales.",
           "recommendation": "Target the STRATEGIC segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce STRATEGIC DSO by 3 points via dedicated collector pod."
+          "nextAction": "Set a 60-day target to reduce STRATEGIC DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
-          "observation": "Average month-on-month DSO change: +99.7%. Accelerating upward — losing ground.",
+          "observation": "Average month-on-month DSO change: +99.0%. Accelerating upward — losing ground.",
           "recommendation": "Investigate the most recent month — sudden velocity spikes usually trace to one or two large customers.",
           "nextAction": "Add a velocity threshold alert to the dashboard — flag any month > +10% velocity."
         },
@@ -19101,7 +19101,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
         },
         "ar-health-score": {
-          "observation": "AR Health: 65/100 (Grade B). Strongest dim: CEI. Weakest: Trend.",
+          "observation": "AR Health: 62/100 (Grade C). Strongest dim: CEI. Weakest: Trend.",
           "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
           "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
         },
@@ -19186,8 +19186,8 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "Q4 FY 2025-26 headline: DSO 18.8 · CEI 84% · 27% overdue · ₹18.8B cash trapped.",
-          "recommendation": "Portfolio in healthy band. Use the headroom for strategic terms negotiations and capacity investment.",
+          "observation": "Q4 FY 2025-26 headline: DSO 50.6 days · CEI 84% · 27% overdue · ₹18.8B cash trapped.",
+          "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
         "risk-heatmap": {
@@ -19225,55 +19225,55 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "executive": {
         "dso": {
-          "overall": 2.7,
+          "overall": 116.5,
           "monthly": [
             {
               "month": "Apr'25",
-              "value": 23.3
+              "value": 7
             },
             {
               "month": "May'25",
-              "value": 20.5
+              "value": 6.1
             },
             {
               "month": "Jun'25",
-              "value": 20.8
+              "value": 6.2
             },
             {
               "month": "Jul'25",
-              "value": 18.3
+              "value": 5.5
             },
             {
               "month": "Aug'25",
-              "value": 23.2
+              "value": 7
             },
             {
               "month": "Sep'25",
-              "value": 22.2
+              "value": 6.7
             },
             {
               "month": "Oct'25",
-              "value": 21.4
+              "value": 6.4
             },
             {
               "month": "Nov'25",
-              "value": 22.9
+              "value": 6.9
             },
             {
               "month": "Dec'25",
-              "value": 18.4
+              "value": 5.5
             },
             {
               "month": "Jan'26",
-              "value": 23.2
+              "value": 7
             },
             {
               "month": "Feb'26",
-              "value": 58
+              "value": 17.4
             },
             {
               "month": "Mar'26",
-              "value": 86.6
+              "value": 26
             }
           ]
         },
@@ -19817,39 +19817,39 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "advanced": {
         "dsoBridge": {
-          "blendedDSO": 2.7,
+          "blendedDSO": 116.5,
           "segments": [
             {
               "segment": "STRATEGIC",
-              "dso": 30.7,
+              "dso": 112.2,
               "weight": 33.7,
-              "contribution": 9.5
+              "contribution": -1.5
             },
             {
               "segment": "KEY",
-              "dso": 30.3,
+              "dso": 110.7,
               "weight": 38.3,
-              "contribution": 10.6
+              "contribution": -2.2
             },
             {
               "segment": "STANDARD",
-              "dso": 35.3,
+              "dso": 128.8,
               "weight": 18.2,
-              "contribution": 5.9
+              "contribution": 2.2
             },
             {
               "segment": "SMB",
-              "dso": 35.8,
+              "dso": 130.7,
               "weight": 9.7,
-              "contribution": 3.2
+              "contribution": 1.4
             }
           ]
         },
         "arHealthScore": {
-          "score": 64,
-          "grade": "C",
+          "score": 44,
+          "grade": "D",
           "components": {
-            "DSO": 100,
+            "DSO": 0,
             "CEI": 83,
             "Overdue": 39,
             "Aging": 39,
@@ -19872,7 +19872,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "bestPossibleDSO": 41.6,
           "actualDSO": 116.5,
           "leakageDays": 74.9,
-          "leakageINR": 22551485847
+          "leakageINR": 22563422399
         },
         "companyCodePerformance": [
           {
@@ -19938,19 +19938,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "May'25",
-              "change": -12
+              "change": -12.9
             },
             {
               "month": "Jun'25",
-              "change": 1.5
+              "change": 1.6
             },
             {
               "month": "Jul'25",
-              "change": -12
+              "change": -11.3
             },
             {
               "month": "Aug'25",
-              "change": 26.8
+              "change": 27.3
             },
             {
               "month": "Sep'25",
@@ -19958,27 +19958,27 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             },
             {
               "month": "Oct'25",
-              "change": -3.6
+              "change": -4.5
             },
             {
               "month": "Nov'25",
-              "change": 7
+              "change": 7.8
             },
             {
               "month": "Dec'25",
-              "change": -19.7
+              "change": -20.3
             },
             {
               "month": "Jan'26",
-              "change": 26.1
+              "change": 27.3
             },
             {
               "month": "Feb'26",
-              "change": 150
+              "change": 148.6
             },
             {
               "month": "Mar'26",
-              "change": 49.3
+              "change": 49.4
             }
           ],
           "avgChange": 19
@@ -20192,13 +20192,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "aiInsights": {
         "healthGauge": {
-          "score": 64,
-          "grade": "C"
+          "score": 44,
+          "grade": "D"
         },
         "healthRadar": [
           {
             "dim": "DSO",
-            "value": 100
+            "value": 0
           },
           {
             "dim": "CEI",
@@ -20246,7 +20246,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
         "opportunityWaterfall": [
           {
             "name": "Dunning Gap",
-            "value": 7893020046
+            "value": 7897197840
           },
           {
             "name": "Slow Segment",
@@ -20270,19 +20270,19 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "exec-summary",
             "title": "Executive Summary",
             "iconKey": "summary",
-            "severity": "info",
-            "headline": "AR Health Grade C (64/100) — Mixed signals require attention",
-            "narrative": "For FY 2025-26, the receivables portfolio shows manageable stress. DSO sits at 2.7 days against a best-possible benchmark of 41.6 days (terms-implied). Collection effectiveness is 83% and 61% of open AR is overdue. ",
+            "severity": "warning",
+            "headline": "AR Health Grade D (44/100) — Structural issues require CFO action",
+            "narrative": "For FY 2025-26, the receivables portfolio shows elevated stress. DSO sits at 116.5 days against a best-possible benchmark of 41.6 days (terms-implied). Collection effectiveness is 83% and 61% of open AR is overdue. ",
             "metrics": [
               {
                 "label": "Health Score",
-                "value": "64/100",
-                "color": "text-accent-amber"
+                "value": "44/100",
+                "color": "text-accent-red"
               },
               {
                 "label": "DSO",
-                "value": "2.7 days",
-                "color": "text-accent-green"
+                "value": "116.5 days",
+                "color": "text-accent-red"
               },
               {
                 "label": "CEI",
@@ -20308,7 +20308,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               },
               {
                 "type": "opportunity",
-                "text": "Largest improvement lever is \"Trend\" — even a 10-point lift moves overall grade up one letter."
+                "text": "Largest improvement lever is \"DSO\" — even a 10-point lift moves overall grade up one letter."
               },
               {
                 "type": "opportunity",
@@ -20325,13 +20325,13 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
             "id": "dso-drivers",
             "title": "DSO Driver Analysis",
             "iconKey": "drivers",
-            "severity": "warning",
-            "headline": "KEY drags blended DSO up by +10.6 days",
-            "narrative": "The blended 2.7-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 41.6 days — leaving 74.9 days of behavioural leakage worth ₹22.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
+            "severity": "info",
+            "headline": "STANDARD drags blended DSO up by +2.2 days",
+            "narrative": "The blended 116.5-day DSO breaks down across four segments. Best-possible DSO if everyone paid to terms would be 41.6 days — leaving 74.9 days of behavioural leakage worth ₹22.6B. Process-side, the dunning gap currently runs 0 days from due-date to first reminder versus a 3-day target.",
             "metrics": [
               {
                 "label": "Actual DSO",
-                "value": "2.7d",
+                "value": "116.5d",
                 "color": "text-accent-red"
               },
               {
@@ -20351,9 +20351,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "keyObservations": [
-              "KEY: DSO 30d, weight 38%, contribution +10.6d.",
-              "STRATEGIC: DSO 31d, weight 34%, contribution +9.5d.",
-              "STANDARD: DSO 35d, weight 18%, contribution +5.9d."
+              "STANDARD: DSO 129d, weight 18%, contribution +2.2d.",
+              "SMB: DSO 131d, weight 10%, contribution +1.4d.",
+              "STRATEGIC: DSO 112d, weight 34%, contribution -1.5d."
             ],
             "risksAndOpportunities": [
               {
@@ -20362,7 +20362,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
               }
             ],
             "actions": [
-              "Target KEY segment first — concentrating collection effort here yields highest DSO impact.",
+              "Target STANDARD segment first — concentrating collection effort here yields highest DSO impact.",
               "Move dunning gap from 0d to 3d via automated cadences.",
               "Tighten payment-terms exceptions: 0% terms variance contributes to leakage."
             ]
@@ -20681,9 +20681,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
       },
       "insights": {
         "basic-dso": {
-          "observation": "For FY 2025-26, DSO is 2.7 (healthy). Average AR ₹34973824 sits against ₹109.9B of credit sales; no prior period to compare.",
-          "recommendation": "Hold the line — DSO is in best-in-class territory. Use any room to extend terms strategically with key customers.",
-          "nextAction": "Maintain weekly collector cadence and review top 5 accounts for early signs of slip."
+          "observation": "For FY 2025-26, DSO is 116.5 days (critical) — that's how long, on average, credit sales stay locked in receivables before cash lands. no prior period to compare.",
+          "recommendation": "Critical. Launch an emergency cash-recovery program; DSO beyond 90 days signals systemic collection failure.",
+          "nextAction": "Within 14 days, complete a top-20 customer call sweep targeting accounts contributing > -1.5 days to blended DSO."
         },
         "basic-overdue-ratio": {
           "observation": "60.8% of open AR (₹21.3B) is past due across 5,634 invoices; no prior period to compare.",
@@ -20761,9 +20761,9 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Approve 30-day pilot of automated L1 dunning; measure backlog reduction."
         },
         "dso-bridge": {
-          "observation": "Blended DSO 2.7. Largest drag: KEY contributing 10.6 pts at 38% of sales.",
-          "recommendation": "Target the KEY segment first — fixing the heaviest contributor yields the largest DSO impact.",
-          "nextAction": "Set a 60-day target to reduce KEY DSO by 3 points via dedicated collector pod."
+          "observation": "Blended DSO 116.5 days. Largest drag: STANDARD contributing 2.2 days at 18% of sales.",
+          "recommendation": "Target the STANDARD segment first — fixing the heaviest contributor yields the largest DSO impact.",
+          "nextAction": "Set a 60-day target to reduce STANDARD DSO by 3 days via dedicated collector pod."
         },
         "dso-velocity": {
           "observation": "Average month-on-month DSO change: +19.0%. Accelerating upward — losing ground.",
@@ -20776,7 +20776,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Track monthly and flag if drag exceeds 5 days for any segment."
         },
         "ar-health-score": {
-          "observation": "AR Health: 64/100 (Grade C). Strongest dim: DSO. Weakest: Trend.",
+          "observation": "AR Health: 44/100 (Grade D). Strongest dim: CEI. Weakest: DSO.",
           "recommendation": "Lift the weakest dimension first — even a 10-point gain on the lowest component moves the overall grade up one letter.",
           "nextAction": "Stand up a 90-day program targeting the weakest health dimension; report progress monthly to CFO."
         },
@@ -20861,7 +20861,7 @@ export const COMPUTED_KPI_DATA: Record<FYKey, Record<QuarterKey, QuarterData>> =
           "nextAction": "Quarterly segment review with explicit improvement targets per segment."
         },
         "executive-summary": {
-          "observation": "FY 2025-26 headline: DSO 2.7 · CEI 83% · 61% overdue · ₹35.1B cash trapped.",
+          "observation": "FY 2025-26 headline: DSO 116.5 days · CEI 83% · 61% overdue · ₹35.1B cash trapped.",
           "recommendation": "Stand up a CFO-sponsored cash recovery program with weekly progress reviews.",
           "nextAction": "Set the next quarter's target as a 10% improvement on the weakest of the four headline metrics."
         },
